@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>webtorrent demo</title>
+	<link rel="stylesheet" type="text/css" href="./index.css">
+	<script type="text/javascript" src="./jquery.min.js"></script>
+	<script type="text/javascript" src="./webtorrent.min.js"></script>
+	<script type="text/javascript" src="./fileSaver.js"></script>
+	<script type="text/javascript" src="./jszip.min.js"></script>
+</head>
+<body>
+	<form>
+		<h1>开始分享文件：</h1>
+		<input id="seeds" type="file" name="seeds" multiple>
+	</form>
+	<form>
+		<h1>下载文件：</h1>
+		<input id="magnet" name="magnet" type="text" placeholder="输入magnet地址：">
+		<button id="download">开始下载</button>
+	</form>
+	<div class="speed"></div>
+	<div class="message"></div>
+	<script type="text/javascript" src="./index.js"></script>
+</body>
+</html>

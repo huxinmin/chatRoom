@@ -1,0 +1,83 @@
+{
+  "users": [
+    {
+      "username": "huxinmin",
+      "password": "1",
+      "avater": "images/avater/12.jpg",
+      "isOnline": true
+    },
+    {
+      "username": "test",
+      "password": "1",
+      "avater": "images/avater/11.jpg",
+      "isOnline": true
+    },
+    {
+      "username": "waylee",
+      "password": "123456",
+      "avater": "images/avater/4.jpg"
+    },
+    {
+      "username": "吉达远",
+      "password": "jdy54329826",
+      "avater": "images/avater/11.jpg"
+    },
+    {
+      "username": "xuyp",
+      "password": "123456",
+      "avater": "images/avater/23.jpg"
+    },
+    {
+      "username": "陈林",
+      "password": "123456",
+      "avater": "images/avater/22.jpg"
+    },
+    {
+      "username": "wwx548100",
+      "password": "123456",
+      "avater": "images/avater/22.jpg"
+    },
+    {
+      "username": "hushijian",
+      "password": "epro1988",
+      "avater": "images/avater/29.jpg"
+    }
+  ],
+  "rooms": [
+    {
+      "username": "群聊",
+      "avater": "images/avater/10.jpg",
+      "users": []
+    }
+  ],
+  "unReceivedMessages": [
+    {
+      "sender": {
+        "username": "huxinmin",
+        "avater": "images/avater/12.jpg"
+      },
+      "messages": "1234",
+      "receiver": "huxinmin",
+      "time": "2016-02-23"
+    },
+    {
+      "sender": {
+        "username": "huxinmin",
+        "avater": "images/avater/12.jpg"
+      },
+      "messages": "2345",
+      "receiver": "huxinmin",
+      "time": "2016-02-23"
+    },
+    {
+      "sender": {
+        "username": "huxinmin",
+        "avater": "images/avater/12.jpg"
+      },
+      "messages": "2345",
+      "receiver": "sdsds",
+      "time": "2016-02-23"
+    }
+  ],
+  "files": []
+}
