@@ -52,6 +52,8 @@ $(document).ready(function() {
 		var p2pFiles;
 		var jqFileUploadData;
 		var sendMessageBtn = $("#sendMessage");
+		var href = window.location.href;
+		var loginBtn = $("#login");
 		//实现背景模糊，动态计算background-position
 		blurBg.css("background-position", "-" + (win_w * .5 - 500) + "px -" + win_h * .075 + "px");
 		//监听document.resize事件动态计算background-position，需要加入throttle函数
@@ -271,15 +273,13 @@ $(document).ready(function() {
 
 		//登录功能
 		//后期加一个登录验证 不为空 以及后台提示消息
-		var host = window.location.host;
-		var loginBtn = $("#login");
 
 		loginBtn.on('click', function() {
 				var sendLoginData = { username: $("form.login-form").find("[name=username]").val(), password: $("form.login-form").find("[name=password]").val() }
 				$.ajax({
 						type: "post",
 						dataType: "json",
-						url: 'http://' + host + '/login',
+						url: href + 'login',
 						data: sendLoginData
 				}).done(function(data) {
 						loginSuccess(data);
@@ -410,7 +410,7 @@ $(document).ready(function() {
 				$.ajax({
 						type: "post",
 						dataType: "json",
-						url: 'http://' + host + '/register',
+						url: href + 'register',
 						data: sendRegisterData
 				}).done(function(data) {
 						loginSuccess(data);
@@ -422,7 +422,7 @@ $(document).ready(function() {
 				$.ajax({
 						type: "post",
 						dataType: "json",
-						url: 'http://' + host + '/logout',
+						url: href + 'logout',
 						data: {}
 				}).done(function() {
 						settingDropMenu.fadeOut();
@@ -512,11 +512,11 @@ $(document).ready(function() {
 			console.log(data)
 			if(data.receiver !== $('.user-name').text()){
 				$(".chat-box-body-window[data-username="+data.receiver+"]").find(".send-file-message.is-uploading")
-				.append("<a target='_blank' href='http://" + host + "/download?filePath="+data.filePath+"'  class='send-file-download'>下载</a>")
+				.append("<a target='_blank' href='" + href + "download?filePath="+data.filePath+"'  class='send-file-download'>下载</a>")
 				.removeClass("is-uploading").addClass('is-uploaded')
 			}else{
 				$(".chat-box-body-window[data-username="+data.sender+"]").find(".send-file-message.is-uploading")
-				.append("<a target='_blank' href='http://" + host + "/download?filePath="+data.filePath+"'  class='send-file-download'>下载</a>")
+				.append("<a target='_blank' href='" + href + "download?filePath="+data.filePath+"'  class='send-file-download'>下载</a>")
 				.removeClass("is-uploading").addClass('is-uploaded')
 			}
 		}
@@ -762,7 +762,7 @@ function updateSpeed(speedEl, torrent) {
 	//发送文件
 	//使用jquery-file-upload
 	sendFileInput.fileupload({
-    url: 'http://' + host + '/upload',
+    url: href + 'upload',
     dataType: 'json',
     add:function(e, data){
     	if (message.find(".send-file-message").length) {
