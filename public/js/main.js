@@ -85,7 +85,8 @@ $(document).ready(function() {
 		var emoji1Body = $(".emoji-face1-body");
 		var emoji2Body = $(".emoji-face2-body");
 		var showEmoj = $(".showEmoj");
-		var emoji1Data = [
+		var qqEmojis = {
+			emojis:[
 				{ title: "微笑" }, { title: "撇嘴" }, { title: "色" }, { title: "发呆" }, { title: "得意" }, { title: "流泪" },
 				{ title: "害羞" }, { title: "闭嘴" }, { title: "睡" }, { title: "大哭" }, { title: "尴尬" }, { title: "发怒" },
 				{ title: "调皮" }, { title: "呲牙" }, { title: "惊讶" }, { title: "难过" }, { title: "酷" }, { title: "冷汗" },
@@ -95,15 +96,25 @@ $(document).ready(function() {
 				{ title: "衰" }, { title: "骷髅" }, { title: "敲打" }, { title: "再见" }, { title: "擦汗" }, { title: "抠鼻" },
 				{ title: "鼓掌" }, { title: "糗大了" }, { title: "左哼哼" }, { title: "右哼哼" }, { title: "哈欠" },
 				{ title: "鄙视" }, { title: "委屈" }, { title: "快哭了" }, { title: "阴险" }, { title: "亲亲" }, { title: "可怜" }
-		];
-		var emoji2Data = [
+			],
+			type: 'qq',
+    	imgType:'.gif'
+		};
+		var tiebaEmojis = {
+			emojis:[
 				{ title: "呵呵" }, { title: "哈哈" }, { title: "吐舌" }, { title: "啊" }, { title: "酷" }, { title: "怒" },
 				{ title: "开心" }, { title: "汗" }, { title: "泪" }, { title: "黑线" }, { title: "鄙视" }, { title: "不高兴" },
 				{ title: "真棒" }, { title: "钱" }, { title: "疑问" }, { title: "阴险" }, { title: "吐" }, { title: "咦" },
 				{ title: "委屈" }, { title: "花心" }, { title: "呼" }, { title: "笑眼" }, { title: "冷" }, { title: "太开心" },
 				{ title: "滑稽" }, { title: "勉强" }, { title: "狂汗" }, { title: "乖" }, { title: "睡觉" }, { title: "惊哭" },
 				{ title: "升起" }, { title: "惊讶" }, { title: "喷" }
-		];
+			],
+			type:'tieba',
+			imgType:'.png'
+		};
+		var emojiTemplate = '{{each emojis value i}}'
+														+		'<img src="images/{{type}}/{{i+1}}{{imgType}}" title="{{value.title}}" class="face {{type}}-face">'
+														+'{{/each}}'
 		showEmoj.on('click', function(e) {
 				e.stopPropagation();
 				if (emojiContainer.css('display') === "none") {
@@ -122,14 +133,11 @@ $(document).ready(function() {
 				if (emojiContainer.find('.face').length) {
 						return
 				}
-				emoji1Data.forEach(function(item, index) {
-						var emojiItem = $("<img src='images/qq/" + (1 + index) + ".gif' title='" + item.title + "'  class='face qq-face'>");
-						emoji1Body.append(emojiItem);
-				});
-				emoji2Data.forEach(function(item, index) {
-						var emojiItem = $("<img src='images/tieba/" + (1 + index) + ".png' title='" + item.title + "' class='face tieba-face'>");
-						emoji2Body.append(emojiItem);
-				});
+				var render = template.compile(emojiTemplate);
+				var qqEmojisHtml = render(qqEmojis);
+				emoji1Body.html(qqEmojisHtml)
+				var tiebaEmojisHtml = render(tiebaEmojis)
+				emoji2Body.html(tiebaEmojisHtml);
 		}
 		//点击emoji-head切换emoji-body
 
