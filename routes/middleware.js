@@ -1,3 +1,9 @@
+const low = require('lowdb')
+const FileSync = require('lowdb/adapters/FileSync')
+const adapter = new FileSync('./jsonData/db.json')
+
+exports.db = low(adapter);
+
 //验证登录
 exports.requireLogin = function (req, res, next) {
 	if (!req.signedCookies.isLogin) {

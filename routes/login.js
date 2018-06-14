@@ -1,19 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const middleware = require("./middleware");
-const low = require('lowdb')
-const FileSync = require('lowdb/adapters/FileSync')
-const adapter = new FileSync('./jsonData/db.json')
-const db = low(adapter)
 
 /* GET home page. */
 router.post('/', function(req, res, next) {
-	var user = db.get('users').find({ username: req.body.username }).value();
+	var user = middleware.db.get('users').find({ username: req.body.username }).value();
 	if (user && user.password === req.body.password) {
 				res.locals.isLogin = true;
-				var usersList = middleware.getUsersList(db, user.username);
-				var unReceivedMessages = middleware.getReceivedMessages(db, user.username);
-				var roomsList = middleware.getRoomsList(db);
+				var usersList = middleware.getUsersList(middleware.db, user.username);
+				var unReceivedMessages = middleware.getReceivedMessages(middleware.db, user.username);
+				var roomsList = middleware.getRoomsList(middleware.db);
 				middleware.setIsLoginCookie(res, req.body.username);
 				res.json({ isLogin: true, message: "登录成功", user:user,  usersList:usersList, unReceivedMessages:unReceivedMessages, roomsList:roomsList});
 		} else {
