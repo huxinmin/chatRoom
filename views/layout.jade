@@ -7,16 +7,6 @@ html
     link(rel='stylesheet', href='css/style.css')
     link(rel='stylesheet', href='css/jquery.fileupload.css')
     meta(name="viewport", content="width=device-width, initial-scale=1")
-    script(src="/socket.io/socket.io.js")
-    script(src='js/jquery.min.js')
-    script(src='js/webtorrent.min.js')
-    script(src='js/jquery.ui.widget.js')
-    script(src='js/jszip.min.js')
-    script(src='js/fileSaver.js')
-    script(src='js/StreamSaver.js')
-    script(src='js/template-web.js')
-    script(src='js/jquery.fileupload.js')
-    script(src='js/main.js')
   body
     block content
     div(class= (isLogin? "mask hide": "mask show"))
@@ -39,4 +29,16 @@ html
             input(name="password", type="password", placeholder="请输入密码", required)
           div.form-item
             input#register(type="button", value="注册")
+    script(src="/socket.io/socket.io.js")
+    script(src='lib/jquery.min.js')
+    script(src='lib/webtorrent.min.js')
+    script(src='lib/jquery.ui.widget.js')
+    script(src='lib/jszip.min.js')
+    script(src='lib/fileSaver.js')
+    script(src='lib/StreamSaver.js')
+    script(src='lib/template-web.js')
+    script(src='lib/jquery.fileupload.js')
+    script(src='js/utils.js')
+    script(src='js/main.js')
+
 
