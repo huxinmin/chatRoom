@@ -1,13 +1,8 @@
 const middleware = require("../routes/middleware");
-const low = require('lowdb')
-const FileSync = require('lowdb/adapters/FileSync')
-const adapter = new FileSync('./jsonData/db.json')
-const db = low(adapter)
-
 
 exports = module.exports = function(server) {
 		var io = require('socket.io')(server);
-		var room = middleware.getRoomsList(db)[0];
+		var room = middleware.getRoomsList()[0];
 		//开始连接
 		io.on('connection', (socket) => {
 			console.log("socket connection");
@@ -22,6 +17,7 @@ exports = module.exports = function(server) {
 				//加入群聊
 				socket.join(room.username);
 				socket.broadcast.emit('userLogin',data)
+				middleware.updateOnlineStatus(socket.username, true)
 			});
 			//接收用户退出登录消息
 			//并告诉其他用户该用户退出登录
@@ -30,6 +26,7 @@ exports = module.exports = function(server) {
 				console.log(socket.id)
 				console.log(socket.username)
 				socket.broadcast.emit('userLogout',socket.username)
+				middleware.updateOnlineStatus(socket.username, false)
 			});
 			//接收用户发的消息
 			//并告诉正在聊天的用户

@@ -42,7 +42,7 @@ block content
                   img(src=roomItem.avater)
                   p=roomItem.username
               each userItem in usersList
-                div.friend-item(data-username=userItem.username, data-avater=userItem.avater, data-isRoom="false")
+                div.friend-item(data-username=userItem.username, data-avater=userItem.avater, data-isRoom="false", data-isOnline=userItem.isOnline)
                   img(src=userItem.avater)
                   p=userItem.username
     li.right

@@ -239,6 +239,8 @@ $(document).ready(function() {
 				list.forEach(function(item) {
 						var friendItem = $("<div class='friend-item' data-isRoom=" + isRoom + " data-avater='" + item.avater + "' data-username='" + item.username + "'><img src='" + item.avater + "'><p>" + item.username + "</p></div>");
 						friendsBody.append(friendItem);
+						//判断用户是否在线，添加对应的data-isOnline属性
+						item.isOnline !== undefined && item.isOnline && friendItem.attr('data-isOnline','')
 				});
 		}
 		//生成聊天列表，聊天列表只保存在本地locastorage
@@ -395,18 +397,20 @@ $(document).ready(function() {
 		socket.on("userLogin", function(data) {
 				console.log('userLogin')
 				console.log(data)
+				receiveUserLogin(data.username);
 		});
 		//好友下线了
 		socket.on("userLogout", function(data) {
 				console.log('userLogout')
 				console.log(data)
+				receiveUserLogout(data);
 		});
 		//好友向我发送消息了
 		socket.on("userSendMessage", function(data) {
 				console.log("userSendMessage")
 				console.log(data);
 				receiveMessage(data)
-				createNotification(data)
+				createNotification(data.sender, data.message, data.senderAvater)
 		});
 
 		//好友向我发送了P2P分享文件
@@ -425,7 +429,14 @@ $(document).ready(function() {
 				$(".chat-box-body-window[data-username="+data.sender+"]").find(".p2p-files-message.not-seed").append("<span class='pending'>正在获取种子...</span>")
 				client.add(data.magnetURI, onAddTorrent)
 		}
-
+		function receiveUserLogout(username){
+			$(".friend-item[data-username='"+username+"']").removeAttr("data-isOnline");
+			createNotification(username, '下线了', $(".friend-item[data-username='"+username+"']").attr("data-avater"))
+		}
+		function receiveUserLogin(username){
+			$(".friend-item[data-username='"+username+"']").attr("data-isOnline","");
+			createNotification(username, '上线了', $(".friend-item[data-username='"+username+"']").attr("data-avater"))
+		}
 		function receiveSendFile(data){
 			console.log("receiveSendFile")
 			console.log(data)
@@ -713,13 +724,13 @@ function updateSpeed(speedEl, torrent) {
 	//向用户申请是否显示通知权限
 	Notification.requestPermission(function (permission) {});
 	//发送通知消息
-	function createNotification(data){
+	function createNotification(title, message, icon){
 		if(Notification.permission === "denied" || !document.hidden){
 			return
 		}
-		let notification = new Notification(data.sender, {
-			body:data.message,
-			icon:data.senderAvater
+		let notification = new Notification(title, {
+			body:message,
+			icon:icon
 		})
 		//过段时间后自动关闭
 		setTimeout(function(){notification.close()},5000)

@@ -138,3 +138,6 @@ a.face:nth-child(15n){
 .progress-bar{
 	background-color: #42ac3e;
 }
+.friend-item[data-isOnline] img{
+	filter:grayscale(100%);
+}

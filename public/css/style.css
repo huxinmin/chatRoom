@@ -392,6 +392,7 @@ img.tieba-face{
 	padding: 10px;
 	display: flex;
 	justify-content: flex-start;
+	position: relative;
 }
 .friend-item>img{
 	width: 30px;
@@ -559,4 +560,14 @@ img.tieba-face{
 }
 .left-message .progress-box{
 	display: none;
+}
+.friend-item[data-isOnline]::after{
+	content: "在线";
+}
+.friend-item::after{
+	content: "不在线";
+	display: block;
+	position: absolute;
+	right: 10px;
+	font-size: 12px;
 }
