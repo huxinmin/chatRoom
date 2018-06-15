@@ -406,6 +406,7 @@ $(document).ready(function() {
 				console.log("userSendMessage")
 				console.log(data);
 				receiveMessage(data)
+				createNotification(data)
 		});
 
 		//好友向我发送了P2P分享文件
@@ -707,4 +708,25 @@ function updateSpeed(speedEl, torrent) {
 			$('.single-message-info').find('.is-uploading').removeClass('is-uploading').addClass('is-uploaded')
 		}
 	}
+
+	//桌面提示消息
+	//向用户申请是否显示通知权限
+	Notification.requestPermission(function (permission) {});
+	//发送通知消息
+	function createNotification(data){
+		if(Notification.permission === "denied" || !document.hidden){
+			return
+		}
+		let notification = new Notification(data.sender, {
+			body:data.message,
+			icon:data.senderAvater
+		})
+		//过段时间后自动关闭
+		setTimeout(function(){notification.close()},5000)
+	}
+	//将emoji表情解析为表情提示
+	function parseEmojiToWords(message){
+
+	}
+
 });
