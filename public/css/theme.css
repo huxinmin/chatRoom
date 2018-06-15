@@ -139,5 +139,8 @@ a.face:nth-child(15n){
 	background-color: #42ac3e;
 }
 .friend-item[data-isOnline] img{
+	filter:grayscale(0);
+}
+.friend-item img{
 	filter:grayscale(100%);
 }

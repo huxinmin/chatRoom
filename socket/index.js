@@ -6,6 +6,7 @@ exports = module.exports = function(server) {
 		//开始连接
 		io.on('connection', (socket) => {
 			console.log("socket connection");
+			console.log(socket.username)
 			//接收用户登录信息
 			//并告诉其他用户有用户登录了
 			socket.on('login',(data)=>{
