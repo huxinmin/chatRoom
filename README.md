@@ -1,4 +1,4 @@
-# chatRoomWithFilesTransfer
+# chatRoom
 类似微信的一个简单的传送文件或者发送消息的简单聊天系统，在线地址：[https://www.huxinmin.com/chatRoom](https://www.huxinmin.com/chatRoom)
 
 ## 功能
