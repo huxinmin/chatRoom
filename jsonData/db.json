@@ -11,42 +11,6 @@
       "password": "1",
       "avater": "images/avater/11.jpg",
       "isOnline": true
-    },
-    {
-      "username": "waylee",
-      "password": "123456",
-      "avater": "images/avater/4.jpg",
-      "isOnline": false
-    },
-    {
-      "username": "吉达远",
-      "password": "jdy54329826",
-      "avater": "images/avater/11.jpg",
-      "isOnline": false
-    },
-    {
-      "username": "xuyp",
-      "password": "123456",
-      "avater": "images/avater/23.jpg",
-      "isOnline": false
-    },
-    {
-      "username": "陈林",
-      "password": "123456",
-      "avater": "images/avater/22.jpg",
-      "isOnline": false
-    },
-    {
-      "username": "wwx548100",
-      "password": "123456",
-      "avater": "images/avater/22.jpg",
-      "isOnline": false
-    },
-    {
-      "username": "hushijian",
-      "password": "epro1988",
-      "avater": "images/avater/29.jpg",
-      "isOnline": false
     }
   ],
   "rooms": [
@@ -64,24 +28,6 @@
       },
       "messages": "1234",
       "receiver": "huxinmin",
-      "time": "2016-02-23"
-    },
-    {
-      "sender": {
-        "username": "huxinmin",
-        "avater": "images/avater/12.jpg"
-      },
-      "messages": "2345",
-      "receiver": "huxinmin",
-      "time": "2016-02-23"
-    },
-    {
-      "sender": {
-        "username": "huxinmin",
-        "avater": "images/avater/12.jpg"
-      },
-      "messages": "2345",
-      "receiver": "sdsds",
       "time": "2016-02-23"
     }
   ]
