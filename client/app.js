@@ -1,12 +1,12 @@
-var finalhandler = require('finalhandler')
-var http = require('http')
-var serveStatic = require('serve-static')
+const finalhandler = require('finalhandler')
+const http = require('http')
+const serveStatic = require('serve-static')
 
 // Serve up folder
-var serve = serveStatic('./dist', {'index': ['index.html', 'index.htm']})
+const serve = serveStatic('./dist', {maxAge: '1d','index': 'index.html'})
 
 // Create server
-var server = http.createServer(function onRequest (req, res) {
+const server = http.createServer((req, res)=> {
   serve(req, res, finalhandler(req, res))
 })
 
