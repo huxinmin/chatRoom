@@ -7,7 +7,7 @@
     "start-pm2": "pm2 start ./app.js"
   },
   "dependencies": {
-    "finalhandler": "^1.1.1",
-    "serve-static": "^1.13.2"
+    "express": "^4.16.3",
+    "express-history-api-fallback": "^2.2.1"
   }
 }

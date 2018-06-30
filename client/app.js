@@ -1,14 +1,12 @@
-const finalhandler = require('finalhandler')
-const http = require('http')
-const serveStatic = require('serve-static')
+const path = require('path');
+const express = require('express');
+const history =  require('express-history-api-fallback');
 
-// Serve up folder
-const serve = serveStatic('./dist', {maxAge: '1d','index': 'index.html'})
+const app = express();
+const root = path.join(__dirname, './dist');
 
-// Create server
-const server = http.createServer((req, res)=> {
-  serve(req, res, finalhandler(req, res))
-})
+app.use(express.static(root));
 
-// Listen
-server.listen(3000)
+app.use(history('index.html', { root: root }));
+
+app.listen(process.env.PORT || 3000);

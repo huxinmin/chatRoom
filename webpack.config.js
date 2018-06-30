@@ -5,7 +5,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 module.exports = {
-  entry: path.resolve(__dirname, './client/src/js/index.js'),
+  entry: path.resolve(__dirname, './client/src/index.js'),
 
   target: 'web',
 
@@ -18,7 +18,8 @@ module.exports = {
 
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, './client/dist')
+    path: path.resolve(__dirname, './client/dist'),
+    publicPath:'/'
   },
 
   module:{
@@ -38,7 +39,17 @@ module.exports = {
 	},
 
 	externals: {
-  	jquery: 'jQuery'
+  	jquery: 'jQuery',
+    moment:'moment',
+    anime:'anime',
+    fileSaver:'file-saver',
+    JSZip:'JSZip',
+    localforage:'localforage',
+    _:'_', //lodash
+    page:'page',
+    template:'template',
+    WebTorrent:'WebTorrent'
+
 	},
 
 	plugins: [
