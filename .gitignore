@@ -1,3 +1,4 @@
 */node_modules
+node_modules
 server/upload
-server/db.json
+# server/db.json
