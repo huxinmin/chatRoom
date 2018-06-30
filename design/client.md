@@ -1,0 +1,90 @@
+## 页面或组件列表
+- 登录页面
+  - 用户名输入框
+  - 密码输入框（切换输入框时候，可以做动效）
+  - 注册跳转链接
+- 注册
+- 聊天页面
+  - 背景图
+  - 左侧菜单
+    - 用户头像
+      - 点击弹出框个人中心
+        - 头像信息
+        - 修改密码
+        - 修改头像
+    - 聊天列表按钮
+    - 群组列表按钮
+    - 设置按钮
+      - 点击弹出设置弹出框
+  - 中间对话列表
+    - 头部
+      - 搜索
+      - 创建群组
+    - 其余
+      - 聊天列表
+- 弹出框组件
+- 桌面通知组件
+
+## 依赖
+- 使用page.js做前端路由
+- 使用art-template做模板渲染
+- 使用moment.js做时间处理
+- 使用Lodash做工具
+- 使用Mordernizr做嗅探
+- 使用jquery.fileupload做上传
+- 使用anime.js做动画
+
+## DOM设计
+- 聊天页面
+  - 总体`ul.app`分为`li.left`，`li.middle`,`li.right`三个模块
+  - `.left`左侧
+    - `.mine`
+    - `.menu-group`
+  - `.middle`中间
+    - `.search-create`
+      - `.search`搜索
+      - `.create`创建群组
+    - `ul.tabs-group`
+      - `li.chats-group`聊天列表
+        - `.chats-item`聊天记录框
+      		- `[data-username]`表示与之聊天对象的名字
+      		- `[data-unread]`表示未读消息的数量，没有未读消息则为0
+      		- 有消息则显示消息，无则显示暂无消息
+      		- 有未读消息需要显示红色圆形数字
+      		- 点击切换改变`.active`的class选项，同时改变`curChat`全局变量（可以设置setter，监听改变，右边聊天窗口也改变）和`.chats-window`
+      		- 右击删除，则删掉本地存储，如果是`curChat`则置为null并改变`.chats-window`为未选择聊天
+      - `li.users-group`用户列表
+				- `.users-item`用户
+				  - `[data-username]`用户名
+				  - `[data-isInChats]`是否在聊天列表中有聊天记录框，如果有点击则直接跳到聊天记录，不创建，如果没有则需要先创建再跳转
+				  - `[data-isOnline]`是否在线
+     	- `li.rooms-group`群聊列表
+     	  - `.rooms-item`群聊
+     	    - `[data-roomname]`群聊名
+     	    - `[data-isInChats]`是否在聊天列表中有聊天记录框，如果有点击则直接跳到聊天记录，不创建，如果没有则需要先创建再跳转
+  - `right`右边
+    - `chats-window`聊天窗口
+      - `chats-win-user`聊天对象
+        - `chats-win-user-name`聊天对象名称
+        - `chats-win-user-info-btn`点击按钮显示聊天对象信息弹出框
+      - `chats-win-history-group`聊天内容记录
+        - `chats-win-history-item`单个聊天内容
+          - `[data-isMine]`表示是自己说的，应该显示在右侧，否则不是自己说的，显示在左侧
+    - `chats-input`输入区域
+
+
+## 全局变量设计（登陆成功后初始化或刷新页面重新赋值）
+- `mine`[Object]用户自己
+  - `username`
+  - `avater`
+- `users`[Array]用户列表
+- `rooms`[Array]群聊列表
+- `curChat`[Object]正在聊天的用户
+  - `username`
+  - `avater`
+
+## 本地存储数据设计
+- `chats`[Array]聊天记录
+- `roomChats`[Array]群聊记录
+- `bg`[Blob]自定义的背景图
+- `settings`[Array]用户设置

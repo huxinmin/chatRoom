@@ -1,0 +1,70 @@
+## 后端Socket.io的功能及API设计
+- `login`[on]用户上线
+  - 传参`user`[Object]
+    - `username`用户名
+    - `avater`用户头像
+  - 回调函数
+    - 广播给所有人，触发`recLogin`(receiveLogin)事件
+    - 更新数据库用户在线状态
+    - 设置socket的`username`等于用户名
+- `disconnect`[on]下线或掉线
+  - 回调函数
+    - 广播给所有人，触发`recLogout`(receiveLogout)事件
+    - 更新数据库用户在线状态
+- `messages`[on]发送用户消息（不包括离线）
+  - 传参`data`[Object]
+    - `sender`[Object]发送者
+      - `username`
+      - `avater`
+    - `receiver`[String]接受者
+    - `messages`[String]消息
+    - `time`[String]发送时间
+  - 回调函数
+    - 发送给接受者，触发`recMessages`(receiveMessages)事件
+    - 确认是否发送成功，并返回给发送者
+- `file`[on]发送用户文件
+  - 传参`data`[Object]
+    - `sender`
+    - `receiver`
+    - `file`[Object]
+      - `filename`
+      - `filepath`
+    - `time`
+  - 回调函数
+    - 发送给接受者，触发`recFile`(receiveFile)事件
+    - 确认是否发送成功
+- `roomMessages`[on]发送群聊消息
+  - 回调函数
+    - 广播给群组成员，触发`recRoomMessages`(receiveRoomMessages)事件
+    - 确认是否发送成功，返回给发送者
+- `roomFile`[on]发送群聊文件
+  - 回调函数
+    - 广播给群组成员，触发`recRoomFile`(receiveRoomFile)事件
+    - 确认是否发送成功，返回给发送者
+- `torrent`[on]发送用户torrent
+  - 回调函数
+    - 发送给接受者，触发`recTorrent`(receiveTorrent)事件
+    - 确认是否发送成功，返回给发送者
+- `roomTorrent`[on]发送群聊torrent
+  - 回调函数
+    - 广播给群组成员，触发`recRoomTorrent`(receiveRoomTorrent)事件
+    - 确认是否发送成功，返回给发送者
+
+
+## 前端Socket.io的功能及API设计
+- `recLogin`[on]
+- `recLogout`[on]
+- `recMessages`[on]
+- `recFile`[on]
+- `recRoomMessages`[on]
+- `recRoomFile`[on]
+- `recTorrent`[on]
+- `recRoomTorrent`[on]
+- `login`[emit]
+- `logout`[close]
+- `file`[emit]
+- `messages`[emit]
+- `torrent`[emit]
+- `roomFile`[emit]
+- `roomMessages`[emit]
+- `roomTorrent`[emit]

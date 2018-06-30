@@ -4,7 +4,9 @@
       "username": "huxinmin",
       "password": "1",
       "avater": "images/avater/12.jpg",
-      "isOnline": true
+      "isOnline": true,
+      "remarks":[],
+      "roflms":[]
     },
     {
       "username": "test",
@@ -18,17 +20,6 @@
       "username": "群聊",
       "avater": "images/avater/10.jpg",
       "users": []
-    }
-  ],
-  "offlineMessages": [
-    {
-      "sender": {
-        "username": "huxinmin",
-        "avater": "images/avater/12.jpg"
-      },
-      "messages": "1234",
-      "receiver": "huxinmin",
-      "time": "2016-02-23"
     }
   ]
 }
