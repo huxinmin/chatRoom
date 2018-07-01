@@ -1,14 +1,30 @@
-import './index.less';
+import template from 'template';
 
-var source = '<ul>'
-+    '{{each list value i}}'
-+        '<li>索引 {{i + 1}} ：{{value}}</li>'
-+    '{{/each}}'
-+ '</ul>';
+import './index.less';
+import SVG from './svg.js';
+import './animation.js';
+
+var source = '<div class="login-container">'
++      SVG
++      '<div class="login-form">'
++        '{{each inputs val }}'
++           '<div class="login-from-group">'
++              '<label for={{val.id}}>{{val.val}}</label>'
++              '<input autocomplete="off" type={{val.type}} id={{val.id}}>'
++           '</div>'
++        '{{/each}}'
++        '<input type="submit" id={{btn.id}} value={{btn.val}}>'
++      '</div>'
++'</div>'
+
+
 
 var render = template.compile(source);
 var html = render({
-    list: ['摄影', '电影', '民谣', '旅行', '吉他']
+	inputs:[{id:"username", val:"用户名", type:"text"},{id:"password", val:"密码", type:"password"}],
+	btn:{
+		id:"login", val:"登录"
+	}
 });
 
 export default html

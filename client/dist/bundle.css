@@ -1,3 +1,85 @@
-body {
-  background: red;
+.login-container {
+  height: 300px;
+  width: 400px;
+  background: #474A59;
+  border-radius: 4px;
+  box-sizing: border-box;
+  position: relative;
+  padding: 40px;
+  overflow: hidden;
+  margin-top: -200px;
+}
+.login-container svg {
+  position: absolute;
+  width: 320px;
+  top: -36px;
+}
+.login-container path {
+  fill: none;
+  stroke: url(#linearGradient);
+  stroke-width: 4;
+  stroke-dasharray: 240 1386;
+}
+.login-form {
+  position: absolute;
+  width: 320px;
+}
+.login-from-group {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 40px;
+  margin-bottom: 32px;
+}
+.login-form label {
+  color: #c2c2c5;
+  display: block;
+  font-size: 14px;
+  width: 16%;
+}
+.login-form input {
+  background: transparent;
+  border: 0;
+  color: #f2f2f2;
+  font-size: 20px;
+  height: 36px;
+  line-height: 30px;
+  outline: none !important;
+  width: 66%;
+}
+.login-form input::-moz-focus-inner {
+  border: 0;
+}
+#login {
+  color: #707075;
+  margin-top: 4px;
+  transition: color 300ms;
+  margin-left: 17%;
+  cursor: pointer;
+}
+#login:focus {
+  color: #f2f2f2;
+}
+#login:active {
+  color: #d0d0d2;
+}
+::selection {
+  background: #2D2F36;
+}
+::-webkit-selection {
+  background: #2D2F36;
+}
+::-moz-selection {
+  background: #2D2F36;
+}
+html,
+body,
+#app {
+  height: 100%;
+}
+#app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
 }
