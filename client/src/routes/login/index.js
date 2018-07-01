@@ -4,7 +4,10 @@ import './index.less';
 import SVG from './svg.js';
 import './animation.js';
 
-var source = '<div class="login-container">'
+const loginClass = 'login-container';
+const loginBtn = 'login';
+
+var source = '<div class={{loginClass}}>'
 +      SVG
 +      '<div class="login-form">'
 +        '{{each inputs val }}'
@@ -18,13 +21,14 @@ var source = '<div class="login-container">'
 +'</div>'
 
 
-
-var render = template.compile(source);
-var html = render({
+const data = {
+	loginClass:loginClass,
 	inputs:[{id:"username", val:"用户名", type:"text"},{id:"password", val:"密码", type:"password"}],
 	btn:{
-		id:"login", val:"登录"
+		id:loginBtn, val:"登录"
 	}
-});
+}
+var render = template.compile(source);
+var loginHtml = render(data);
 
-export default html
+export {loginClass, loginHtml, loginBtn}

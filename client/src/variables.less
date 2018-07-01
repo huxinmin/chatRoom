@@ -1,0 +1,18 @@
+//主颜色，紫灰色
+@mainColor:#474A59;
+
+@lighten: lighten(@mainColor, 10%);     // return a color which is 10% *lighter* than @color
+@darken: darken(@mainColor, 10%);      // return a color which is 10% *darker* than @color
+
+@saturate: saturate(@mainColor, 10%);    // return a color 10% *more* saturated than @color
+@desaturate: desaturate(@mainColor, 10%);  // return a color 10% *less* saturated than @color
+
+@fadein: fadein(@mainColor, 10%);      // return a color 10% *less* transparent than @color
+@fadeout: fadeout(@mainColor, 10%);     // return a color 10% *more* transparent than @color
+@fade: fade(@mainColor, 50%);        // return @color with 50% transparency
+
+@spinAdd: spin(@mainColor, 10);         // return a color with a 10 degree larger in hue than @color
+@spinSub: spin(@mainColor, -10);        // return a color with a 10 degree smaller hue than @color
+
+@white:white;
+@grayWhite:#e2e2e5;

@@ -1,3 +1,45 @@
+::selection {
+  background: #2D2F36;
+}
+::-webkit-selection {
+  background: #2D2F36;
+}
+::-moz-selection {
+  background: #2D2F36;
+}
+body {
+  background: #e2e2e5;
+}
+html,
+body,
+#app {
+  height: 100%;
+}
+.fireworks {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+#app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+#canvasWarpper {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+ul,
+li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
 .login-container {
   height: 300px;
   width: 400px;
@@ -6,7 +48,6 @@
   box-sizing: border-box;
   padding: 40px;
   overflow: hidden;
-  margin-top: -200px;
 }
 .login-container svg {
   position: absolute;
@@ -62,38 +103,55 @@
 #login:active {
   color: #d0d0d2;
 }
-::selection {
-  background: #2D2F36;
-}
-::-webkit-selection {
-  background: #2D2F36;
-}
-::-moz-selection {
-  background: #2D2F36;
-}
-body {
-  background: #e2e2e5;
-}
-html,
-body,
-#app {
-  height: 100%;
-}
-.fireworks {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-#app {
+.home {
+  width: 1000px;
+  height: 80%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  align-content: center;
 }
-#canvasWarpper {
-  position: fixed;
+.left {
+  background: #5e6275;
+  width: 8%;
+  height: 100%;
+}
+.left .mine {
+  margin: auto;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.left .mine img {
   width: 100%;
+  height: 100%;
+}
+.menu-group {
+  width: 100%;
+}
+.menu-group .menu-item {
+  width: 100%;
+  height: 80px;
+}
+.menu-group svg {
+  width: 40px;
+}
+.menu-group path {
+  fill: #e2e2e5;
+}
+.setting-btn svg {
+  width: 40px;
+}
+.setting-btn path {
+  fill: #e2e2e5;
+}
+.middle {
+  background: #30323d;
+  width: 26%;
+  height: 100%;
+}
+.right {
+  background: white;
+  width: 66%;
   height: 100%;
 }

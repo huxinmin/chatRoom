@@ -36,7 +36,7 @@
 
 ## DOM设计
 - 聊天页面
-  - 总体`ul.app`分为`li.left`，`li.middle`,`li.right`三个模块
+  - 总体`ul.home `分为`li.left`，`li.middle`,`li.right`三个模块
   - `.left`左侧
     - `.mine`
     - `.menu-group`
