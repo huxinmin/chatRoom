@@ -48,7 +48,8 @@ module.exports = {
     _:'_', //lodash
     page:'page',
     template:'template',
-    WebTorrent:'WebTorrent'
+    WebTorrent:'WebTorrent',
+    particlesJS:'particlesJS'
 
 	},
 
