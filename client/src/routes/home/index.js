@@ -1,12 +1,10 @@
 import template from 'template';
 import './index.less';
-import {leftHtml} from './left';
-import {middleHtml} from './middle';
-import {rightHtml} from './right';
+import renderLeft from './left';
+import renderMiddle from './middle';
+import renderRight from './right';
 
-var source = '<ul class="home">'
-+leftHtml+middleHtml+rightHtml
-+'</ul>'
+var source = '<ul class="home"></ul>'
 
 
 const data = {
@@ -15,4 +13,12 @@ const data = {
 var render = template.compile(source);
 var homeHtml = render(data);
 
-export { homeHtml}
+const renderHome = (app)=>{
+	app.html(homeHtml);
+	const home = app.children('.home');
+	renderLeft(home);
+	renderMiddle(home);
+	renderRight(home);
+}
+
+export default renderHome

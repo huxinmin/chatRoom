@@ -114,35 +114,61 @@ li {
   background: #5e6275;
   width: 8%;
   height: 100%;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  box-sizing: border-box;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
 }
 .left .mine {
-  margin: auto;
-  width: 60px;
-  height: 60px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
   overflow: hidden;
+  position: relative;
 }
 .left .mine img {
   width: 100%;
   height: 100%;
 }
+.left .setting-btn {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .menu-group {
   width: 100%;
+  margin-top: -25vh;
 }
 .menu-group .menu-item {
+  box-sizing: border-box;
+  cursor: pointer;
   width: 100%;
   height: 80px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.menu-group svg {
-  width: 40px;
+.menu-group .menu-item.active {
+  background-color: #30323d;
+  border-left: #76ff59 3px solid;
 }
-.menu-group path {
-  fill: #e2e2e5;
-}
+.menu-group svg,
 .setting-btn svg {
-  width: 40px;
+  width: 32px;
+  height: 32px;
 }
+.menu-item path,
 .setting-btn path {
+  fill: #a2a3a9;
+}
+.menu-item.active path {
   fill: #e2e2e5;
 }
 .middle {
@@ -154,4 +180,6 @@ li {
   background: white;
   width: 66%;
   height: 100%;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
 }

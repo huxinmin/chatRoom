@@ -4,23 +4,20 @@ import './utils/fireworks';
 import page from 'page';
 import $ from 'jquery';
 // login page
-import {loginHtml, loginClass} from './routes/login';
-import './routes/login/event';
-import loadingLogin from './routes/login/loading'
+import renderLogin from './routes/login';
 // home page
-import {homeHtml} from './routes/home';
+import renderHome from './routes/home';
 
 
 const app = $('#app');
 page.base('/chatRoom');
 
 page('/login', function(){
-	app.html(loginHtml);
-	loadingLogin('.'+loginClass);
+	renderLogin(app);
 });
 
 page('/home', function(){
-	app.html(homeHtml);
+	renderHome(app);
 });
 
 page();

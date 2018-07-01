@@ -13,4 +13,8 @@ const data = {
 var render = template.compile(source);
 var rightHtml = render(data);
 
-export { rightHtml}
+const renderRight = (home)=>{
+	home.append(rightHtml);
+}
+
+export default renderRight

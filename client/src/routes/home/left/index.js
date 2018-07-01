@@ -5,8 +5,10 @@ import chatSvg from '../../../svg/chat';
 import groupSvg from '../../../svg/group';
 import settingSvg from '../../../svg/setting';
 
+import leftEvent from './events';
 
-var source = '<li class="left">'
+
+var source = '<li class={{className}}>'
 +'<div class="mine"><img src={{mine.avater}}></div>'
 +'<ul class="menu-group">'
 +  '{{each menus val i}}'
@@ -18,6 +20,7 @@ var source = '<li class="left">'
 
 
 const data = {
+	className:'left',
 	mine:{
 		username:"huxinmin",
 		avater:"/assets/images/avater.jpg"
@@ -33,4 +36,9 @@ var render = template.compile(source);
 
 var leftHtml = render(data);
 
-export { leftHtml}
+const renderLeft = (home)=>{
+	home.append(leftHtml);
+	leftEvent();
+}
+
+export default renderLeft
