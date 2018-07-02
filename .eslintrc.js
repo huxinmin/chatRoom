@@ -1,6 +1,11 @@
 module.exports = {
     "extends": "eslint:recommended",
     "parser": "babel-eslint",
+    "globals":{
+        $:false,
+        window:false,
+        document:false
+    },
     "rules": {
         // enable additional rules
         "indent": ["error", 2],

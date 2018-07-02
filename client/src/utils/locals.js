@@ -1,8 +1,8 @@
 var locals = {
-	mine:{},
-	users:[],
-	rooms:[],
-	curChat:{}
-}
+  mine:{},
+  users:[],
+  rooms:[],
+  curChat:{},
+};
 
-export default locals
+export default locals;

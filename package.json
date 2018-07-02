@@ -6,7 +6,9 @@
     "start": "node ./server/app && node ./client/app",
     "start-pm2": "pm2 start ./server/app $$ pm2 start ./client/app",
     "build": "webpack --config ./webpack.config.js --progress",
+    "watch":"webpack --config ./webpack.config.js --progress --watch",
     "eslint":"eslint client/src",
+    "eslint-fix":"eslint client/src --fix",
     "test": "",
     "coverage": "",
     "dev": ""

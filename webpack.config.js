@@ -9,7 +9,6 @@ module.exports = {
 
   target: 'web',
 
-  watch: true,
   watchOptions: {
   	ignored: /node_modules/,
   	aggregateTimeout: 300,

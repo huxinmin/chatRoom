@@ -1,15 +1,15 @@
-import template from 'template';
-import torrentSvg from '../../../svg/torrent';
+import template from "template";
+import torrentSvg from "../../../svg/torrent";
 
-var source = '<div class="tools-torrent">'
+var source = "<div title='P2P分享' class=\"tools-torrent\">"
 +torrentSvg
-+'</div>'
++"</div>";
 
 var render = template.compile(source);
 
 const renderToolTorrent = (chatsInputTools)=>{
-	var torrentHtml = render();
-	chatsInputTools.append(torrentHtml);
-}
+  var torrentHtml = render();
+  chatsInputTools.append(torrentHtml);
+};
 
-export default renderToolTorrent
+export default renderToolTorrent;

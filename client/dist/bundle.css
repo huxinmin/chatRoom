@@ -355,11 +355,14 @@ p {
 .chats-input-box {
   width: 100%;
   height: 100px;
+  padding: 0 20px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  box-sizing: border-box;
   align-items: center;
 }
 .chats-input-box .chats-input-btn {
+  cursor: pointer;
   width: 30px;
   height: 30px;
 }
@@ -367,8 +370,15 @@ p {
   fill: #a2a3a9;
 }
 .chats-input-box .chats-input-text {
-  width: 50%;
+  overflow: hidden;
+  width: 420px;
+  height: 36px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  padding-left: 10px;
+  line-height: 36px;
   background-color: #e2e2e5;
+  outline: none;
 }
 .chats-input-tools {
   display: flex;
@@ -376,17 +386,35 @@ p {
   align-items: center;
   width: 120px;
 }
+.chats-input-tools .tools-emoji {
+  cursor: pointer;
+}
 .chats-input-tools .tools-emoji svg {
   width: 30px;
   height: 30px;
+}
+.chats-input-tools .tools-emoji svg path {
+  fill: #a2a3a9;
+}
+.chats-input-tools .tools-file {
+  cursor: pointer;
 }
 .chats-input-tools .tools-file svg {
   width: 30px;
   height: 30px;
 }
+.chats-input-tools .tools-file svg path {
+  fill: #a2a3a9;
+}
+.chats-input-tools .tools-torrent {
+  cursor: pointer;
+}
 .chats-input-tools .tools-torrent svg {
   width: 30px;
   height: 30px;
+}
+.chats-input-tools .tools-torrent svg path {
+  fill: #a2a3a9;
 }
 .chats-window {
   width: 100%;

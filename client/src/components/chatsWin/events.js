@@ -1,6 +1,6 @@
-import $ from 'jquery';
+import $ from "jquery";
 
 const chatsWinEvent = ()=>{
 
-}
-export default chatsWinEvent
+};
+export default chatsWinEvent;

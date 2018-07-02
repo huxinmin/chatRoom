@@ -1,6 +1,6 @@
-import $ from 'jquery';
+import $ from "jquery";
 
 const searchEvent = ()=>{
 
-}
-export default searchEvent
+};
+export default searchEvent;

@@ -1,16 +1,16 @@
-import template from 'template';
+import template from "template";
 
-import emojiSvg from '../../../svg/emoji';
+import emojiSvg from "../../../svg/emoji";
 
-var source = '<div class="tools-emoji">'
+var source = "<div title='发送表情' class=\"tools-emoji\">"
 +emojiSvg
-+'</div>'
++"</div>";
 
 var render = template.compile(source);
 
 const renderToolEmoji = (chatsInputTools)=>{
-	var toolsEmojiHtml = render();
-	chatsInputTools.append(toolsEmojiHtml);
-}
+  var toolsEmojiHtml = render();
+  chatsInputTools.append(toolsEmojiHtml);
+};
 
-export default renderToolEmoji
+export default renderToolEmoji;

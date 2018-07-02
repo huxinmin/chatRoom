@@ -1,15 +1,15 @@
-import template from 'template';
-import fileSvg from '../../../svg/file';
+import template from "template";
+import fileSvg from "../../../svg/file";
 
-var source = '<div class="tools-file">'
+var source = "<div title='发送文件' class=\"tools-file\">"
 + fileSvg
-+'</div>'
++"</div>";
 
 var render = template.compile(source);
 
 const renderToolFile = (chatsInputTools)=>{
-	var fileHtml = render();
-	chatsInputTools.append(fileHtml);
-}
+  var fileHtml = render();
+  chatsInputTools.append(fileHtml);
+};
 
-export default renderToolFile
+export default renderToolFile;

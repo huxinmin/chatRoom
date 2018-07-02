@@ -1,6 +1,6 @@
-import $ from 'jquery';
+import $ from "jquery";
 
 const chatsInputEvent = ()=>{
 
-}
-export default chatsInputEvent
+};
+export default chatsInputEvent;
