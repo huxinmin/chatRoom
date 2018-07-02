@@ -1,3 +1,6 @@
+@import "./variables.less";
+
+/*选中的背景色*/
 ::selection {
   background: #2D2F36;
 }
@@ -32,8 +35,32 @@ html, body, #app{
 	width: 100%;
 	height: 100%;
 }
-ul, li{
+ul, li, p{
 	list-style: none;
 	margin: 0;
 	padding: 0;
+}
+
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar
+{
+    width: 4px;
+    height: 6px;
+    background-color: #F5F5F5;
+}
+ 
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 4px @gray;
+    border-radius: 2px;
+    background-color: @gray;
+}
+ 
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb
+{
+    border-radius: 2px;
+    -webkit-box-shadow: inset 0 0 4px @lighten;
+    background-color: @lighten;
 }

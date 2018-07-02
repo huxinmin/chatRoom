@@ -49,6 +49,8 @@
         - `.chats-item`聊天记录框
       		- `[data-username]`表示与之聊天对象的名字
       		- `[data-unread]`表示未读消息的数量，没有未读消息则为0
+          - `[data-isOnline]`是否在线，只有用户聊天才有true或者false属性，如果是群聊的话，该属性为none
+          - `[data-type]`是用户聊天或者是群聊
       		- 有消息则显示消息，无则显示暂无消息
       		- 有未读消息需要显示红色圆形数字
       		- 点击切换改变`.active`的class选项，同时改变`curChat`全局变量（可以设置setter，监听改变，右边聊天窗口也改变）和`.chats-window`
@@ -57,6 +59,8 @@
 				- `.users-item`用户
 				  - `[data-username]`用户名
 				  - `[data-isInChats]`是否在聊天列表中有聊天记录框，如果有点击则直接跳到聊天记录，不创建，如果没有则需要先创建再跳转
+            - 从远处获取用户列表数据的时候，没有这个属性，可以使用lodash将本地的聊天记录与之对比然后设置这个属性
+            - 后期在本地聊天或删除聊天的时候，也要动态改变这个值
 				  - `[data-isOnline]`是否在线
      	- `li.rooms-group`群聊列表
      	  - `.rooms-item`群聊
