@@ -9,9 +9,8 @@ const leftEvent = ()=>{
 		  *
 		  *
 		  */
-		const target = $('.'+$(this).attr("data-type")+'-group');
-		$('.tabs-group li').removeClass('active');
-		target.addClass('active');
+		const type =$(this).attr("data-type");
+		$('.tabs-group li').trigger('changTabs',[type])
 	});
 }
 export default leftEvent

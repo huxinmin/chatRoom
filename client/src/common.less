@@ -1,15 +1,4 @@
 @import "./variables.less";
-
-/*选中的背景色*/
-::selection {
-  background: #2D2F36;
-}
-::-webkit-selection {
-  background: #2D2F36;
-}
-::-moz-selection {
-  background: #2D2F36;
-}
 body{
 	background: #e2e2e5;
 }
@@ -34,6 +23,8 @@ html, body, #app{
 	position: fixed;
 	width: 100%;
 	height: 100%;
+	pointer-events: none;
+	z-index: 10;
 }
 ul, li, p{
 	list-style: none;

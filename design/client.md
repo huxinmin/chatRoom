@@ -74,7 +74,13 @@
       - `chats-win-history-group`聊天内容记录
         - `chats-win-history-item`单个聊天内容
           - `[data-isMine]`表示是自己说的，应该显示在右侧，否则不是自己说的，显示在左侧
-    - `chats-input`输入区域
+    - `chats-input-box`输入区域
+      - `chats-input-tools`工具栏
+        - `tool-emoji`表情
+        - `tool-file`发送文件
+        - `tool-torrent`发送共享文件
+      - `chats-input-text`输入框
+      - `chats-input-btn`发送按钮
 
 
 ## 全局变量设计（登陆成功后初始化或刷新页面重新赋值）

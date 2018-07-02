@@ -1,0 +1,77 @@
+@import "../../variables.less";
+.chats-window{
+	width: 100%;
+	height: calc(100% - 100px);
+	position: relative;
+	background-color: @lightenGrayWhite;
+	overflow: auto;
+	.chats-win-user{
+		height: 60px;
+		text-align: center;
+		line-height: 60px;
+		background-color: @white;
+	}
+	.chats-win-history-item{
+		width: 100%;
+		display: flex;
+		padding: 20px;
+		box-sizing: border-box;
+		.history-item-avater{
+			width: 40px;
+			height: 40px;
+			border-radius: 20px;
+		}
+		.inner-history-item{
+			display: flex;
+			max-width: 500px;
+			align-items:baseline;
+		}
+		.history-item-info{
+			width: 440px;
+			.history-item-info-time{
+				margin-top: 10px;
+				font-size: 12px;
+				color: @gray;
+			}
+		}
+		.history-item-info-message{
+			padding: 10px 20px;
+			border-radius: 4px;
+			box-sizing: border-box;
+		}
+		&[data-ismine="false"]{
+			justify-content: flex-start;
+			.inner-history-item{
+				justify-content: flex-start;
+				flex-direction: row-reverse;
+			}
+			.history-item-info{
+				margin-left: 20px;
+				.history-item-info-message{
+					background-color:@white; 
+				}
+				.history-item-info-time{
+					float: left;
+					margin-left: 10px;
+				}
+			}
+		}
+		&[data-ismine="true"]{
+			justify-content: flex-end;
+			.inner-history-item{
+				justify-content: flex-end;
+			}
+			.history-item-info{
+				margin-right: 20px;
+				.history-item-info-message{
+					background-color:@darkenActive;
+					color: @white;
+				}
+				.history-item-info-time{
+					float: right;
+					margin-right: 10px;
+				}
+			}
+		}
+	}
+}
