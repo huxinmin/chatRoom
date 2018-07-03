@@ -1,5 +1,5 @@
-var login = require("./login");
+const mine = require("./mine");
 
 exports = module.exports = function(app){
-	app.use('/login', login);
+	mine(app);
 }

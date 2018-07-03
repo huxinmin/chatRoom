@@ -6,7 +6,7 @@
     - 告诉其他在线用户，该用户上线了
     - 将该用户的在线状态改为在线
     - 删除离线消息
-    - 设置返回cookie的isLogin为true
+    - 设置返回cookie的token为true
   - 返回值
     - 成功
         ```js
@@ -26,7 +26,7 @@
   - 要做的事（成功）
     - 告诉其他用户，该用户注册了
     - 更新数据库
-    - 设置cookie的isLogin为true
+    - 设置cookie的token为true
   - 返回值
     - 成功（同登录成功）
     - 失败
@@ -46,7 +46,7 @@
     - 失败
 - 主页
   - 地址： `/home`
-  - 参数： `username`用户名，`isLogin`是否登录成功
+  - 参数： `username`用户名，`token`是否登录成功
   - 要做的事
   - 返回值
       ```js 

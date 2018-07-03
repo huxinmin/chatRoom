@@ -1,10 +1,12 @@
-var createError = require('http-errors');
-var express = require('express');
-var debug = require('debug')('myexpress:server');
-var http = require('http');
-var socketIO = require('./socket');
-var port = normalizePort(process.env.PORT || '9000');
 var path = require('path');
+var http = require('http');
+var createError = require('http-errors');
+var env = require('dotenv').config({path:path.resolve(__dirname, '../.env')}).parsed;
+var express = require('express');
+var debug = require('debug')('chatRoom:server');
+var socketIO = require('./socket');
+var port = normalizePort(env.serverPort || '9000');
+
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var routes  = require('./routes/index')
@@ -15,12 +17,11 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set("rootPath", __dirname);
-app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser("0123456789"));
+app.use(cookieParser(env.cookieSecret));
 app.use(express.static(path.join(__dirname, 'public')));
 
 routes(app);
@@ -38,7 +39,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.json(err);
 });
 
 
@@ -56,6 +57,7 @@ socketIO(server);
  * Listen on provided port, on all network interfaces.
  */
 server.listen(port);
+console.log('server is listen on '+port)
 server.on('error', onError);
 server.on('listening', onListening);
 

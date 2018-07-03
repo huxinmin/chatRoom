@@ -1,5 +1,6 @@
 const path = require('path');
 const express = require('express');
+const env = require('dotenv').config({path:path.resolve(__dirname, '../.env')}).parsed;
 const history =  require('express-history-api-fallback');
 
 const app = express();
@@ -9,4 +10,7 @@ app.use(express.static(root));
 
 app.use(history('index.html', { root: root }));
 
-app.listen(process.env.PORT || 3000);
+const port = env.clientPort || 3000
+app.listen(port);
+
+console.log('client is listen on '+port)

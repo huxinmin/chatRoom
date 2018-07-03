@@ -3,32 +3,49 @@
     {
       "username": "huxinmin",
       "password": "1",
-      "avater": "images/avater/12.jpg",
-      "isOnline": true
-    },
-    {
-      "username": "test",
-      "password": "1",
-      "avater": "images/avater/11.jpg",
-      "isOnline": true
+      "avater": "/assets/images/avater.jpg",
+      "isOnline": true,
+      "remarks": [
+        {
+          "username": "",
+          "remarkName": ""
+        }
+      ],
+      "oflms": [
+        {
+          "sender": "",
+          "messages": [
+            {
+              "content": "",
+              "time": ""
+            }
+          ]
+        }
+      ]
     }
   ],
   "rooms": [
     {
-      "username": "群聊",
+      "roomname": "群聊",
       "avater": "images/avater/10.jpg",
-      "users": []
-    }
-  ],
-  "offlineMessages": [
-    {
-      "sender": {
-        "username": "huxinmin",
-        "avater": "images/avater/12.jpg"
-      },
-      "messages": "1234",
-      "receiver": "huxinmin",
-      "time": "2016-02-23"
+      "users": [
+        {
+          "username": "",
+          "isAdmin": "",
+          "displayName": ""
+        }
+      ],
+      "files": [
+        {
+          "username": "",
+          "file": {
+            "filename": "",
+            "path": "",
+            "size": ""
+          },
+          "time": ""
+        }
+      ]
     }
   ]
 }
