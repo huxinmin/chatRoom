@@ -1,3 +1,6 @@
+import renderUsersItem from "../components/tabs/users/item";
+import renderRoomsItem from "../components/tabs/rooms/item";
+
 window.locals = {
 	_serverHost:'http://127.0.0.1:9000',
 	get serverHost(){
@@ -23,7 +26,12 @@ window.locals = {
   	if(!_.isArray(data)){
   		throw TypeError("locals.users 赋值必须为一个数组");
   	}
-  	this._curChat = data
+  	this._users = data
+    if(data.length ===0) return
+    const usersGroup = $(".users-group");
+    data.forEach((item)=>{
+      renderUsersItem(usersGroup,item);
+    });
   },
   get rooms(){
   	return this._rooms
@@ -32,7 +40,12 @@ window.locals = {
   	if(!_.isArray(data)){
   		throw TypeError("locals.rooms 赋值必须为一个数组");
   	}
-  	this._curChat = data
+  	this._rooms = data
+    if(data.length ===0) return
+    const roomsGroup = $(".rooms-group");
+    data.forEach((item)=>{
+      renderRoomsItem(roomsGroup,item);
+    });
   },
   get curChat(){
   	return this._curChat

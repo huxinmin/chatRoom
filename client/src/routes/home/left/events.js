@@ -1,6 +1,7 @@
 import $ from "jquery";
 
 const leftEvent = ()=>{
+  $(".menu-item")[0].classList.add("active");
   $(document).on("click", ".menu-item", function(){
     const menuItem = $(".menu-item");
     menuItem.removeClass("active");

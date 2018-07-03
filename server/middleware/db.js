@@ -18,7 +18,7 @@ exports.findRoomByName = (roomname)=>{
   */
 exports.getAllUsers = ()=>{
 	return db.get('users').map((item)=>{
-		return _.pick(item, ['username','avater','isOnline','remarks'])
+		return _.pick(item, ['username','avater','online','remarks'])
 	}).value();
 }
 
@@ -35,5 +35,5 @@ exports.setOffline = (username)=>{
 }
 
 const updateOnlineStatus = (username, status)=>{
-	db.get('users').find({ username: username }).assign({ isOnline: status}).write();
+	db.get('users').find({ username: username }).assign({ online: status}).write();
 }

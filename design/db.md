@@ -6,7 +6,7 @@
 ## 单个用户[Object]
 - `username`[String]用户名
 - `password`[String]密码
-- `isOnline`[Boolean]是否在线
+- `online`[Boolean]是否在线
 - `avater`[String]头像
 - `remarks`[Array]备注
   - 单个备注[Object]

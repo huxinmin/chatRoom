@@ -1,4 +1,5 @@
 import swal from 'sweetalert';
+import {addUsersInChatsPro, addRoomsInChatsPro} from '../utils/addInChatsPro';
 
 const loginAjax = (data)=>{
 	$.ajax({
@@ -14,8 +15,8 @@ const loginAjax = (data)=>{
   function done(data){
     if(data.auth){
     	window.locals.mine = data.mine;
-    	window.locals.rooms = data.rooms;
-    	window.locals.users = data.users;
+    	addRoomsInChatsPro(data.rooms);
+    	addUsersInChatsPro(data.users);
     	page.redirect("/home");
     }else{
     	loginFail(data.message);

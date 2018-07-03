@@ -4,7 +4,7 @@
       "username": "huxinmin",
       "password": "123456",
       "avater": "/assets/images/avater.jpg",
-      "isOnline": true,
+      "online": true,
       "remarks": [
         {
           "username": "",

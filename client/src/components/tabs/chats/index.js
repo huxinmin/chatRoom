@@ -17,7 +17,10 @@ const data = {
 };
 var render = template.compile(source);
 
-
+/** 像users和rooms一样，在这里只渲染一个group，然后在别的地方获取数据，再渲染items，并隐藏chats-none
+  * 未完成待做
+  *
+  */
 const renderChats = (tabs)=>{
 	localforage.getItem('chats').then((val, err)=>{
 		val = val || [];

@@ -55,6 +55,42 @@ p {
   -webkit-box-shadow: inset 0 0 4px #5e6275;
   background-color: #5e6275;
 }
+.users-item {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 20px;
+}
+.users-item .users-item-avater {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+}
+.users-item .users-item-name {
+  font-size: 16px;
+  margin-left: 10px;
+  color: #e2e2e5;
+}
+.rooms-item {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 20px;
+}
+.rooms-item .rooms-item-avater {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+}
+.rooms-item .rooms-item-name {
+  font-size: 16px;
+  margin-left: 10px;
+  color: #e2e2e5;
+}
 .login-container {
   height: 300px;
   width: 400px;
@@ -311,42 +347,6 @@ p {
   background-color: #f33a3a;
   color: white;
   font-size: 12px;
-}
-.rooms-item {
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  box-sizing: border-box;
-  padding: 20px;
-}
-.rooms-item .rooms-item-avater {
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-}
-.rooms-item .rooms-item-name {
-  font-size: 16px;
-  margin-left: 10px;
-  color: #e2e2e5;
-}
-.users-item {
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  box-sizing: border-box;
-  padding: 20px;
-}
-.users-item .users-item-avater {
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-}
-.users-item .users-item-name {
-  font-size: 16px;
-  margin-left: 10px;
-  color: #e2e2e5;
 }
 .right {
   background: white;
