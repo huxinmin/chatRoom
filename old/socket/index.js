@@ -23,7 +23,7 @@ exports = module.exports = function(server) {
 			//接收用户退出登录消息
 			//并告诉其他用户该用户退出登录
 			socket.on('disconnect', ()=>{
-				console.log('logout')
+				console.log('logout');
 				console.log(socket.id)
 				console.log(socket.username)
 				socket.broadcast.emit('userLogout',socket.username)

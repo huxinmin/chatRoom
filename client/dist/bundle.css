@@ -34,6 +34,9 @@ p {
   margin: 0;
   padding: 0;
 }
+.swal-modal {
+  margin-top: -200px;
+}
 /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
 ::-webkit-scrollbar {
   width: 4px;

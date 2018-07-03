@@ -2,8 +2,8 @@ const login = require("./login");
 const logout = require("./logout");
 
 const mine = (app)=>{
-	app.use('/mine/login', login);
-	app.use('/mine/logout', logout);
+	app.use('/login', login);
+	app.use('/logout', logout);
 }
 
 module.exports = mine;

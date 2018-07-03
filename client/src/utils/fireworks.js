@@ -97,7 +97,7 @@ function animateParticules(x, y) {
       alpha: {
         value: 0,
         easing: "linear",
-        duration: anime.random(600, 800),  
+        duration: anime.random(600, 800),
       },
       duration: anime.random(1200, 1800),
       easing: "easeOutExpo",
@@ -124,4 +124,4 @@ var centerX = window.innerWidth / 2;
 var centerY = window.innerHeight / 2;
 
 setCanvasSize();
-window.addEventListener("resize", setCanvasSize, false);
+// window.addEventListener("resize", setCanvasSize, false);

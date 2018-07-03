@@ -78,7 +78,7 @@ particlesJS("canvasWarpper",
           "enable": false,
           "mode": "push",
         },
-        "resize": true,
+        "resize": false,
       },
       "modes": {
         "grab": {
