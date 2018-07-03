@@ -1,0 +1,3 @@
+localforage.config({
+	name        : 'chatRoom'
+});

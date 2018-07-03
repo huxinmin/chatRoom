@@ -259,6 +259,10 @@ p {
 .rooms-group {
   display: none;
 }
+.chats-none {
+  text-align: center;
+  color: #a2a3a9;
+}
 .chats-item {
   width: 100%;
   display: flex;

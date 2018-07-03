@@ -12,7 +12,10 @@ exports.findUserByName = (username)=>{
 exports.findRoomByName = (roomname)=>{
 	return db.get('rooms').find({ roomname: roomname }).value();
 }
-
+/**获取所有用户，需要去掉自己
+  *未完成
+  *
+  */
 exports.getAllUsers = ()=>{
 	return db.get('users').map((item)=>{
 		return _.pick(item, ['username','avater','isOnline','remarks'])

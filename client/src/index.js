@@ -4,6 +4,7 @@ import "./utils/fireworks";
 import page from "page";
 import $ from "jquery";
 import "./utils/locals";
+import "./utils/db";
 // login page
 import renderLogin from "./routes/login";
 // home page

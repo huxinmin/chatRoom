@@ -3,12 +3,11 @@ import "./index.less";
 
 import renderChatsItem from "./item";
 
-var source = "<li class=\"chats-group\">"
+var source = "<li class=\"chats-group active\">"
 +"{{if !chats.length}}"
 +  "<div class=\"chats-none\">暂无消息</div>"
 +"{{/if}}"
 +"</li>";
-
 
 const data = {
   chats:[
@@ -17,14 +16,18 @@ const data = {
   ],
 };
 var render = template.compile(source);
-var chatsHtml = render(data);
+
 
 const renderChats = (tabs)=>{
-  tabs.append(chatsHtml);
-  const chatsGroup = $(".chats-group");
-  data.chats.forEach((item)=>{
-    renderChatsItem(chatsGroup,item);
-  });
+	localforage.getItem('chats').then((val, err)=>{
+		val = val || [];
+		var chatsHtml = render({chats:val});
+		tabs.append(chatsHtml);
+  	const chatsGroup = $(".chats-group");
+  	val.forEach((item)=>{
+    	renderChatsItem(chatsGroup,item);
+  	});
+	});
 };
 
 export default renderChats;
