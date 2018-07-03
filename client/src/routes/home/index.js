@@ -3,6 +3,7 @@ import "./index.less";
 import renderLeft from "./left";
 import renderMiddle from "./middle";
 import renderRight from "./right";
+import homeEvent from "./events";
 
 var source = "<ul class=\"home\"></ul>";
 
@@ -19,6 +20,7 @@ const renderHome = (app)=>{
   renderLeft(home);
   renderMiddle(home);
   renderRight(home);
+  homeEvent();
 };
 
 export default renderHome;
