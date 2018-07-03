@@ -96,5 +96,4 @@
 ## 本地存储数据设计
 - `chats`[Array]聊天记录
 - `roomChats`[Array]群聊记录
-- `bg`[Blob]自定义的背景图
 - `settings`[Array]用户设置

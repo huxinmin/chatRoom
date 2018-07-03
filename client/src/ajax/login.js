@@ -13,6 +13,9 @@ const loginAjax = (data)=>{
 	});
   function done(data){
     if(data.auth){
+    	window.locals.mine = data.mine;
+    	window.locals.rooms = data.rooms;
+    	window.locals.users = data.users;
     	page.redirect("/home");
     }else{
     	loginFail(data.message);
