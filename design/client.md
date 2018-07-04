@@ -101,6 +101,7 @@
   - 单个聊天记录{Object}
     - `username`聊天对象
     - `avater`聊天对象头像
+    - `lastMess`最后一次对话的消息
 - `chats_$username`{Object}与某个用户的聊天记录$username是变量
   - `isMine`是否是我说的还是对方说的
   - `message`聊天具体消息
