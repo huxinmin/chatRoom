@@ -90,10 +90,27 @@
 - `users`[Array]用户列表
 - `rooms`[Array]群聊列表
 - `curChat`[Object]正在聊天的用户
+  - `isRoom`是否是群聊
   - `username`
   - `avater`
 
 ## 本地存储数据设计
 - `chats`[Array]聊天记录
+  - 单个聊天记录{Object}
+    - `username`聊天对象
+    - `avater`聊天对象头像
+- `chats_$username`{Object}与某个用户的聊天记录$username是变量
+  - `isMine`是否是我说的还是对方说的
+  - `message`聊天具体消息
+  - `time`聊天时间
 - `roomChats`[Array]群聊记录
+  - 单个聊天记录{Object}
+    - `roomname`聊天群组名
+    - `avater`聊天群组头像
+- `roomChats_$roomname`{Object}某个群聊的聊天记录$roomname是变量
+  - `isMine`是否自己说的还是别人说的
+  - `message`聊天具体消息
+  - `avater`说话者的头像
+  - `username`说话者的用户名
+  - `time`聊天的时间
 - `settings`[Array]用户设置

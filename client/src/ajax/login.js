@@ -6,6 +6,10 @@ const loginAjax = (data)=>{
 		type: "post",
 		dataType: "json",
 		url: window.locals.serverHost+"/login",
+		xhrFields: {
+      withCredentials: true
+    },
+    crossDomain: true,
 		data: data
 	}).done((data)=>{
 		done(data);

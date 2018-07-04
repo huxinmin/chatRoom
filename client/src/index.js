@@ -14,7 +14,7 @@ const app = $("#app");
 page.base("/chatRoom");
 
 page("/", ()=>{
-  renderLogin(app);
+  page.redirect("/login");
 });
 
 page("/login", ()=>{

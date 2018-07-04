@@ -2,7 +2,7 @@ import template from "template";
 import "./index.less";
 
 
-var source = "<div class=\"users-item\" data-online={{online}} data-inChats={{inChats}}>"
+var source = "<div class=\"users-item\" data-online={{online}} data-inChat={{inChats}}>"
 +"<img class=\"users-item-avater\" src={{avater}}>"
 +"<p class=\"users-item-name\">{{username}}</p>"
 +"</div>";

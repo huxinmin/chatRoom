@@ -6,6 +6,14 @@ import {uPattern} from '../../utils/validate';
 
 const loginEvent = (loginBtn)=>{
   $(document).on("click", loginBtn, ()=>{
+  	onLoginBtn();
+  });
+  $(document).on("keydown", (e)=>{
+  	if(e.keyCode === 13){
+  		onLoginBtn();
+  	}
+  });
+  function onLoginBtn(){
   	var username = $("#username").val();
   	var password = $("#password").val();
   	if(!username || !password){
@@ -42,6 +50,6 @@ const loginEvent = (loginBtn)=>{
 			return
   	}
   	loginAjax({username:username, password:password});
-  });
+  }
 };
 export default loginEvent;

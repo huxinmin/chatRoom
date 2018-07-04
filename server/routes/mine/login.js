@@ -8,10 +8,8 @@ const messages = require('../../utils/messages')
 router.post('/', function(req, res, next) {
 	const mine = db.findUserByName( req.body.username);
 	if (mine && mine.password === req.body.password) {
-		const users = db.getAllUsers();
-		const rooms = db.getAllRooms();
 		auth.setAuth(res);
-		res.json({ auth:true, mine:mine, users:users, rooms:rooms, message:messages.loginSuccess})
+		res.json({ auth:true, mine:mine, message:messages.loginSuccess})
 	} else {
 		res.json({ auth: false, message: messages.loginFail});
 	}

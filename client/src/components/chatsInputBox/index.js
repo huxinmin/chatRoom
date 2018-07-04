@@ -15,6 +15,7 @@ const renderChatsInputBox = (chatsWindowWrapper)=>{
   var chatsInputHtml = render();
   chatsWindowWrapper.append(chatsInputHtml);
   const chatsInputBox = $(".chats-input-box");
+  chatsInputBox.hide();
   renderChatsInputTools(chatsInputBox);
 };
 
