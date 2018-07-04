@@ -103,6 +103,7 @@ window.locals = {
    	renderChatsItem(chatsGroup,itemData);
    	$(".menu-item[data-type='chats']").click();
    }
+   //然后还要打开聊天窗口和输入界面
   }
 };
 
