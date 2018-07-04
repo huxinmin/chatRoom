@@ -19,5 +19,8 @@ const getChatHistories = (curChat, cb)=>{
 	});
 }
 
+const setChatHistories =(curChat, cb)=>{
 
-export default getChatHistories
+}
+
+export {getChatHistories,setChatHistories}

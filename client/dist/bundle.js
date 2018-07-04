@@ -663,9 +663,7 @@ var _chatsWin = __webpack_require__(20);
 
 var _chatsWin2 = _interopRequireDefault(_chatsWin);
 
-var _getChatHistories = __webpack_require__(22);
-
-var _getChatHistories2 = _interopRequireDefault(_getChatHistories);
+var _chatHistories = __webpack_require__(87);
 
 var _item5 = __webpack_require__(9);
 
@@ -760,7 +758,7 @@ window.locals = {
     //在聊天列表中，不重新创建聊天框，只跳转激活，并获取历史记录
     if (data.inChat === 'true') {
       $(".chats-item[data-username='" + data.username + "']").attr("data-active", "true");
-      (0, _getChatHistories2.default)(data, function (newVal) {
+      (0, _chatHistories.getChatHistories)(data, function (newVal) {
         var chatsWindowWrapper = $(".chats-window-wrapper");
         (0, _chatsWin2.default)(chatsWindowWrapper, newVal);
       });
@@ -779,6 +777,11 @@ window.locals = {
       (0, _chatsWin2.default)(chatsWindowWrapper, Object.assign(data, { histories: [] }));
     }
     $(".menu-item[data-type='chats']").click();
+    /** 设置本地或者更新chats以及chats_$username
+      * 亦或是roomschats以及roomchats_$roomname
+      * 未完待做
+      */
+    (0, _chatHistories.setChatHistories)(data);
   }
 };
 
@@ -888,39 +891,7 @@ var renderHistoryItem = function renderHistoryItem(chatsWin, data) {
 exports.default = renderHistoryItem;
 
 /***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-var getChatHistories = function getChatHistories(curChat, cb) {
-	console.log("getChatHistories");
-	if (curChat.isRoom) {
-		var groupName = 'roomChats';
-		var itemName = 'roomname';
-	} else {
-		var groupName = 'chats';
-		var itemName = 'username';
-	}
-	localforage.getItem('chats', function (chats, err) {
-		/** 这里应该不是获取getItem('chats')，而是获取对应的chats_$username或者roomChats_$roomname
-    * 然后返回一个对象，具有username也就是聊天窗口头部的用户名,histories历史消息
-    * 未完成待做
-    *
-    */
-		var findVal = _.find(chats, { username: curChat.username });
-		var data = Object.assign(curChat, findVal);
-		cb(data);
-	});
-};
-
-exports.default = getChatHistories;
-
-/***/ }),
+/* 22 */,
 /* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2576,6 +2547,59 @@ var homeOnload = function homeOnload() {
 	}
 };
 exports.default = homeOnload;
+
+/***/ }),
+/* 70 */,
+/* 71 */,
+/* 72 */,
+/* 73 */,
+/* 74 */,
+/* 75 */,
+/* 76 */,
+/* 77 */,
+/* 78 */,
+/* 79 */,
+/* 80 */,
+/* 81 */,
+/* 82 */,
+/* 83 */,
+/* 84 */,
+/* 85 */,
+/* 86 */,
+/* 87 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var getChatHistories = function getChatHistories(curChat, cb) {
+	console.log("getChatHistories");
+	if (curChat.isRoom) {
+		var groupName = 'roomChats';
+		var itemName = 'roomname';
+	} else {
+		var groupName = 'chats';
+		var itemName = 'username';
+	}
+	localforage.getItem('chats', function (chats, err) {
+		/** 这里应该不是获取getItem('chats')，而是获取对应的chats_$username或者roomChats_$roomname
+    * 然后返回一个对象，具有username也就是聊天窗口头部的用户名,histories历史消息
+    * 未完成待做
+    *
+    */
+		var findVal = _.find(chats, { username: curChat.username });
+		var data = Object.assign(curChat, findVal);
+		cb(data);
+	});
+};
+
+var setChatHistories = function setChatHistories(curChat, cb) {};
+
+exports.getChatHistories = getChatHistories;
+exports.setChatHistories = setChatHistories;
 
 /***/ })
 /******/ ]);

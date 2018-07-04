@@ -1,7 +1,7 @@
 import renderUsersItem from "../components/tabs/users/item";
 import renderRoomsItem from "../components/tabs/rooms/item";
 import renderChatsWin from "../components/chatsWin";
-import getChatHistories from './getChatHistories';
+import {getChatHistories,setChatHistories} from './chatHistories';
 import renderChatsItem from '../components/tabs/chats/item';
 import swal from 'sweetalert';
 
@@ -107,6 +107,11 @@ window.locals = {
     renderChatsWin(chatsWindowWrapper,Object.assign(data,{histories:[]}));
    }
    $(".menu-item[data-type='chats']").click();
+   /** 设置本地或者更新chats以及chats_$username
+     * 亦或是roomschats以及roomchats_$roomname
+     * 未完待做
+     */
+   setChatHistories(data);
   }
 };
 
