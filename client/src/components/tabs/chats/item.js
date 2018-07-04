@@ -19,6 +19,7 @@ var render = template.compile(source);
 const renderChatsItem = (chatsGroup, data)=>{
   var itemHtml = render(data);
   chatsGroup.append(itemHtml);
+  $(".chats-none").hide();
 };
 
 export default renderChatsItem;

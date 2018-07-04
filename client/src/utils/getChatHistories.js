@@ -1,5 +1,5 @@
-const addCurChatHistories = (curChat, cb)=>{
-	console.log("addCurChatHistories");
+const getChatHistories = (curChat, cb)=>{
+	console.log("getChatHistories");
 	if(curChat.isRoom){
 		var groupName = 'roomChats';
 		var itemName = 'roomname';
@@ -20,4 +20,4 @@ const addCurChatHistories = (curChat, cb)=>{
 }
 
 
-export default addCurChatHistories
+export default getChatHistories

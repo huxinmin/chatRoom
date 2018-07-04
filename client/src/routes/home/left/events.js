@@ -9,7 +9,7 @@ const leftEvent = ()=>{
 		  *
 		  */
     const type =$(this).attr("data-type");
-    $(".tabs-group li").trigger("changTabs",[type,]);
+    $(".tabs-group li").trigger("changTabs",[type]);
   });
 };
 export default leftEvent;

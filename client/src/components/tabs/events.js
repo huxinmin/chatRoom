@@ -5,41 +5,21 @@ const tabsEvent = ()=>{
     $(".tabs-group li").removeClass("active");
     $("."+type+"-group").addClass("active");
   });
-  $(document).on("click", ".users-item", ()=>{
-  	if($(this).attr("data-online") === "false"){
-  		//如果用户离线，则提示，并限制发送数量
-  	}
-  	if($(this).attr("data-inchat") === "true"){
-  		//如果已经在聊天列表中，则直接跳到聊天列表并激活那个聊天
-  	}else{
-  		//如果不在聊天列表，则需要插入到本地数据库，并且创建聊天，然后跳转到聊天并激活
-  		$(this).attr("data-inchat", "true");
-  		pushChats($(this), 'users');
-  	}
+  //自己在这里犯了一个错误 ，如果使用箭头函数，则this不是点击的元素而是外面的this
+  $(document).on("click", ".users-item", function(){
+  	var username = $(this).children(".users-item-name").text();
+  	var avater = $(this).children(".users-item-avater").attr("src");
+  	var online = $(this).attr("data-online");
+  	var inChat = $(this).attr("data-inchat");
+  	window.locals.curChat = {isRoom:false,username:username,avater:avater,online:online, inChat:inChat};
+  	$(this).attr("data-inchat", "true");
   });
-  $(document).on("click", ".rooms-item", ()=>{
-  	 /**  这里貌似不用这样写，直接改变curChat即可
-  		 *  pushChats也可以写在curChat的setter中
-  		 *  未完成
-  		 */
-  	if($(this).attr("data-inchat") === "true"){
-  		//如果已经在聊天列表中，则直接跳到聊天列表并激活那个聊天
-
-  	}else{
-  		//如果不在聊天列表，则需要插入到本地数据库，并且创建聊天，然后跳转到聊天并激活
-  		$(this).attr("data-inchat", "true");
-  		pushChats($(this), 'rooms');
-  	}
+  $(document).on("click", ".rooms-item", function(){
+  	$(this).attr("data-inchat", "true");
+  	var username = $(this).children(".rooms-item-name").text();
+  	var avater = $(this).children(".rooms-item-avater").attr("src");
+  	var inChat = $(this).attr("data-inchat");
+  	window.locals.curChat = {isRoom:true,username:username,avater:avater,online:"none", inChat:inChat};
   });
-  function pushChats(wrapper,type){
-  	var username = wrapper.children("."+type+"-item-name").text();
-  	var avater = wrapper.children("."+type+"-item-avater").attr("src");
-  	var item = (type==="users")? "chats":"roomChats";
-  	var data = (type==="users")?{username:username,avater:avater}:{roomname:username,avater:avater}
-  	localforage.getItem(item).then((chats)=> {
-  		chats.push(data);
-  		localforage.setItem(item, chats);
-  	});
-  }
 };
 export default tabsEvent;

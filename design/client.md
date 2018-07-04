@@ -93,6 +93,8 @@
   - `isRoom`是否是群聊
   - `username`
   - `avater`
+  - `online`是否在线，如果isRoom为真，也就是群聊消息，则该值为none
+  - `inChat`初始值，是否在对话框中
 
 ## 本地存储数据设计
 - `chats`[Array]聊天记录

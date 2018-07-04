@@ -1,8 +1,9 @@
 import renderUsersItem from "../components/tabs/users/item";
 import renderRoomsItem from "../components/tabs/rooms/item";
 import renderChatsWin from "../components/chatsWin";
-import addCurChatHistories from './addCurChatHistories';
-
+import getChatHistories from './getChatHistories';
+import renderChatsItem from '../components/tabs/chats/item';
+import swal from 'sweetalert';
 
 window.locals = {
 	_serverHost:'http://127.0.0.1:9000',
@@ -71,13 +72,37 @@ window.locals = {
   	  * 点击chat-item或者users-item rooms-item也可激活这个setter
   	  * 未完成代做
   	  */
-    // curChat数据形式为{username:"",avater:"", isRoom:true}
-    // data等于从本地chats中查找到username等于curChat的数据的合并
-    //注意curChat只获取60条记录，更多的需要再次查询，为了做高效滚动加载
-    addCurChatHistories(data, (newVal)=>{
-    	const chatsWindowWrapper = $(".chats-window-wrapper");
-  		renderChatsWin(chatsWindowWrapper,newVal);
-    });
+    // curChat数据形式为{username:"",avater:"", isRoom:true, online:true||false||"none"}
+    // data等于从本地chats-$username中查找到username等于curChat的数据的合并
+    // 注意只获取50条记录，更多的需要再次查询，为了做高效滚动加载
+    if(data.online === 'false'){
+    	swal({
+   			button: {
+    			text: "确定",
+  			},
+  			text: "当前用户不在线，您只被允许发送3条离线消息",
+  			icon: "warning",
+  			timer: 3000
+			})
+    }
+    //在聊天列表中，不重新创建聊天框，只跳转激活，并获取历史记录
+   if(data.inChat === 'true'){
+   	  getChatHistories(data, (newVal)=>{
+    		const chatsWindowWrapper = $(".chats-window-wrapper");
+  			renderChatsWin(chatsWindowWrapper,newVal);
+    	});
+   }else{
+   	//不在聊天列表中，重新创建聊天框，并跳转激活，不用获取历史记录
+   	const chatsGroup = $(".chats-group");
+   	var itemData = Object.assign({
+   		unread:0,
+   		type: data.isRoom ? "room":"user",
+   		active:"true",
+   		lastMes:""
+   	},data);
+   	renderChatsItem(chatsGroup,itemData);
+   	$(".menu-item[data-type='chats']").click();
+   }
   }
 };
 
