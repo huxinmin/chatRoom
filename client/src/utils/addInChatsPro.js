@@ -11,7 +11,7 @@ const addRoomsInChatsPro =(rooms)=>{
 }
 
 function addInChatsPro(arr, key, localsKey){
-	localforage.getItem('chats').then((chats, err)=>{
+	localforage.getItem('chats',(chats, err)=>{
 		window.locals[localsKey] = _.map(arr,(item)=>{
 			if( (chats === null) || (chats.length === 0)){
 				return Object.assign(item, {inChats:false});

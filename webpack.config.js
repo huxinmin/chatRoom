@@ -58,7 +58,7 @@ module.exports = {
       template: './client/src/index.html'
     }),
     new ExtractTextPlugin("bundle.css"),
-    new UglifyJsPlugin(),
+    // new UglifyJsPlugin(),
     new CleanWebpackPlugin(['./client/dist'], {root: __dirname,exclude: [ 'assets']})
   ]
 };

@@ -87,23 +87,26 @@ window.locals = {
     }
     //在聊天列表中，不重新创建聊天框，只跳转激活，并获取历史记录
    if(data.inChat === 'true'){
-   	  getChatHistories(data, (newVal)=>{
-    		const chatsWindowWrapper = $(".chats-window-wrapper");
-  			renderChatsWin(chatsWindowWrapper,newVal);
-    	});
+    $(".chats-item[data-username='"+data.username+"']").attr("data-active", "true");
+   	getChatHistories(data, (newVal)=>{
+    	const chatsWindowWrapper = $(".chats-window-wrapper");
+  		renderChatsWin(chatsWindowWrapper,newVal);
+    });
    }else{
    	//不在聊天列表中，重新创建聊天框，并跳转激活，不用获取历史记录
    	const chatsGroup = $(".chats-group");
-   	var itemData = Object.assign({
+   	var itemData = window.Object.assign({
    		unread:0,
    		type: data.isRoom ? "room":"user",
    		active:"true",
    		lastMes:""
    	},data);
    	renderChatsItem(chatsGroup,itemData);
-   	$(".menu-item[data-type='chats']").click();
+    //然后还要打开聊天窗口和输入界面
+    const chatsWindowWrapper = $(".chats-window-wrapper");
+    renderChatsWin(chatsWindowWrapper,Object.assign(data,{histories:[]}));
    }
-   //然后还要打开聊天窗口和输入界面
+   $(".menu-item[data-type='chats']").click();
   }
 };
 

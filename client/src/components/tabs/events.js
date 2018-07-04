@@ -7,19 +7,25 @@ const tabsEvent = ()=>{
   });
   //自己在这里犯了一个错误 ，如果使用箭头函数，则this不是点击的元素而是外面的this
   $(document).on("click", ".users-item", function(){
-  	var username = $(this).children(".users-item-name").text();
-  	var avater = $(this).children(".users-item-avater").attr("src");
-  	var online = $(this).attr("data-online");
-  	var inChat = $(this).attr("data-inchat");
-  	window.locals.curChat = {isRoom:false,username:username,avater:avater,online:online, inChat:inChat};
-  	$(this).attr("data-inchat", "true");
+    calcCurChat($(this),"users");
   });
   $(document).on("click", ".rooms-item", function(){
-  	$(this).attr("data-inchat", "true");
-  	var username = $(this).children(".rooms-item-name").text();
-  	var avater = $(this).children(".rooms-item-avater").attr("src");
-  	var inChat = $(this).attr("data-inchat");
-  	window.locals.curChat = {isRoom:true,username:username,avater:avater,online:"none", inChat:inChat};
+    calcCurChat($(this),"rooms");
   });
+  function calcCurChat(target, type){
+    var username = target.children("p").text();
+    var avater = target.children("img").attr("src");
+    var inChat = target.attr("data-inchat");
+    if(type === "users"){
+      var online = target.attr("data-online");
+      var isRoom = false;
+    }else{
+      var online = "none";
+      var isRoom = true;
+    }
+    $(".chats-item").attr("data-active", "false");
+    window.locals.curChat = {isRoom:isRoom,username:username,avater:avater,online:online, inChat:inChat};
+    target.attr("data-inchat", "true");
+  }
 };
 export default tabsEvent;
