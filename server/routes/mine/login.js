@@ -9,6 +9,7 @@ router.post('/', function(req, res, next) {
 	const mine = db.findUserByName( req.body.username);
 	if (mine && mine.password === req.body.password) {
 		auth.setAuth(res);
+		auth.setUid(res, req.body.username);
 		res.json({ auth:true, mine:mine, message:messages.loginSuccess})
 	} else {
 		res.json({ auth: false, message: messages.loginFail});

@@ -1,5 +1,6 @@
 import template from "template";
 import "./index.less";
+import chatsInputEvent from './events';
 
 import renderChatsInputTools from "../chatsInputTools";
 
@@ -17,6 +18,7 @@ const renderChatsInputBox = (chatsWindowWrapper)=>{
   const chatsInputBox = $(".chats-input-box");
   chatsInputBox.hide();
   renderChatsInputTools(chatsInputBox);
+  chatsInputEvent();
 };
 
 export default renderChatsInputBox;

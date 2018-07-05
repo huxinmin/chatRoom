@@ -1,8 +1,8 @@
 import renderUsersItem from "../components/tabs/users/item";
 import renderRoomsItem from "../components/tabs/rooms/item";
 import renderChatsWin from "../components/chatsWin";
-import {getChats,setChats} from './chats';
-import {setChatsWith} from './chatsWith';
+import {setChats} from './chats';
+import {createChatsWith, getChatsWith} from './chatsWith';
 import renderChatsItem from '../components/tabs/chats/item';
 import swal from 'sweetalert';
 
@@ -90,9 +90,10 @@ window.locals = {
     //在聊天列表中，不重新创建聊天框，只跳转激活，并获取历史记录
    if(data.inChat === 'true'){
     $(".chats-item[data-username='"+data.username+"']").attr("data-active", "true");
-   	getChats(data, (newVal)=>{
+   	getChatsWith(data, (chatsWithHistories)=>{
     	const chatsWindowWrapper = $(".chats-window-wrapper");
-  		renderChatsWin(chatsWindowWrapper,newVal);
+    	const histories = Object.assign({histories:chatsWithHistories},data);
+  		renderChatsWin(chatsWindowWrapper,histories);
     });
    }else{
    	//不在聊天列表中，重新创建聊天框，并跳转激活，不用获取历史记录，但是需要设置历史记录
@@ -108,8 +109,8 @@ window.locals = {
     const chatsWindowWrapper = $(".chats-window-wrapper");
     renderChatsWin(chatsWindowWrapper,Object.assign({histories:[]}, data));
     setChats(data, ()=>{
-    	var itemName = data.isRoom?"chats_"+data.username:"roomChats_"+data.username;
-    	setChatsWith(itemName);
+    	var itemName = data.isRoom?"roomChats_"+data.username:"chats_"+data.username;
+    	createChatsWith(itemName);
     });
    }
    $(".menu-item[data-type='chats']").click();

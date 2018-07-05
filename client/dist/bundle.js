@@ -237,7 +237,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(23);
+__webpack_require__(24);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -340,13 +340,13 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 __webpack_require__(18);
 
-__webpack_require__(25);
+__webpack_require__(26);
 
-var _login = __webpack_require__(26);
+var _login = __webpack_require__(27);
 
 var _login2 = _interopRequireDefault(_login);
 
-var _home = __webpack_require__(34);
+var _home = __webpack_require__(35);
 
 var _home2 = _interopRequireDefault(_home);
 
@@ -663,9 +663,9 @@ var _chatsWin = __webpack_require__(20);
 
 var _chatsWin2 = _interopRequireDefault(_chatsWin);
 
-var _chats = __webpack_require__(87);
+var _chats = __webpack_require__(22);
 
-var _chatsWith = __webpack_require__(88);
+var _chatsWith = __webpack_require__(23);
 
 var _item5 = __webpack_require__(9);
 
@@ -761,9 +761,10 @@ window.locals = {
     //在聊天列表中，不重新创建聊天框，只跳转激活，并获取历史记录
     if (data.inChat === 'true') {
       $(".chats-item[data-username='" + data.username + "']").attr("data-active", "true");
-      (0, _chats.getChats)(data, function (newVal) {
+      (0, _chatsWith.getChatsWith)(data, function (chatsWithHistories) {
         var chatsWindowWrapper = $(".chats-window-wrapper");
-        (0, _chatsWin2.default)(chatsWindowWrapper, newVal);
+        var histories = Object.assign({ histories: chatsWithHistories }, data);
+        (0, _chatsWin2.default)(chatsWindowWrapper, histories);
       });
     } else {
       //不在聊天列表中，重新创建聊天框，并跳转激活，不用获取历史记录，但是需要设置历史记录
@@ -779,8 +780,8 @@ window.locals = {
       var chatsWindowWrapper = $(".chats-window-wrapper");
       (0, _chatsWin2.default)(chatsWindowWrapper, Object.assign({ histories: [] }, data));
       (0, _chats.setChats)(data, function () {
-        var itemName = data.isRoom ? "chats_" + data.username : "roomChats_" + data.username;
-        (0, _chatsWith.setChatsWith)(itemName);
+        var itemName = data.isRoom ? "roomChats_" + data.username : "chats_" + data.username;
+        (0, _chatsWith.createChatsWith)(itemName);
       });
     }
     $(".menu-item[data-type='chats']").click();
@@ -897,8 +898,100 @@ var renderHistoryItem = function renderHistoryItem(chatsWin, data) {
 exports.default = renderHistoryItem;
 
 /***/ }),
-/* 22 */,
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var getChats = function getChats(curChat, cb) {
+	console.log("getChats");
+	if (curChat.isRoom) {
+		var groupName = 'roomChats';
+		var findKey = { roomname: curChat.username };
+	} else {
+		var groupName = 'chats';
+		var findKey = { username: curChat.username };
+	}
+	localforage.getItem(groupName, function (err, chats) {
+		var findVal = _.find(chats, findKey);
+		cb(findVal);
+	});
+};
+
+var setChats = function setChats(curChat, cb) {
+	if (curChat.inChat === "false") {
+		var item = curChat.isRoom ? "roomChats" : "chats";
+		var pushData = curChat.isRoom ? { roomname: curChat.username, avater: curChat.avater, lastMess: '' } : { username: curChat.username, avater: curChat.avater, lastMess: '' };
+		localforage.getItem(item, function (err, chats) {
+			chats = chats || [];
+			chats.push(pushData);
+			localforage.setItem(item, chats, function (err, val) {
+				if (err) throw Error('创建聊天出错了');
+				cb(val);
+			});
+		});
+		var chatsWithItem = curChat.isRoom ? 'roomChats_' + curChat.username : 'chats_' + curChat.username;
+	}
+};
+
+exports.getChats = getChats;
+exports.setChats = setChats;
+
+/***/ }),
 /* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var createChatsWith = function createChatsWith(itemName) {
+	console.log("setChatsWith");
+	localforage.setItem(itemName, []);
+};
+
+var dropChatsWith = function dropChatsWith(itemName) {
+	localforage.setItem(itemName, null);
+};
+
+var getChatsWith = function getChatsWith(data, cb) {
+	console.log("getChatWithHistories");
+	if (data.isRoom) {
+		var groupName = 'roomChats_' + data.username;
+	} else {
+		var groupName = 'chats_' + data.username;
+	}
+	localforage.getItem(groupName, function (err, chatsWithHistories) {
+		cb(chatsWithHistories);
+	});
+};
+/** 需要限制数量，不能超过100个，超过则删除第一个，尾部增加一个
+	*
+	*
+	*/
+var updateChatsWith = function updateChatsWith(itemName, val) {
+	var limit = 100;
+	localforage.getItem(itemName, function (err, items) {
+		if (items.length >= limit) {
+			items.shift();
+		}
+		items.push(val);
+		localforage.setItem(itemName, items);
+	});
+};
+
+exports.createChatsWith = createChatsWith;
+exports.getChatsWith = getChatsWith;
+exports.updateChatsWith = updateChatsWith;
+
+/***/ }),
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -1088,10 +1181,10 @@ exports.default = renderHistoryItem;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12), __webpack_require__(24)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12), __webpack_require__(25)))
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -1281,7 +1374,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1290,12 +1383,9 @@ process.umask = function() { return 0; };
 localforage.config({
 	name: 'chatRoom'
 });
-//设置初始化值
-localforage.setItem('chats', []);
-localforage.setItem('roomChats', []);
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1309,19 +1399,19 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(27);
+__webpack_require__(28);
 
-var _svg = __webpack_require__(28);
+var _svg = __webpack_require__(29);
 
 var _svg2 = _interopRequireDefault(_svg);
 
-__webpack_require__(29);
+__webpack_require__(30);
 
-var _event = __webpack_require__(30);
+var _event = __webpack_require__(31);
 
 var _event2 = _interopRequireDefault(_event);
 
-var _loading = __webpack_require__(33);
+var _loading = __webpack_require__(34);
 
 var _loading2 = _interopRequireDefault(_loading);
 
@@ -1348,13 +1438,13 @@ var renderLogin = function renderLogin(app) {
 exports.default = renderLogin;
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1369,7 +1459,7 @@ var svg = "<svg viewBox=\"0 0 320 320\">" + "<defs>" + "<linearGradient inkscape
 exports.default = svg;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1437,7 +1527,7 @@ var current = null;
 });
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1455,7 +1545,7 @@ var _page = __webpack_require__(4);
 
 var _page2 = _interopRequireDefault(_page);
 
-var _login = __webpack_require__(31);
+var _login = __webpack_require__(32);
 
 var _login2 = _interopRequireDefault(_login);
 
@@ -1463,7 +1553,7 @@ var _sweetalert = __webpack_require__(2);
 
 var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
-var _validate = __webpack_require__(32);
+var _validate = __webpack_require__(33);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1518,7 +1608,7 @@ var loginEvent = function loginEvent(loginBtn) {
 exports.default = loginEvent;
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1575,7 +1665,7 @@ var loginAjax = function loginAjax(data) {
 exports.default = loginAjax;
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1590,7 +1680,7 @@ var uPattern = /^[a-zA-Z0-9_-]{4,16}$/;
 exports.uPattern = uPattern;
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1624,7 +1714,7 @@ var loadingLogin = function loadingLogin(target) {
 exports.default = loadingLogin;
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1638,21 +1728,21 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(35);
+__webpack_require__(36);
 
-var _left = __webpack_require__(36);
+var _left = __webpack_require__(37);
 
 var _left2 = _interopRequireDefault(_left);
 
-var _middle = __webpack_require__(43);
+var _middle = __webpack_require__(44);
 
 var _middle2 = _interopRequireDefault(_middle);
 
-var _right = __webpack_require__(56);
+var _right = __webpack_require__(57);
 
 var _right2 = _interopRequireDefault(_right);
 
-var _events = __webpack_require__(68);
+var _events = __webpack_require__(69);
 
 var _events2 = _interopRequireDefault(_events);
 
@@ -1676,13 +1766,13 @@ var renderHome = function renderHome(app) {
 exports.default = renderHome;
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1696,25 +1786,25 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(37);
+__webpack_require__(38);
 
-var _user = __webpack_require__(38);
+var _user = __webpack_require__(39);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _chat = __webpack_require__(39);
+var _chat = __webpack_require__(40);
 
 var _chat2 = _interopRequireDefault(_chat);
 
-var _group = __webpack_require__(40);
+var _group = __webpack_require__(41);
 
 var _group2 = _interopRequireDefault(_group);
 
-var _setting = __webpack_require__(41);
+var _setting = __webpack_require__(42);
 
 var _setting2 = _interopRequireDefault(_setting);
 
-var _events = __webpack_require__(42);
+var _events = __webpack_require__(43);
 
 var _events2 = _interopRequireDefault(_events);
 
@@ -1743,13 +1833,13 @@ var renderLeft = function renderLeft(home) {
 exports.default = renderLeft;
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1762,7 +1852,7 @@ var userSvg = "<svg t=\"1530441974032\" class=\"icon\" style=\"\" viewBox=\"0 0 
 exports.default = userSvg;
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1775,7 +1865,7 @@ var chatSvg = "<svg t=\"1530441491910\" class=\"icon\" style=\"\" viewBox=\"0 0 
 exports.default = chatSvg;
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1788,7 +1878,7 @@ var groupSvg = "<svg t=\"1530441429861\" class=\"icon\" style=\"\" viewBox=\"0 0
 exports.default = groupSvg;
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1801,7 +1891,7 @@ var settingSvg = "<svg t=\"1530441420200\" class=\"icon\" style=\"\" viewBox=\"0
 exports.default = settingSvg;
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1827,7 +1917,7 @@ var leftEvent = function leftEvent() {
 exports.default = leftEvent;
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1841,13 +1931,13 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(44);
+__webpack_require__(45);
 
-var _search = __webpack_require__(45);
+var _search = __webpack_require__(46);
 
 var _search2 = _interopRequireDefault(_search);
 
-var _tabs = __webpack_require__(50);
+var _tabs = __webpack_require__(51);
 
 var _tabs2 = _interopRequireDefault(_tabs);
 
@@ -1869,13 +1959,13 @@ var renderMiddle = function renderMiddle(home) {
 exports.default = renderMiddle;
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1889,17 +1979,17 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(46);
+__webpack_require__(47);
 
-var _search = __webpack_require__(47);
+var _search = __webpack_require__(48);
 
 var _search2 = _interopRequireDefault(_search);
 
-var _add = __webpack_require__(48);
+var _add = __webpack_require__(49);
 
 var _add2 = _interopRequireDefault(_add);
 
-var _events = __webpack_require__(49);
+var _events = __webpack_require__(50);
 
 var _events2 = _interopRequireDefault(_events);
 
@@ -1922,13 +2012,13 @@ var renderSearch = function renderSearch(middle) {
 exports.default = renderSearch;
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1941,7 +2031,7 @@ var searchSvg = "<svg t=\"1530441471927\" class=\"icon\" style=\"\" viewBox=\"0 
 exports.default = searchSvg;
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1954,7 +2044,7 @@ var addSvg = "<svg t=\"1530441538036\" class=\"icon\" style=\"\" viewBox=\"0 0 1
 exports.default = addSvg;
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1974,7 +2064,7 @@ var searchEvent = function searchEvent() {};
 exports.default = searchEvent;
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1988,21 +2078,21 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(51);
+__webpack_require__(52);
 
-var _chats = __webpack_require__(52);
+var _chats = __webpack_require__(53);
 
 var _chats2 = _interopRequireDefault(_chats);
 
-var _rooms = __webpack_require__(53);
+var _rooms = __webpack_require__(54);
 
 var _rooms2 = _interopRequireDefault(_rooms);
 
-var _users = __webpack_require__(54);
+var _users = __webpack_require__(55);
 
 var _users2 = _interopRequireDefault(_users);
 
-var _events = __webpack_require__(55);
+var _events = __webpack_require__(56);
 
 var _events2 = _interopRequireDefault(_events);
 
@@ -2025,13 +2115,13 @@ var renderTabs = function renderTabs(middle) {
 exports.default = renderTabs;
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2079,7 +2169,7 @@ var renderChats = function renderChats(tabs) {
 exports.default = renderChats;
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2114,7 +2204,7 @@ var renderRooms = function renderRooms(tabs) {
 exports.default = renderRooms;
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2145,7 +2235,7 @@ var renderUsers = function renderUsers(tabs) {
 exports.default = renderUsers;
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2198,7 +2288,7 @@ var tabsEvent = function tabsEvent() {
 exports.default = tabsEvent;
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2212,9 +2302,9 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(57);
+__webpack_require__(58);
 
-var _chatsInputBox = __webpack_require__(58);
+var _chatsInputBox = __webpack_require__(59);
 
 var _chatsInputBox2 = _interopRequireDefault(_chatsInputBox);
 
@@ -2238,13 +2328,13 @@ var renderRight = function renderRight(home) {
 exports.default = renderRight;
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2258,9 +2348,13 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(59);
+__webpack_require__(60);
 
-var _chatsInputTools = __webpack_require__(60);
+var _events = __webpack_require__(88);
+
+var _events2 = _interopRequireDefault(_events);
+
+var _chatsInputTools = __webpack_require__(61);
 
 var _chatsInputTools2 = _interopRequireDefault(_chatsInputTools);
 
@@ -2276,18 +2370,19 @@ var renderChatsInputBox = function renderChatsInputBox(chatsWindowWrapper) {
   var chatsInputBox = $(".chats-input-box");
   chatsInputBox.hide();
   (0, _chatsInputTools2.default)(chatsInputBox);
+  (0, _events2.default)();
 };
 
 exports.default = renderChatsInputBox;
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2301,17 +2396,17 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(61);
+__webpack_require__(62);
 
-var _emoji = __webpack_require__(62);
+var _emoji = __webpack_require__(63);
 
 var _emoji2 = _interopRequireDefault(_emoji);
 
-var _file = __webpack_require__(64);
+var _file = __webpack_require__(65);
 
 var _file2 = _interopRequireDefault(_file);
 
-var _torrent = __webpack_require__(66);
+var _torrent = __webpack_require__(67);
 
 var _torrent2 = _interopRequireDefault(_torrent);
 
@@ -2333,13 +2428,13 @@ var renderChatsInputTools = function renderChatsInputTools(chatsInputBox) {
 exports.default = renderChatsInputTools;
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2353,7 +2448,7 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-var _emoji = __webpack_require__(63);
+var _emoji = __webpack_require__(64);
 
 var _emoji2 = _interopRequireDefault(_emoji);
 
@@ -2371,7 +2466,7 @@ var renderToolEmoji = function renderToolEmoji(chatsInputTools) {
 exports.default = renderToolEmoji;
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2384,7 +2479,7 @@ var emojiSvg = "<svg t=\"1530441533385\" class=\"icon\" style=\"\" viewBox=\"0 0
 exports.default = emojiSvg;
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2398,7 +2493,7 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-var _file = __webpack_require__(65);
+var _file = __webpack_require__(66);
 
 var _file2 = _interopRequireDefault(_file);
 
@@ -2416,7 +2511,7 @@ var renderToolFile = function renderToolFile(chatsInputTools) {
 exports.default = renderToolFile;
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2429,7 +2524,7 @@ var fileSvg = "<svg t=\"1530441567176\" class=\"icon\" style=\"\" viewBox=\"0 0 
 exports.default = fileSvg;
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2443,7 +2538,7 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-var _torrent = __webpack_require__(67);
+var _torrent = __webpack_require__(68);
 
 var _torrent2 = _interopRequireDefault(_torrent);
 
@@ -2461,7 +2556,7 @@ var renderToolTorrent = function renderToolTorrent(chatsInputTools) {
 exports.default = renderToolTorrent;
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2474,7 +2569,7 @@ var torrentSvg = "<svg t=\"1530441521205\" class=\"icon\" style=\"\" viewBox=\"0
 exports.default = torrentSvg;
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2484,7 +2579,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _homeOnload = __webpack_require__(69);
+var _homeOnload = __webpack_require__(70);
 
 var _homeOnload2 = _interopRequireDefault(_homeOnload);
 
@@ -2507,7 +2602,7 @@ var homeEvent = function homeEvent() {
 exports.default = homeEvent;
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2541,6 +2636,7 @@ var homeOnload = function homeOnload() {
 	});
 	function done(data) {
 		if (data) {
+			window.locals.mine = data.mine;
 			(0, _addInChatsPro.addRoomsInChatsPro)(data.rooms);
 			(0, _addInChatsPro.addUsersInChatsPro)(data.users);
 		} else {
@@ -2561,7 +2657,6 @@ var homeOnload = function homeOnload() {
 exports.default = homeOnload;
 
 /***/ }),
-/* 70 */,
 /* 71 */,
 /* 72 */,
 /* 73 */,
@@ -2578,55 +2673,7 @@ exports.default = homeOnload;
 /* 84 */,
 /* 85 */,
 /* 86 */,
-/* 87 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-var getChats = function getChats(curChat, cb) {
-	console.log("getChatHistories");
-	if (curChat.isRoom) {
-		var groupName = 'roomChats';
-		var itemName = 'roomname';
-	} else {
-		var groupName = 'chats';
-		var itemName = 'username';
-	}
-	localforage.getItem('chats', function (err, chats) {
-		/** 这里应该不是获取getItem('chats')，而是获取对应的chats_$username或者roomChats_$roomname
-    * 然后返回一个对象，具有username也就是聊天窗口头部的用户名,histories历史消息
-    * 未完成待做
-    *
-    */
-		var findVal = _.find(chats, { username: curChat.username });
-		var data = Object.assign({}, findVal, curChat);
-		cb(data);
-	});
-};
-
-var setChats = function setChats(curChat, cb) {
-	if (curChat.inChat === "false") {
-		var item = curChat.isRoom ? "roomChats" : "chats";
-		var pushData = curChat.isRoom ? { roomname: curChat.username, avater: curChat.avater, lastMess: '' } : { username: curChat.username, avater: curChat.avater, lastMess: '' };
-		localforage.getItem(item, function (err, chats) {
-			chats.push(pushData);
-			localforage.setItem(item, chats, function (err, val) {
-				if (err) throw Error('创建聊天出错了');
-				cb(val);
-			});
-		});
-		var chatsWithItem = curChat.isRoom ? 'roomChats_' + curChat.username : 'chats_' + curChat.username;
-	}
-};
-
-exports.getChats = getChats;
-exports.setChats = setChats;
-
-/***/ }),
+/* 87 */,
 /* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2636,11 +2683,37 @@ exports.setChats = setChats;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-var setChatsWith = function setChatsWith(itemName) {
-	localforage.setItem(itemName, []);
-};
 
-exports.setChatsWith = setChatsWith;
+var _jquery = __webpack_require__(1);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _historyItem = __webpack_require__(21);
+
+var _historyItem2 = _interopRequireDefault(_historyItem);
+
+var _chatsWith = __webpack_require__(23);
+
+var _chatsWith2 = _interopRequireDefault(_chatsWith);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var chatsInputEvent = function chatsInputEvent() {
+	(0, _jquery2.default)(document).on("click", ".chats-input-btn", function () {
+		var inputCont = (0, _jquery2.default)(".chats-input-text");
+		if (!inputCont || inputCont.length === 0) {
+			return;
+		}
+		console.log(inputCont);
+		var chatsWin = (0, _jquery2.default)(".chats-win-history-group");
+		var data = [{ isMine: "true", message: inputCont.html(), time: '22', avater: window.locals.mine.avater }];
+		(0, _historyItem2.default)(chatsWin, data);
+		inputCont.html("");
+
+		(0, _chatsWith2.default)();
+	});
+};
+exports.default = chatsInputEvent;
 
 /***/ })
 /******/ ]);

@@ -17,6 +17,7 @@ const homeOnload = ()=>{
 	});
 	function done(data){
 		if(data){
+			window.locals.mine = data.mine;
 			addRoomsInChatsPro(data.rooms);
 			addUsersInChatsPro(data.users);
 		}else{

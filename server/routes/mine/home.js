@@ -7,7 +7,8 @@ const auth = require('../../middleware/auth');
 router.get('/',auth.requireAuth, function(req, res, next) {
 	const users = db.getAllUsers();
 	const rooms = db.getAllRooms();
-	res.json({ users:users, rooms:rooms})
+	const mine = db.findUserByName( req.signedCookies.uid);
+	res.json({ mine:mine, users:users, rooms:rooms})
 });
 
 module.exports = router;
