@@ -1,5 +1,4 @@
-import avaterCropper from '../../components/avaterCropper';
-import swal from 'sweetalert';
+
 
 const regEvent = ()=>{
 	 const options = {
@@ -9,6 +8,11 @@ const regEvent = ()=>{
    	minContainerWidth:100
   };
 	$(document).on('change',"#avaterInput", function(){
+		/** 将下面的代码抽出到cropperSwal公用
+		  *
+		  *
+		  *
+		  */ 
 		if (this.files && this.files.length) {
 			var file = this.files[0];
 			
