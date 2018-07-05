@@ -1,18 +1,25 @@
 import $ from "jquery";
 import renderHistoryItem from '../chatsWin/historyItem';
-import updateChatsWith from '../../utils/chatsWith';
+import {updateChatsWith} from '../../utils/chatsWith';
 
 const chatsInputEvent = ()=>{
 	$(document).on("click", ".chats-input-btn", function(){
 		const inputCont = $(".chats-input-text");
-		if(!inputCont || inputCont.length===0){ return }
-		console.log(inputCont)
+		const message = inputCont.html();
+		if(!message || message.length===0){ return }
 		const chatsWin = $(".chats-win-history-group");
-		const data = [{isMine:"true", message:inputCont.html(), time:'22', avater:window.locals.mine.avater}];
+		const now = moment().format('MM-DD HH:mm');
+		const data = [{isMine:"true", message:message, time:now, avater:window.locals.mine.avater}];
 		renderHistoryItem(chatsWin, data);
 		inputCont.html("");
-
-		updateChatsWith();
+		const curChat = window.locals.curChat;
+		if(!curChat.isRoom){
+			const itemName = "chats_"+curChat.username;
+			updateChatsWith(itemName, {isMine:"true",message:message,time:now});
+		}else{
+			const itemName = "roomChats_"+curChat.username;
+			updateChatsWith(itemName, {isMine:"true",message:message,time:now, avater:window.locals.mine.avater, username:window.locals.mine.username});
+		}
 	});
 };
 export default chatsInputEvent;

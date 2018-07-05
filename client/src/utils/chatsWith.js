@@ -15,6 +15,17 @@ const getChatsWith = (data, cb)=>{
 		var groupName = 'chats_'+data.username;
 	}
 	localforage.getItem(groupName,(err, chatsWithHistories)=>{
+		//如果是和用户聊天，还需要加上username和avater
+		if(!data.isRoom){
+			chatsWithHistories = _.map(chatsWithHistories,(item)=>{
+				if(item.isMine === "true"){
+					var assignData = _.pick(window.locals.mine,["username","avater"]);
+				}else{
+					var assignData = _.chain(window.locals.users).find({username:data.username}).pick(["username","avater"]).value();
+				}
+				return Object.assign(assignData, item);
+			})
+		}
 		cb(chatsWithHistories);
 	});
 }

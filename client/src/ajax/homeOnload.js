@@ -1,5 +1,6 @@
 import swal from 'sweetalert';
 import {addUsersInChatsPro, addRoomsInChatsPro} from '../utils/addInChatsPro';
+import {setCookie} from '../utils/cookie';
 
 const homeOnload = ()=>{
 	$.ajax({
@@ -32,7 +33,10 @@ const homeOnload = ()=>{
 			text: "数据获取失败",
 			icon: "error",
 			timer: 3000
-		})
+		}).then(()=>{
+			setCookie('isLogin',false);
+			page.redirect("/login");
+		});
 	}
 }
 export default homeOnload

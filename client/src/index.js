@@ -9,6 +9,7 @@ import "./utils/db";
 import renderLogin from "./routes/login";
 // home page
 import renderHome from "./routes/home";
+import renderRegister from "./routes/register";
 
 const app = $("#app");
 page.base("/chatRoom");
@@ -19,6 +20,10 @@ page("/", ()=>{
 
 page("/login", ()=>{
   renderLogin(app);
+});
+
+page("/register", ()=>{
+  renderRegister(app);
 });
 
 page("/home", ()=>{
