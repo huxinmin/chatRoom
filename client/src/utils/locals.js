@@ -1,7 +1,8 @@
 import renderUsersItem from "../components/tabs/users/item";
 import renderRoomsItem from "../components/tabs/rooms/item";
 import renderChatsWin from "../components/chatsWin";
-import {getChatHistories,setChatHistories} from './chatHistories';
+import {getChats,setChats} from './chats';
+import {setChatsWith} from './chatsWith';
 import renderChatsItem from '../components/tabs/chats/item';
 import swal from 'sweetalert';
 
@@ -85,15 +86,16 @@ window.locals = {
   			timer: 3000
 			})
     }
+    $(".chats-item").attr("data-active", "false");
     //在聊天列表中，不重新创建聊天框，只跳转激活，并获取历史记录
    if(data.inChat === 'true'){
     $(".chats-item[data-username='"+data.username+"']").attr("data-active", "true");
-   	getChatHistories(data, (newVal)=>{
+   	getChats(data, (newVal)=>{
     	const chatsWindowWrapper = $(".chats-window-wrapper");
   		renderChatsWin(chatsWindowWrapper,newVal);
     });
    }else{
-   	//不在聊天列表中，重新创建聊天框，并跳转激活，不用获取历史记录
+   	//不在聊天列表中，重新创建聊天框，并跳转激活，不用获取历史记录，但是需要设置历史记录
    	const chatsGroup = $(".chats-group");
    	var itemData = window.Object.assign({
    		unread:0,
@@ -104,14 +106,17 @@ window.locals = {
    	renderChatsItem(chatsGroup,itemData);
     //然后还要打开聊天窗口和输入界面
     const chatsWindowWrapper = $(".chats-window-wrapper");
-    renderChatsWin(chatsWindowWrapper,Object.assign(data,{histories:[]}));
+    renderChatsWin(chatsWindowWrapper,Object.assign({histories:[]}, data));
+    setChats(data, ()=>{
+    	var itemName = data.isRoom?"chats_"+data.username:"roomChats_"+data.username;
+    	setChatsWith(itemName);
+    });
    }
    $(".menu-item[data-type='chats']").click();
    /** 设置本地或者更新chats以及chats_$username
      * 亦或是roomschats以及roomchats_$roomname
      * 未完待做
      */
-   setChatHistories(data);
   }
 };
 

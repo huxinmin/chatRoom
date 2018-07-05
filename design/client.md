@@ -110,6 +110,7 @@
   - 单个聊天记录{Object}
     - `roomname`聊天群组名
     - `avater`聊天群组头像
+    - `lastMess`最后一次对话的消息
 - `roomChats_$roomname`{Object}某个群聊的聊天记录$roomname是变量
   - `isMine`是否自己说的还是别人说的
   - `message`聊天具体消息

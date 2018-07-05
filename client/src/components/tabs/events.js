@@ -12,10 +12,17 @@ const tabsEvent = ()=>{
   $(document).on("click", ".rooms-item", function(){
     calcCurChat($(this),"rooms");
   });
+  $(document).on("click", ".chats-item", function(){
+  	const isRoom = $(this).attr("data-type")==="room" ?true:false;
+  	const username = $(this).find(".chats-item-username").text();
+  	const avater = $(this).children(".chats-item-avater").attr("src");
+  	const online = $(this).attr("data-online");
+  	window.locals.curChat = {isRoom:isRoom,username:username,avater:avater,online:online, inChat:'true'};
+  });
   function calcCurChat(target, type){
-    var username = target.children("p").text();
-    var avater = target.children("img").attr("src");
-    var inChat = target.attr("data-inchat");
+    const username = target.children("p").text();
+    const avater = target.children("img").attr("src");
+    const inChat = target.attr("data-inchat");
     if(type === "users"){
       var online = target.attr("data-online");
       var isRoom = false;
@@ -23,7 +30,6 @@ const tabsEvent = ()=>{
       var online = "none";
       var isRoom = true;
     }
-    $(".chats-item").attr("data-active", "false");
     window.locals.curChat = {isRoom:isRoom,username:username,avater:avater,online:online, inChat:inChat};
     target.attr("data-inchat", "true");
   }

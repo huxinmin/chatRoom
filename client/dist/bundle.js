@@ -162,7 +162,7 @@ __webpack_require__(10);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var source = "<div class=\"chats-item\" data-username={{username}} data-unread={{unread}} data-active={{active}} data-type={{type}} data-onLine={{onLine}}>" + "<img class=\"chats-item-avater\" src={{avater}}>" + "<div class=\"chats-item-info\">" + "<div class=\"chats-item-info-top\">" + "<span class=\"chats-item-username\">{{username}}</span>" + "<span class=\"chats-item-unread\">{{unread}}</span>" + "</div>" + "<p class=\"chats-item-info-bottom\">{{lastMes}}</p>" + "</div>" + "</div>";
+var source = "<div class=\"chats-item\" data-username={{username}} data-unread={{unread}} data-active={{active}} data-type={{type}} data-online={{online}}>" + "<img class=\"chats-item-avater\" src={{avater}}>" + "<div class=\"chats-item-info\">" + "<div class=\"chats-item-info-top\">" + "<span class=\"chats-item-username\">{{username}}</span>" + "<span class=\"chats-item-unread\">{{unread}}</span>" + "</div>" + "<p class=\"chats-item-info-bottom\">{{lastMes}}</p>" + "</div>" + "</div>";
 
 var render = _template2.default.compile(source);
 
@@ -300,7 +300,7 @@ var addRoomsInChatsPro = function addRoomsInChatsPro(rooms) {
 };
 
 function addInChatsPro(arr, key, localsKey) {
-	localforage.getItem('chats', function (chats, err) {
+	localforage.getItem('chats', function (err, chats) {
 		window.locals[localsKey] = _.map(arr, function (item) {
 			if (chats === null || chats.length === 0) {
 				return Object.assign(item, { inChats: false });
@@ -663,7 +663,9 @@ var _chatsWin = __webpack_require__(20);
 
 var _chatsWin2 = _interopRequireDefault(_chatsWin);
 
-var _chatHistories = __webpack_require__(87);
+var _chats = __webpack_require__(87);
+
+var _chatsWith = __webpack_require__(88);
 
 var _item5 = __webpack_require__(9);
 
@@ -755,15 +757,16 @@ window.locals = {
         timer: 3000
       });
     }
+    $(".chats-item").attr("data-active", "false");
     //在聊天列表中，不重新创建聊天框，只跳转激活，并获取历史记录
     if (data.inChat === 'true') {
       $(".chats-item[data-username='" + data.username + "']").attr("data-active", "true");
-      (0, _chatHistories.getChatHistories)(data, function (newVal) {
+      (0, _chats.getChats)(data, function (newVal) {
         var chatsWindowWrapper = $(".chats-window-wrapper");
         (0, _chatsWin2.default)(chatsWindowWrapper, newVal);
       });
     } else {
-      //不在聊天列表中，重新创建聊天框，并跳转激活，不用获取历史记录
+      //不在聊天列表中，重新创建聊天框，并跳转激活，不用获取历史记录，但是需要设置历史记录
       var chatsGroup = $(".chats-group");
       var itemData = window.Object.assign({
         unread: 0,
@@ -774,14 +777,17 @@ window.locals = {
       (0, _item6.default)(chatsGroup, itemData);
       //然后还要打开聊天窗口和输入界面
       var chatsWindowWrapper = $(".chats-window-wrapper");
-      (0, _chatsWin2.default)(chatsWindowWrapper, Object.assign(data, { histories: [] }));
+      (0, _chatsWin2.default)(chatsWindowWrapper, Object.assign({ histories: [] }, data));
+      (0, _chats.setChats)(data, function () {
+        var itemName = data.isRoom ? "chats_" + data.username : "roomChats_" + data.username;
+        (0, _chatsWith.setChatsWith)(itemName);
+      });
     }
     $(".menu-item[data-type='chats']").click();
     /** 设置本地或者更新chats以及chats_$username
       * 亦或是roomschats以及roomchats_$roomname
       * 未完待做
       */
-    (0, _chatHistories.setChatHistories)(data);
   }
 };
 
@@ -2167,6 +2173,13 @@ var tabsEvent = function tabsEvent() {
   (0, _jquery2.default)(document).on("click", ".rooms-item", function () {
     calcCurChat((0, _jquery2.default)(this), "rooms");
   });
+  (0, _jquery2.default)(document).on("click", ".chats-item", function () {
+    var isRoom = (0, _jquery2.default)(this).attr("data-type") === "room" ? true : false;
+    var username = (0, _jquery2.default)(this).find(".chats-item-username").text();
+    var avater = (0, _jquery2.default)(this).children(".chats-item-avater").attr("src");
+    var online = (0, _jquery2.default)(this).attr("data-online");
+    window.locals.curChat = { isRoom: isRoom, username: username, avater: avater, online: online, inChat: 'true' };
+  });
   function calcCurChat(target, type) {
     var username = target.children("p").text();
     var avater = target.children("img").attr("src");
@@ -2178,7 +2191,6 @@ var tabsEvent = function tabsEvent() {
       var online = "none";
       var isRoom = true;
     }
-    (0, _jquery2.default)(".chats-item").attr("data-active", "false");
     window.locals.curChat = { isRoom: isRoom, username: username, avater: avater, online: online, inChat: inChat };
     target.attr("data-inchat", "true");
   }
@@ -2575,7 +2587,7 @@ exports.default = homeOnload;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-var getChatHistories = function getChatHistories(curChat, cb) {
+var getChats = function getChats(curChat, cb) {
 	console.log("getChatHistories");
 	if (curChat.isRoom) {
 		var groupName = 'roomChats';
@@ -2584,22 +2596,51 @@ var getChatHistories = function getChatHistories(curChat, cb) {
 		var groupName = 'chats';
 		var itemName = 'username';
 	}
-	localforage.getItem('chats', function (chats, err) {
+	localforage.getItem('chats', function (err, chats) {
 		/** 这里应该不是获取getItem('chats')，而是获取对应的chats_$username或者roomChats_$roomname
     * 然后返回一个对象，具有username也就是聊天窗口头部的用户名,histories历史消息
     * 未完成待做
     *
     */
 		var findVal = _.find(chats, { username: curChat.username });
-		var data = Object.assign(curChat, findVal);
+		var data = Object.assign({}, findVal, curChat);
 		cb(data);
 	});
 };
 
-var setChatHistories = function setChatHistories(curChat, cb) {};
+var setChats = function setChats(curChat, cb) {
+	if (curChat.inChat === "false") {
+		var item = curChat.isRoom ? "roomChats" : "chats";
+		var pushData = curChat.isRoom ? { roomname: curChat.username, avater: curChat.avater, lastMess: '' } : { username: curChat.username, avater: curChat.avater, lastMess: '' };
+		localforage.getItem(item, function (err, chats) {
+			chats.push(pushData);
+			localforage.setItem(item, chats, function (err, val) {
+				if (err) throw Error('创建聊天出错了');
+				cb(val);
+			});
+		});
+		var chatsWithItem = curChat.isRoom ? 'roomChats_' + curChat.username : 'chats_' + curChat.username;
+	}
+};
 
-exports.getChatHistories = getChatHistories;
-exports.setChatHistories = setChatHistories;
+exports.getChats = getChats;
+exports.setChats = setChats;
+
+/***/ }),
+/* 88 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var setChatsWith = function setChatsWith(itemName) {
+	localforage.setItem(itemName, []);
+};
+
+exports.setChatsWith = setChatsWith;
 
 /***/ })
 /******/ ]);
