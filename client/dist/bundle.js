@@ -2788,7 +2788,7 @@ var _events2 = _interopRequireDefault(_events);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var source = "<div class='register-wrapper' style='width:200px'>" + "<label for='avaterInput' style='display:block; overflow:hidden;width:100px;height:100px;border-radius:50%;position:relative;'>" + "<img style='width:100%' src='/assets/images/avater.jpg' class='register-avater'><input id='avaterInput' type='file' style='display:none;'>" + "<span style='position:absolute;left:10px;top:30px;'>选择头像</span></label>" + "<form class='register-form'>" + "<div class='register-form-group'><input class='register-name' type='text' placeholder='请输入用户名'></div>" + "<div class='register-form-group'><input class='register-password' type='password' placeholder='请输入密码'></div>" + "<div class='register-form-group'><input class='register-cfPassword' type='password' placeholder='请再次输入密码'></div>" + "</form>" + "</div>";
+var source = "<div class='register-wrapper'>" + "<label class='register-label' for='avaterInput'>" + "<img src='/assets/images/avater.jpg' class='register-avater'>" + "<input id='avaterInput' type='file'>" + "<span class='choose-avater'>选择头像</span>" + "</label>" + "<form class='register-form'>" + "<div class='register-form-group'><input class='register-name' type='text' placeholder='请输入用户名'></div>" + "<div class='register-form-group'><input class='register-password' type='password' placeholder='请输入密码'></div>" + "<div class='register-form-group'><input class='register-cfPassword' type='password' placeholder='请再次输入密码'></div>" + "<div class='register-form-group'><input class='register-confirm-btn' type='button' value='注册'></div>" + "</form>" + "</div>";
 
 var data = {};
 var render = template.compile(source);
@@ -2815,68 +2815,47 @@ exports.default = renderRegister;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
 
-var _avaterCropper = __webpack_require__(76);
+var _avaterCropper = __webpack_require__(94);
 
 var _avaterCropper2 = _interopRequireDefault(_avaterCropper);
-
-var _sweetalert = __webpack_require__(2);
-
-var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var regEvent = function regEvent() {
-  var options = {
-    preview: '.img-preview',
-    aspectRatio: 1 / 1,
-    minContainerHeight: 100,
-    minContainerWidth: 100
-  };
-  $(document).on('change', "#avaterInput", function () {
-    if (this.files && this.files.length) {
-      var file = this.files[0];
-
-      if (/^image\/\w+$/.test(file.type)) {
-        var URL = window.URL || window.webkitURL;
-        var uploadedImageURL = URL.createObjectURL(file);
-        var uploadedImageType = file.type;
-        var content = $("<div>" + " <div class='img-preview' style='width:100px;height:100px;overflow:hidden;border-radius:50%;'></div>" + "<div class='img-container' style='height:200px;'>" + "<img id='image' src>" + "</div></div>");
-        (0, _sweetalert2.default)("裁切头像", {
-          content: content[0],
-          button: { text: "确定" }
-        }).then(function (val) {
-          if (val) {
-            var resultCanvas = $image.cropper('getCroppedCanvas');
-            resultCanvas.toBlob(function (imgBlob) {
-
-              console.log(imgBlob);
-            });
-            $(".register-avater").attr("src", resultCanvas.toDataURL(uploadedImageType));
-          }
-        });
-        var $image = $('#image');
-        $image.cropper('destroy').attr('src', uploadedImageURL).cropper(options);
-      } else {
-        (0, _sweetalert2.default)({
-          button: {
-            text: "确定"
-          },
-          text: "请选择图片",
-          icon: "error",
-          timer: 3000
-        });
-      }
-    }
-  });
+	$(document).on('change', "#avaterInput", function () {
+		if (this.files && this.files.length) {
+			(0, _avaterCropper2.default)(this.files[0], function (imgBlob) {
+				$(".choose-avater").hide();
+			});
+		}
+	});
 };
 
 exports.default = regEvent;
 
 /***/ }),
-/* 76 */
+/* 76 */,
+/* 77 */,
+/* 78 */,
+/* 79 */,
+/* 80 */,
+/* 81 */,
+/* 82 */,
+/* 83 */,
+/* 84 */,
+/* 85 */,
+/* 86 */,
+/* 87 */,
+/* 88 */,
+/* 89 */,
+/* 90 */,
+/* 91 */,
+/* 92 */,
+/* 93 */,
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2885,11 +2864,58 @@ exports.default = regEvent;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-var avaterCropper = function avaterCropper() {
-	var avaterInput = $("#avaterInput");
+
+var _sweetalert = __webpack_require__(2);
+
+var _sweetalert2 = _interopRequireDefault(_sweetalert);
+
+__webpack_require__(95);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var avaterCropper = function avaterCropper(file, cb) {
+	if (/^image\/\w+$/.test(file.type)) {
+		var options = {
+			preview: '.img-preview',
+			aspectRatio: 1 / 1
+		};
+		var URL = window.URL || window.webkitURL;
+		var uploadedImageURL = URL.createObjectURL(file);
+		var uploadedImageType = file.type;
+		var content = $("<div class='cropper-swal-wrapper'>" + " <div class='img-preview'></div>" + "<div class='img-container'>" + "<img id='image' src>" + "</div></div>");
+		(0, _sweetalert2.default)({
+			content: content[0],
+			button: { text: "确定" }
+		}).then(function (val) {
+			if (val) {
+				var resultCanvas = $image.cropper('getCroppedCanvas');
+				resultCanvas.toBlob(function (imgBlob) {
+					cb(imgBlob);
+				});
+				$(".register-avater").attr("src", resultCanvas.toDataURL(uploadedImageType));
+			}
+		});
+		var $image = $('#image');
+		$image.cropper('destroy').attr('src', uploadedImageURL).cropper(options);
+	} else {
+		(0, _sweetalert2.default)({
+			button: {
+				text: "确定"
+			},
+			text: "请选择图片格式",
+			icon: "error",
+			timer: 3000
+		});
+	}
 };
 
 exports.default = avaterCropper;
+
+/***/ }),
+/* 95 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

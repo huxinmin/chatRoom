@@ -7,11 +7,11 @@ const _ = require("lodash");
 
 /* GET home page. */
 router.post('/', function(req, res, next) {
-	const mine = _.omit(db.findUserByName( req.signedCookies.uid),["password"]);
+	const mine = db.findUserByName( req.body.username);
 	if (mine && mine.password === req.body.password) {
 		auth.setAuth(res);
 		auth.setUid(res, req.body.username);
-		res.json({ auth:true, mine:mine, message:messages.loginSuccess})
+		res.json({ auth:true, mine:_.omit(mine,["password"]), message:messages.loginSuccess})
 	} else {
 		res.json({ auth: false, message: messages.loginFail});
 	}
