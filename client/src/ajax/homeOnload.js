@@ -1,18 +1,16 @@
 import swal from 'sweetalert';
 import {addUsersInChatsPro, addRoomsInChatsPro} from '../utils/addInChatsPro';
 import {setCookie} from '../utils/cookie';
-import {server} from '../config.js';
+import {server, ajaxCrossDomainSettings} from '../config.js';
 
 const homeOnload = ()=>{
-	$.ajax({
+	const options = Object.assign({
 		type: "get",
 		dataType: "json",
-		xhrFields: {
-      withCredentials: true
-    },
-    crossDomain: true,
 		url: server+"/home"
-	}).done((data)=>{
+	},ajaxCrossDomainSettings);
+	
+	$.ajax(options).done((data)=>{
 		done(data);
 	}).fail((err)=>{
 		onloadFail();

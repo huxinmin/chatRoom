@@ -1,19 +1,17 @@
 import swal from 'sweetalert';
 import {setCookie} from '../utils/cookie';
-import {server} from '../config.js';
+import {server, ajaxCrossDomainSettings} from '../config.js';
 import homeOnload from './homeOnload';
 
 const loginAjax = (data)=>{
-	$.ajax({
-		type: "post",
-		dataType: "json",
-		url: server+"/login",
-		xhrFields: {
-      withCredentials: true
-    },
-    crossDomain: true,
-		data: data
-	}).done((data)=>{
+  const options = Object.assign({
+    type: "post",
+    dataType: "json",
+    url: server+"/login",
+    data: data
+  }, ajaxCrossDomainSettings);
+  
+	$.ajax(options).done((data)=>{
 		done(data);
 	}).fail((err)=>{
 		loginFail("登录失败");

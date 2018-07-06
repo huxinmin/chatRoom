@@ -1,7 +1,7 @@
 import swal from 'sweetalert';
 import {setCookie} from '../utils/cookie';
 import dataURLtoBlob from '../utils/dataURLtoBlob';
-import {server} from '../config.js';
+import {server, ajaxCrossDomainSettings} from '../config.js';
 import homeOnload from './homeOnload';
 
 const registerAjax = ()=>{
@@ -10,18 +10,16 @@ const registerAjax = ()=>{
 	data.append("password", $(".register-password").val());
 	const imgBlob = dataURLtoBlob($(".register-avater").attr("src"));
 	data.append("avater", imgBlob);
-	$.ajax({
+	const options = Object.assign({
 		type: "post",
 		dataType: "json",
 		url: server+"/register",
-		xhrFields: {
-      withCredentials: true
-    },
     contentType: false,
     processData:false,
-    crossDomain: true,
 		data: data
-	}).done((data)=>{
+	},ajaxCrossDomainSettings);
+
+	$.ajax(options).done((data)=>{
 		done(data);
 	}).fail((err)=>{
 		fail("登录失败");

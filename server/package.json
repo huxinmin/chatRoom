@@ -22,6 +22,7 @@
     "socket.io": "^2.1.1"
   },
   "devDependencies": {
+    "express-history-api-fallback": "^2.2.1",
     "nodemon": "^1.17.5"
   }
 }

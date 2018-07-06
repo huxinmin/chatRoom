@@ -1,3 +1,5 @@
+import {server} from '../config.js';
+
 const createChatsWith = (itemName)=>{
 	console.log("setChatsWith");
 	localforage.setItem(itemName,[]);
@@ -23,6 +25,7 @@ const getChatsWith = (data, cb)=>{
 				}else{
 					var assignData = _.chain(window.locals.users).find({username:data.username}).pick(["username","avater"]).value();
 				}
+				assignData.avater = server + '/'+ assignData.avater
 				return Object.assign(assignData, item);
 			})
 		}

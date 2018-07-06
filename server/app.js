@@ -6,6 +6,7 @@ var express = require('express');
 var debug = require('debug')('chatRoom:server');
 var socketIO = require('./socket');
 var port = normalizePort(env.serverPort || '9000');
+const history =  require('express-history-api-fallback');
 
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -14,24 +15,42 @@ var routes  = require('./routes/index')
 
 var app = express();
 
+app.use(express.static(path.join(__dirname, 'upload')));
+/** 下面的设置可以既使得前后端进行分离了，但是还可以同域名的情况下，目录相邻即可
+  *  如果要跨域的话，可以将下面的跨域设置给开启
+  *  并将JS中的AJAX的跨域设置给开启
+  */
+if(!env.crossDomain){
+  app.all('*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", '*');
+    res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+    next();
+  });
+}else{
+  //设置跨域访问
+  app.use(express.static(path.resolve(__dirname, '../client/dist')));
+  app.use('/chatRoom',express.static(path.resolve(__dirname, '../client/dist')));
+  app.use('/assets',express.static(path.resolve(__dirname, '../client/dist/assets')));
+  app.use(history('index.html', { root: path.resolve(__dirname, '../client/dist') }));
+  app.all('*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", env.AccessControlAllowOrigin+':'+env.clientPort);
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+    res.header("Access-Control-Allow-Credentials",true);  //跨域Ajax使用
+    res.header("Content-Type", "application/json;charset=utf-8");
+    next();
+  });
+}
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set("rootPath", __dirname);
-//设置跨域访问
-app.all('*', function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", env.AccessControlAllowOrigin+":"+env.clientPort);
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
-  res.header("Access-Control-Allow-Credentials",true);  //跨域Ajax使用
-  res.header("Content-Type", "application/json;charset=utf-8");
-  next();
-});
+
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(env.cookieSecret));
-app.use(express.static(path.join(__dirname, 'upload')));
 
 routes(app);
 

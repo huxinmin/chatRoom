@@ -1,7 +1,7 @@
 import renderUsersItem from "../components/tabs/users/item";
 import renderRoomsItem from "../components/tabs/rooms/item";
 import renderChatsWin from "../components/chatsWin";
-import {setChats} from './chats';
+import {getChats, setChats} from './chats';
 import {createChatsWith, getChatsWith} from './chatsWith';
 import renderChatsItem from '../components/tabs/chats/item';
 import swal from 'sweetalert';
@@ -33,8 +33,16 @@ window.locals = {
   	this._users = data
     if(data.length ===0) return
     const usersGroup = $(".users-group");
+    console.log("设置Users值触发渲染用户列表")
     data.forEach((item)=>{
       renderUsersItem(usersGroup,item);
+    });
+    getChats('chats',(chats)=>{
+      $(".users-item").each(function(){
+        if( _.some(chats, {username:$(this).children(".users-item-name").text()}) ){
+          $(this).attr("data-inchat", "true")
+        }
+      });
     });
   },
   get rooms(){
@@ -45,10 +53,18 @@ window.locals = {
   		throw TypeError("locals.rooms 赋值必须为一个数组");
   	}
   	this._rooms = data
+    console.log("设置rooms值触发渲染群聊列表")
     if(data.length ===0) return
     const roomsGroup = $(".rooms-group");
     data.forEach((item)=>{
       renderRoomsItem(roomsGroup,item);
+    });
+    getChats('roomChats',(roomChats)=>{
+      $(".rooms-item").each(function(){
+        if( _.some(roomChats, {roomname:$(this).children(".rooms-item-name").text()}) ){
+          $(this).attr("data-inchat", "true")
+        }
+      });
     });
   },
   get curChat(){
@@ -91,6 +107,7 @@ window.locals = {
    if(data.inChat === 'true'){
     $(".chats-item[data-username='"+data.username+"']").attr("data-active", "true");
    	getChatsWith(data, (chatsWithHistories)=>{
+      console.log("切换聊天对象时，重新创建对话框，并生成聊天对话记录")
     	const histories = Object.assign({histories:chatsWithHistories},data);
   		renderChatsWin(chatsWindowWrapper,histories);
     });

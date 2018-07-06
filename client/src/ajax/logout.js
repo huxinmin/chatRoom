@@ -1,16 +1,13 @@
 import {setCookie} from '../utils/cookie';
-import {server} from '../config.js';
+import {server, ajaxCrossDomainSettings} from '../config.js';
 
 const logoutAjax = ()=>{
-	$.ajax({
+	const options = Object.assign({
 		type: "post",
 		dataType: "json",
-		url: server+"/logout",
-		xhrFields: {
-      withCredentials: true
-    },
-    crossDomain: true
-	});
+		url: server+"/logout"
+	}, ajaxCrossDomainSettings);
+	$.ajax(options);
 	setCookie('isLogin',false);
 	page.redirect("/login");
 }

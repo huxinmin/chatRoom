@@ -1,6 +1,7 @@
 import $ from "jquery";
 import renderHistoryItem from '../chatsWin/historyItem';
 import {updateChatsWith} from '../../utils/chatsWith';
+import {server} from '../../config.js';
 
 const chatsInputEvent = ()=>{
 	$(document).on("click", ".chats-input-btn", function(){
@@ -9,7 +10,7 @@ const chatsInputEvent = ()=>{
 		if(!message || message.length===0){ return }
 		const chatsWin = $(".chats-win-history-group");
 		const now = moment().format('MM-DD HH:mm');
-		const data = [{isMine:"true", message:message, time:now, avater:window.locals.mine.avater}];
+		const data = [{isMine:"true", message:message, time:now, avater:server+'/'+window.locals.mine.avater}];
 		renderHistoryItem(chatsWin, data);
 		inputCont.html("");
 		const curChat = window.locals.curChat;

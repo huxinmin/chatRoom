@@ -1,15 +1,7 @@
-const getChats = (curChat, cb)=>{
+const getChats = (type, cb)=>{
 	console.log("getChats");
-	if(curChat.isRoom){
-		var groupName = 'roomChats';
-		var findKey = {roomname:curChat.username}
-	}else{
-		var groupName = 'chats';
-		var findKey = {username:curChat.username}
-	}
-	localforage.getItem(groupName,(err, chats)=>{
-		var findVal =  _.find(chats,findKey);
-		cb(findVal);
+	localforage.getItem(type,(err, chats)=>{
+		cb(chats);
 	});
 }
 
@@ -25,8 +17,6 @@ const setChats =(curChat, cb)=>{
 				cb(val);
 			});
 		});
-		var chatsWithItem = curChat.isRoom ? 'roomChats_'+curChat.username :'chats_'+curChat.username;
-
 	}
 }
 

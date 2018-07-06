@@ -1,5 +1,6 @@
 import template from "template";
 import "./index.less";
+import {getChats} from '../../../utils/chats';
 
 import renderChatsItem from "./item";
 
@@ -20,7 +21,8 @@ const renderChats = (tabs)=>{
 	getChatsRenderChats("chats", "username", {type:"user",online:""});
 	getChatsRenderChats("roomChats", "roomname",{type:"room",online:"none"});
 	function getChatsRenderChats(itemName, typename,  assignData){
-		localforage.getItem(itemName).then((chats, err)=>{
+		getChats(itemName, (chats)=>{
+			console.log('获取本地数据并渲染中间的'+itemName+'聊天对话列表')
 			chats = chats || [];
 			if(chats && chats.length>0) $(".chats-none").hide()
   		chats.forEach((item)=>{
