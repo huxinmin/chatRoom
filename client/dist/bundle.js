@@ -1604,8 +1604,6 @@ var _sweetalert = __webpack_require__(2);
 
 var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
-var _validate = __webpack_require__(34);
-
 var _cookie = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -1630,28 +1628,6 @@ var loginEvent = function loginEvent(loginBtn) {
           text: "确定"
         },
         text: "用户名或密码不能为空",
-        icon: "error",
-        timer: 3000
-      });
-      return;
-    }
-    if (!_validate.uPattern.test(username)) {
-      (0, _sweetalert2.default)({
-        button: {
-          text: "确定"
-        },
-        text: "用户名不符合规则，4到16位字母，数字，下划线，减号",
-        icon: "error",
-        timer: 3000
-      });
-      return;
-    }
-    if (!_validate.uPattern.test(password)) {
-      (0, _sweetalert2.default)({
-        button: {
-          text: "确定"
-        },
-        text: "密码不符合规则，4到16位字母，数字，下划线，减号",
         icon: "error",
         timer: 3000
       });
@@ -1732,10 +1708,32 @@ exports.default = loginAjax;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _sweetalert = __webpack_require__(2);
+
+var _sweetalert2 = _interopRequireDefault(_sweetalert);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 //用户名正则，4到16位（字母，数字，下划线，减号）
 var uPattern = /^[a-zA-Z0-9_-]{4,16}$/;
 
-exports.uPattern = uPattern;
+var validate = function validate(text, message) {
+  if (!uPattern.test(text)) {
+    (0, _sweetalert2.default)({
+      button: {
+        text: "确定"
+      },
+      text: message,
+      icon: "error",
+      timer: 3000
+    });
+    return false;
+  }
+  return true;
+};
+
+exports.default = validate;
 
 /***/ }),
 /* 35 */
@@ -2790,9 +2788,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var source = "<div class='register-wrapper'>" + "<label class='register-label' for='avaterInput'>" + "<img src='/assets/images/avater.jpg' class='register-avater'>" + "<input id='avaterInput' type='file'>" + "<span class='choose-avater'>选择头像</span>" + "</label>" + "<form class='register-form'>" + "<div class='register-form-group'><input class='register-name' type='text' placeholder='请输入用户名'></div>" + "<div class='register-form-group'><input class='register-password' type='password' placeholder='请输入密码'></div>" + "<div class='register-form-group'><input class='register-cfPassword' type='password' placeholder='请再次输入密码'></div>" + "<div class='register-form-group'><input class='register-confirm-btn' type='button' value='注册'></div>" + "</form>" + "</div>";
 
-var data = {};
 var render = template.compile(source);
-var regHtml = render(data);
+var regHtml = render();
 
 var renderRegister = function renderRegister(app) {
   app.html(regHtml);
@@ -2818,9 +2815,21 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _avaterCropper = __webpack_require__(94);
+var _avaterCropper = __webpack_require__(76);
 
 var _avaterCropper2 = _interopRequireDefault(_avaterCropper);
+
+var _sweetalert = __webpack_require__(2);
+
+var _sweetalert2 = _interopRequireDefault(_sweetalert);
+
+var _validate = __webpack_require__(34);
+
+var _validate2 = _interopRequireDefault(_validate);
+
+var _register = __webpack_require__(97);
+
+var _register2 = _interopRequireDefault(_register);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2832,30 +2841,63 @@ var regEvent = function regEvent() {
 			});
 		}
 	});
+	$(document).on('click', '.register-confirm-btn', function () {
+		var valid = validateAvater() && validateUsername($(".register-name").val()) && validatePassword($(".register-password").val()) && validateCfPassword($(".register-password").val(), $(".register-cfPassword").val());
+		if (valid) {
+			(0, _register2.default)();
+		}
+	});
+	$(document).on("blur", ".register-name", function () {
+		validateUsername($(this).val());
+	});
+	$(document).on("blur", ".register-password", function () {
+		validatePassword($(this).val());
+	});
+	$(document).on("blur", ".register-cfPassword", function () {
+		var password = $(".register-password").val();
+		var cfPassword = $(this).val();
+		validateCfPassword(password, cfPassword);
+	});
+	function validateUsername(val) {
+		return (0, _validate2.default)(val, "用户名不符合规则，4到16位字母，数字，下划线，减号");
+	}
+	function validatePassword(val) {
+		return (0, _validate2.default)(val, "密码不符合规则，4到16位字母，数字，下划线，减号");
+	}
+	function validateCfPassword(password, cfPassword) {
+		if (password !== cfPassword) {
+			(0, _sweetalert2.default)({
+				button: {
+					text: "确定"
+				},
+				text: "两次密码输入不一致",
+				icon: "error",
+				timer: 3000
+			});
+			return false;
+		}
+		return true;
+	}
+	function validateAvater() {
+		if ($(".choose-avater").css("display") === 'block') {
+			(0, _sweetalert2.default)({
+				button: {
+					text: "确定"
+				},
+				text: "您还未选择头像",
+				icon: "error",
+				timer: 3000
+			});
+			return false;
+		}
+		return true;
+	}
 };
 
 exports.default = regEvent;
 
 /***/ }),
-/* 76 */,
-/* 77 */,
-/* 78 */,
-/* 79 */,
-/* 80 */,
-/* 81 */,
-/* 82 */,
-/* 83 */,
-/* 84 */,
-/* 85 */,
-/* 86 */,
-/* 87 */,
-/* 88 */,
-/* 89 */,
-/* 90 */,
-/* 91 */,
-/* 92 */,
-/* 93 */,
-/* 94 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2869,7 +2911,7 @@ var _sweetalert = __webpack_require__(2);
 
 var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
-__webpack_require__(95);
+__webpack_require__(77);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2912,10 +2954,61 @@ var avaterCropper = function avaterCropper(file, cb) {
 exports.default = avaterCropper;
 
 /***/ }),
-/* 95 */
+/* 77 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 78 */,
+/* 79 */,
+/* 80 */,
+/* 81 */,
+/* 82 */,
+/* 83 */,
+/* 84 */,
+/* 85 */,
+/* 86 */,
+/* 87 */,
+/* 88 */,
+/* 89 */,
+/* 90 */,
+/* 91 */,
+/* 92 */,
+/* 93 */,
+/* 94 */,
+/* 95 */,
+/* 96 */,
+/* 97 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var registerAjax = function registerAjax() {
+	var data = $.ajax({
+		type: "post",
+		dataType: "json",
+		url: window.locals.serverHost + "/register",
+		xhrFields: {
+			withCredentials: true
+		},
+		crossDomain: true,
+		data: data
+	}).done(function (data) {
+		done(data);
+	}).fail(function (err) {
+		fail("登录失败");
+	});
+	function done() {}
+	function fail() {}
+};
+
+exports.default = registerAjax;
 
 /***/ })
 /******/ ]);

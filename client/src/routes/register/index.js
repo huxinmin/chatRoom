@@ -16,11 +16,8 @@ var source = "<div class='register-wrapper'>"
 +"</div>";
 
 
-const data = {
-
-};
 var render = template.compile(source);
-var regHtml = render(data);
+var regHtml = render();
 
 const renderRegister = (app)=>{
   app.html(regHtml);
