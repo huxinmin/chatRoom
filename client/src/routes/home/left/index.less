@@ -28,15 +28,53 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		path{
+			fill:@gray;
+		}
+		svg{
+			width: 32px;
+			height: 32px;
+		}
 	}
+	.logout-btn{
+		position: relative;
+		cursor: pointer;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		path{
+			fill:@gray;
+		}
+		svg{
+			width: 28px;
+			height: 28px;
+		}
+	}
+}
+.bottom-btns-group{
+	height: 100px;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	align-items: center;
 }
 .menu-group{
 	width: 100%;
 	margin-top: -25vh;
+	svg{
+		width: 32px;
+		height: 32px;
+	}
 	.menu-item{
 		&.active{
 			background-color: @darken;
 			border-left:@active 3px solid;
+			path{
+				fill:@grayWhite;
+			}
+		}
+		path{
+			fill:@gray;
 		}
 		box-sizing: border-box;
 		cursor: pointer;
@@ -47,14 +85,4 @@
 		justify-content: center;
 		align-items: center;
 	}
-}
-.menu-group	svg, .setting-btn svg {
-	width: 32px;
-	height: 32px;		
-}
-.menu-item path, .setting-btn path {
-	fill:@gray;
-}
-.menu-item.active path {
-	fill:@grayWhite;
 }

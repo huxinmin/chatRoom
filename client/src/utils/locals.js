@@ -5,12 +5,9 @@ import {setChats} from './chats';
 import {createChatsWith, getChatsWith} from './chatsWith';
 import renderChatsItem from '../components/tabs/chats/item';
 import swal from 'sweetalert';
+import {server} from '../config.js';
 
 window.locals = {
-	_serverHost:'http://127.0.0.1:9000',
-	get serverHost(){
-		return this._serverHost;
-	},
 	_mine:{},
 	_users:[],
 	_rooms:[],
@@ -22,7 +19,9 @@ window.locals = {
   	if(!_.isPlainObject(data)){
   		throw TypeError("locals.mine 赋值必须为一个普通对象");
   	}
-  	this._mine = data
+  	this._mine = data;
+  	const avater = server +'/' +data.avater;
+  	$(".mine img").attr('src', avater);
   },
   get users(){
   	return this._users

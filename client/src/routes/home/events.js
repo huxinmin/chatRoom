@@ -1,17 +1,9 @@
 import homeOnload from '../../ajax/homeOnload';
+import unloadAlert from '../../utils/unloadAlert';
 const homeEvent = () => {
-		/** 监听关闭页面事件，需要弹窗确认
-		 * 监听刷新页面事件，需要弹框确认后再次向服务器请求
-		 *
-		 */
-		$(window).on('beforeunload', (e) => {
-			const confirMessage = "您确定要离开此页面么？"
-			e.returnValue = confirMessage
-			return confirMessage
-		});
+		unloadAlert();
 		$(window).on('load',()=>{
 			homeOnload();
 		});
-		homeOnload();
 };
 export default homeEvent;

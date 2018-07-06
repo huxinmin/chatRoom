@@ -1,6 +1,7 @@
 import swal from 'sweetalert';
 import {addUsersInChatsPro, addRoomsInChatsPro} from '../utils/addInChatsPro';
 import {setCookie} from '../utils/cookie';
+import {server} from '../config.js';
 
 const homeOnload = ()=>{
 	$.ajax({
@@ -10,7 +11,7 @@ const homeOnload = ()=>{
       withCredentials: true
     },
     crossDomain: true,
-		url: window.locals.serverHost+"/home"
+		url: server+"/home"
 	}).done((data)=>{
 		done(data);
 	}).fail((err)=>{

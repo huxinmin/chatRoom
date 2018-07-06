@@ -12,14 +12,21 @@ exports.findUserByName = (username)=>{
 exports.findRoomByName = (roomname)=>{
 	return db.get('rooms').find({ roomname: roomname }).value();
 }
-/**获取所有用户，需要去掉自己
-  *未完成
-  *
-  */
-exports.getAllUsers = ()=>{
+
+
+const getAllUsers = ()=>{
 	return db.get('users').map((item)=>{
 		return _.pick(item, ['username','avater','online','remarks'])
 	}).value();
+}
+exports.getAllUsers = getAllUsers
+
+exports.getAllUsersExcept =(username)=>{
+	var allUsers = getAllUsers()
+	_.remove(allUsers,(item)=>{
+						return item.username ===username
+				});
+	return allUsers
 }
 
 exports.getAllRooms = ()=>{

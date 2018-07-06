@@ -6,7 +6,7 @@ const _ = require("lodash");
 
 /* GET home page. */
 router.get('/',auth.requireAuth, function(req, res, next) {
-	const users = db.getAllUsers();
+	const users = db.getAllUsersExcept(req.signedCookies.uid);
 	const rooms = db.getAllRooms();
 	const mine = _.omit(db.findUserByName( req.signedCookies.uid),["password"]);
 	res.json({ mine:mine, users:users, rooms:rooms})

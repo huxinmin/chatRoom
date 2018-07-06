@@ -1,11 +1,13 @@
 import swal from 'sweetalert';
 import {setCookie} from '../utils/cookie';
+import {server} from '../config.js';
+import homeOnload from './homeOnload';
 
 const loginAjax = (data)=>{
 	$.ajax({
 		type: "post",
 		dataType: "json",
-		url: window.locals.serverHost+"/login",
+		url: server+"/login",
 		xhrFields: {
       withCredentials: true
     },
@@ -20,7 +22,15 @@ const loginAjax = (data)=>{
     if(data.auth){
     	window.locals.mine = data.mine;
     	setCookie('isLogin',true);
-    	page.redirect("/home");
+    	swal({
+				button:false,
+  			text: data.message,
+  			icon: "success",
+  			timer: 2000
+			}).then(()=>{
+				homeOnload();
+				page.redirect("/home");
+			});
     }else{
     	loginFail(data.message);
     }

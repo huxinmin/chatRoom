@@ -1,6 +1,8 @@
 import swal from 'sweetalert';
 import {setCookie} from '../utils/cookie';
 import dataURLtoBlob from '../utils/dataURLtoBlob';
+import {server} from '../config.js';
+import homeOnload from './homeOnload';
 
 const registerAjax = ()=>{
 	var data = new FormData();
@@ -11,7 +13,7 @@ const registerAjax = ()=>{
 	$.ajax({
 		type: "post",
 		dataType: "json",
-		url: window.locals.serverHost+"/register",
+		url: server+"/register",
 		xhrFields: {
       withCredentials: true
     },
@@ -34,6 +36,7 @@ const registerAjax = ()=>{
   			icon: "success",
   			timer: 2000
 			}).then(()=>{
+				homeOnload();
 				page.redirect("/home");
 			});
 		}else{

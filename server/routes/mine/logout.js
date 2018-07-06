@@ -6,9 +6,9 @@ const messages = require('../../utils/messages')
 
 /* GET home page. */
 router.post('/', auth.requireAuth, function(req, res, next) {
-	db.setOffline(req.body.username);
+	db.setOffline(req.signedCookies.uid);
 	auth.clearAuth(res);
- 	res.json({messages:messages.logoutSuccess});
+ 	res.end();
 });
 
 module.exports = router;
