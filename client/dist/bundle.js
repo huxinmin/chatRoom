@@ -1653,8 +1653,6 @@ var _sweetalert = __webpack_require__(2);
 
 var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
-var _addInChatsPro = __webpack_require__(16);
-
 var _cookie = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -1677,8 +1675,6 @@ var loginAjax = function loginAjax(data) {
   function done(data) {
     if (data.auth) {
       window.locals.mine = data.mine;
-      (0, _addInChatsPro.addRoomsInChatsPro)(data.rooms);
-      (0, _addInChatsPro.addUsersInChatsPro)(data.users);
       (0, _cookie.setCookie)('isLogin', true);
       page.redirect("/home");
     } else {
@@ -1708,19 +1704,8 @@ exports.default = loginAjax;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _anime = __webpack_require__(3);
-
-var _anime2 = _interopRequireDefault(_anime);
-
-var _jquery = __webpack_require__(1);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 var loadingLogin = function loadingLogin(target) {
-  (0, _anime2.default)({
+  anime({
     targets: target,
     duration: 200,
     marginTop: [-1000, -200],
@@ -2667,6 +2652,7 @@ var homeEvent = function homeEvent() {
 	$(window).on('load', function () {
 		(0, _homeOnload2.default)();
 	});
+	(0, _homeOnload2.default)();
 };
 exports.default = homeEvent;
 
@@ -2747,15 +2733,20 @@ var _events = __webpack_require__(74);
 
 var _events2 = _interopRequireDefault(_events);
 
+var _loading = __webpack_require__(99);
+
+var _loading2 = _interopRequireDefault(_loading);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var source = "<div class='register-wrapper'>" + "<label class='register-label' for='avaterInput'>" + "<img src='/assets/images/avater.jpg' class='register-avater'>" + "<input id='avaterInput' type='file'>" + "<span class='choose-avater'>选择头像</span>" + "</label>" + "<form class='register-form'>" + "<div class='register-form-group'><input class='register-name' type='text' placeholder='请输入用户名'></div>" + "<div class='register-form-group'><input class='register-password' type='password' placeholder='请输入密码'></div>" + "<div class='register-form-group'><input class='register-cfPassword' type='password' placeholder='请再次输入密码'></div>" + "<div class='register-form-group'><input class='register-confirm-btn' type='button' value='注册'></div>" + "</form>" + "</div>";
+var source = "<div class='register-wrapper'>" + "<label class='register-label' for='avaterInput'>" + "<img src='/assets/images/avater.jpg' class='register-avater'>" + "<input id='avaterInput' type='file'>" + "<span class='choose-avater'>选择头像</span>" + "</label>" + "<form class='register-form'>" + "<div class='register-form-group'><input class='register-name' type='text' placeholder='请输入用户名'></div>" + "<div class='register-form-group'><input class='register-password' type='password' placeholder='请输入密码'></div>" + "<div class='register-form-group'><input class='register-cfPassword' type='password' placeholder='请再次输入密码'></div>" + "<div class='register-form-group'><input class='register-confirm-btn' type='button' value='注册'></div>" + "</form>" + "<a class='register-href' href='/chatRoom/login'>已有账号？立即登录</a>" + "</div>";
 
 var render = template.compile(source);
 var regHtml = render();
 
 var renderRegister = function renderRegister(app) {
   app.html(regHtml);
+  (0, _loading2.default)(".register-wrapper");
   (0, _events2.default)();
 };
 
@@ -2974,6 +2965,8 @@ var _sweetalert = __webpack_require__(2);
 
 var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
+var _cookie = __webpack_require__(4);
+
 var _dataURLtoBlob = __webpack_require__(98);
 
 var _dataURLtoBlob2 = _interopRequireDefault(_dataURLtoBlob);
@@ -3003,9 +2996,31 @@ var registerAjax = function registerAjax() {
 		fail("登录失败");
 	});
 	function done(data) {
-		console.log(data);
+		if (data.auth) {
+			window.locals.mine = data.mine;
+			(0, _cookie.setCookie)('isLogin', true);
+			(0, _sweetalert2.default)({
+				button: false,
+				text: data.message,
+				icon: "success",
+				timer: 2000
+			}).then(function () {
+				page.redirect("/home");
+			});
+		} else {
+			fail(data.message);
+		}
 	}
-	function fail(message) {}
+	function fail(message) {
+		(0, _sweetalert2.default)({
+			button: {
+				text: "确定"
+			},
+			text: message,
+			icon: "error",
+			timer: 3000
+		});
+	}
 };
 
 exports.default = registerAjax;
@@ -3052,6 +3067,29 @@ var dataURLtoBlob = function dataURLtoBlob(dataurl) {
 };
 
 exports.default = dataURLtoBlob;
+
+/***/ }),
+/* 99 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var loadingRegister = function loadingRegister(target) {
+	anime({
+		targets: target,
+		duration: 200,
+		marginTop: [-1000, -200],
+		height: [{ value: "600px", duration: 100, delay: 50, easing: "easeOutExpo" }, { value: "500px", duration: 50 }],
+		easing: "easeInOutSine",
+		elasticity: 100
+	});
+};
+
+exports.default = loadingRegister;
 
 /***/ })
 /******/ ]);

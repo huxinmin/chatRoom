@@ -12,5 +12,6 @@ const homeEvent = () => {
 		$(window).on('load',()=>{
 			homeOnload();
 		});
+		homeOnload();
 };
 export default homeEvent;

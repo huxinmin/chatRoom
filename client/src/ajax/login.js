@@ -1,5 +1,4 @@
 import swal from 'sweetalert';
-import {addUsersInChatsPro, addRoomsInChatsPro} from '../utils/addInChatsPro';
 import {setCookie} from '../utils/cookie';
 
 const loginAjax = (data)=>{
@@ -20,8 +19,6 @@ const loginAjax = (data)=>{
   function done(data){
     if(data.auth){
     	window.locals.mine = data.mine;
-    	addRoomsInChatsPro(data.rooms);
-    	addUsersInChatsPro(data.users);
     	setCookie('isLogin',true);
     	page.redirect("/home");
     }else{

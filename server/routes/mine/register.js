@@ -14,38 +14,36 @@ router.post('/', function(req, res, next) {
 	const uploadDir = path.resolve(__dirname, '../../upload');
 	form.uploadDir =uploadDir;
 	var users = {username:"",password:"",avater:""};
-	var avaterPath, avaterType;
+	var avaterPath, ext, isExist = false;
 	form.parse(req, function(err, fields, files) {
-		users = Object.assign(users, fields)
-		avaterPath = files["avater"]["path"]
-		avaterType = files["avater"]["type"]
-		console.log(users)
-		console.log(avaterPath)
+		isExist = db.findUserByName( fields.username);
+		avaterPath = files["avater"]["path"];
+		if(isExist) return
+		users = Object.assign(users, fields);
+		var avaterType = files["avater"]["type"];
+		ext = '.'+avaterType.substring(avaterType.lastIndexOf('/')+1);
 	});
 	form.on('end', function() {
 		console.log("end")
-		var ext = '.'+avaterType.substring(avaterType.lastIndexOf('/')+1)
-		console.log(ext)
-		var newName = users.username+new Date().getTime()+ext
-		console.log(newName)
-		var newPath = path.join(uploadDir,newName)
-		fs.rename(avaterPath, newPath, function (err) {
-			if(err){
-				console.log(err)
-			}else{
-				res.json({'1':'2'})
-			}
-
-		});
+		if(isExist){
+			fs.unlink(avaterPath);
+			res.json({auth:false,message:messages.registerExist});
+		}else{
+			var newName = users.username+new Date().getTime()+ext;
+			var newPath = path.join(uploadDir,newName)
+			fs.rename(avaterPath, newPath, function (err) {
+				if(err){
+					res.json({auth:false,message:messages.registerFail});
+				}else{
+					users = Object.assign(users, {avater:newName, online: true});
+					db.addUser(users);
+					auth.setAuth(res);
+					auth.setUid(res, users.username);
+					res.json({auth:true,message:messages.registerSuccess, mine:_.omit(users,["password"])});
+				}
+			});
+		}
 	});
-	// const mine = db.findUserByName( req.body.username);
-	// if (mine && mine.password === req.body.password) {
-	// 	auth.setAuth(res);
-	// 	auth.setUid(res, req.body.username);
-	// 	res.json({ auth:true, mine:_.omit(mine,["password"]), message:messages.loginSuccess})
-	// } else {
-	// 	res.json({ auth: false, message: messages.loginFail});
-	// }
 });
 
 module.exports = router;

@@ -1,5 +1,6 @@
 import "./index.less";
 import regEvent from"./events";
+import loadingRegister from './loading';
 
 var source = "<div class='register-wrapper'>"
 +  "<label class='register-label' for='avaterInput'>"
@@ -13,6 +14,7 @@ var source = "<div class='register-wrapper'>"
 +  "<div class='register-form-group'><input class='register-cfPassword' type='password' placeholder='请再次输入密码'></div>"
 +  "<div class='register-form-group'><input class='register-confirm-btn' type='button' value='注册'></div>"
 +"</form>"
++"<a class='register-href' href='/chatRoom/login'>已有账号？立即登录</a>"
 +"</div>";
 
 
@@ -21,6 +23,7 @@ var regHtml = render();
 
 const renderRegister = (app)=>{
   app.html(regHtml);
+  loadingRegister(".register-wrapper");
   regEvent();
 };
 

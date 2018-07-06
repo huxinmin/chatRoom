@@ -1,6 +1,3 @@
-import anime from "anime";
-import $ from "jquery";
-
 const loadingLogin = function(target){
   anime({
   	targets: target,

@@ -37,3 +37,7 @@ exports.setOffline = (username)=>{
 const updateOnlineStatus = (username, status)=>{
 	db.get('users').find({ username: username }).assign({ online: status}).write();
 }
+
+exports.addUser =(user)=>{
+	db.get('users').push(user).write()
+}

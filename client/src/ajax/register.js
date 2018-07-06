@@ -1,4 +1,5 @@
 import swal from 'sweetalert';
+import {setCookie} from '../utils/cookie';
 import dataURLtoBlob from '../utils/dataURLtoBlob';
 
 const registerAjax = ()=>{
@@ -24,9 +25,31 @@ const registerAjax = ()=>{
 		fail("登录失败");
 	});
 	function done(data){
-		console.log(data)
+		if(data.auth){
+			window.locals.mine = data.mine;
+    	setCookie('isLogin',true);
+			swal({
+				button:false,
+  			text: data.message,
+  			icon: "success",
+  			timer: 2000
+			}).then(()=>{
+				page.redirect("/home");
+			});
+		}else{
+			fail(data.message);
+		}
 	}
-	function fail(message){}
+	function fail(message){
+		swal({
+   		button: {
+    		text: "确定",
+  		},
+  		text: message,
+  		icon: "error",
+  		timer: 3000
+		})
+	}
 }
 
 export default registerAjax
