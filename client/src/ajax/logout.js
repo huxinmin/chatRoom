@@ -5,7 +5,7 @@ const logoutAjax = ()=>{
 	const options = Object.assign({
 		type: "post",
 		dataType: "json",
-		url: server+"/logout"
+		url: server+"/server/logout"
 	}, ajaxCrossDomainSettings);
 	$.ajax(options);
 	setCookie('isLogin',false);

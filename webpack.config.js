@@ -17,8 +17,8 @@ module.exports = {
 
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, './client/dist'),
-    publicPath:'/'
+    path: path.resolve(__dirname, './client/dist/bundle'),
+    publicPath:'/bundle'
   },
 
   module:{
@@ -62,7 +62,7 @@ module.exports = {
 
 	plugins: [
     new HtmlWebpackPlugin({
-    	filename:'index.html',
+    	filename:'../html/index.html',
       template: './client/src/index.html'
     }),
     new ExtractTextPlugin("bundle.css"),

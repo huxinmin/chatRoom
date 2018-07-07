@@ -4,10 +4,10 @@ const home = require("./home");
 const register = require("./register");
 
 const mine = (app)=>{
-	app.use('/login', login);
-	app.use('/logout', logout);
-	app.use('/home', home);
-	app.use('/register', register);
+	app.use('/server/login', login);
+	app.use('/server/logout', logout);
+	app.use('/server/home', home);
+	app.use('/server/register', register);
 }
 
 module.exports = mine;

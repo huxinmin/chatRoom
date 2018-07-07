@@ -7,7 +7,7 @@ const homeOnload = ()=>{
 	const options = Object.assign({
 		type: "get",
 		dataType: "json",
-		url: server+"/home"
+		url: server+"/server/home"
 	},ajaxCrossDomainSettings);
 	
 	$.ajax(options).done((data)=>{

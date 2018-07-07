@@ -7,7 +7,7 @@ const loginAjax = (data)=>{
   const options = Object.assign({
     type: "post",
     dataType: "json",
-    url: server+"/login",
+    url: server+"/server/login",
     data: data
   }, ajaxCrossDomainSettings);
   

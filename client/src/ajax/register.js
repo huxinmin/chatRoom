@@ -13,7 +13,7 @@ const registerAjax = ()=>{
 	const options = Object.assign({
 		type: "post",
 		dataType: "json",
-		url: server+"/register",
+		url: server+"/server/register",
     contentType: false,
     processData:false,
 		data: data

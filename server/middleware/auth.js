@@ -14,8 +14,7 @@ exports.clearAuth =(res)=>{
 }
 
 exports.requireAuth =(req, res, next)=>{
-	console.log("req.signedCookies")
-	console.log(req.signedCookies)
+	console.log("req.signedCookies", req.signedCookies)
 	if(req.signedCookies.token === 'true' && req.signedCookies.uid){
 		next();
 	}else{
