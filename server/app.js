@@ -16,14 +16,14 @@ var routes  = require('./routes/index')
 var app = express();
 
 app.use(express.static(path.join(__dirname, 'upload')));
-//前端单页路由后台拦截设置
-const root = path.resolve(__dirname, '../client/dist');
-app.use('/chatRoom', history('index.html', { root: path.join(root,'html') }));
 /** 下面的设置可以既使得前后端进行分离了，但是还可以同域名的情况下，目录相邻即可
   *  如果要跨域的话，可以将下面的跨域设置给开启
   *  并将JS中的AJAX的跨域设置给开启
   */
 if(env.crossDomain === 'false'){
+  //前端单页路由后台拦截设置
+  const root = path.resolve(__dirname, '../client/dist');
+  app.use('/chatRoom', history('index.html', { root: path.join(root,'html') }));
   //设置不跨域访问
   app.use('/chatRoom',express.static(path.join(root,'html')));
   app.use('/bundle',express.static(path.join(root,'bundle')));
