@@ -1,12 +1,12 @@
 import $ from "jquery";
 import page from "page";
 import loginAjax from "../../ajax/login";
-import swal from 'sweetalert';
-import {getCookie} from '../../utils/cookie';
+import swal from "sweetalert";
+import {getCookie,} from "../../utils/cookie";
 
 const loginEvent = (loginBtn)=>{
-	const isLogin = getCookie('isLogin');
-	if(isLogin==="true") page.redirect("/home");
+  const isLogin = getCookie("isLogin");
+  if(isLogin==="true") page.redirect("/home");
   $(document).on("click", loginBtn, ()=>{
   	onLoginBtn();
   });
@@ -25,11 +25,11 @@ const loginEvent = (loginBtn)=>{
   			},
   			text: "用户名或密码不能为空",
   			icon: "error",
-  			timer: 3000
-			});
-			return
+  			timer: 3000,
+      });
+      return;
   	}
-  	loginAjax({username:username, password:password});
+  	loginAjax({username:username, password:password,});
   }
 };
 export default loginEvent;

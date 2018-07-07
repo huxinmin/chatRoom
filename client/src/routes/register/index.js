@@ -1,6 +1,6 @@
 import "./index.less";
 import regEvent from"./events";
-import loadingRegister from './loading';
+import loadingRegister from "./loading";
 
 var source = "<div class='register-wrapper'>"
 +  "<label class='register-label' for='avaterInput'>"

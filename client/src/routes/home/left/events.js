@@ -1,6 +1,6 @@
-import swal from 'sweetalert';
-import logoutAjax from '../../../ajax/logout';
-import settingAlert from '../../../components/settingAlert';
+import swal from "sweetalert";
+import logoutAjax from "../../../ajax/logout";
+import settingAlert from "../../../components/settingAlert";
 
 const leftEvent = ()=>{
   $(".menu-item")[0].classList.add("active");
@@ -13,12 +13,12 @@ const leftEvent = ()=>{
 		  *
 		  */
     const type =$(this).attr("data-type");
-    $(".tabs-group li").trigger("changTabs",[type]);
+    $(".tabs-group li").trigger("changTabs",[type,]);
   });
   //退出
   $(document).on("click", ".logout-btn", function(){
   	swal({
-				buttons:{
+      buttons:{
   				cancel: {
     				text: "取消",
     				value: false,
@@ -29,14 +29,14 @@ const leftEvent = ()=>{
     				text: "确定",
     				value: true,
     				visible: true,
-    				closeModal: true
-  			}
-			},
+    				closeModal: true,
+  			},
+      },
   			text: "您确定要退出登录吗？",
-  			icon: "warning"
-			}).then((val)=>{
-				if(val) logoutAjax();
-		});
+  			icon: "warning",
+    }).then((val)=>{
+      if(val) logoutAjax();
+    });
   });
   //设置
   $(document).on("click", ".setting-btn", function(){

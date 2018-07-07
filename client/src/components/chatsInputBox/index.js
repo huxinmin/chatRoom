@@ -1,6 +1,6 @@
 import template from "template";
 import "./index.less";
-import chatsInputEvent from './events';
+import chatsInputEvent from "./events";
 
 import renderChatsInputTools from "../chatsInputTools";
 

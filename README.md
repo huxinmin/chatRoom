@@ -9,7 +9,10 @@
 - 支持浏览器桌面通知
 
 ## 特性
-- 前后端分离架构
+- 前后端分离架构  
+虽然是前后端分离架构，你不仅可以将`client`前端页面部署在别的域下，也可以部署在同一个域下：
+  - 将`client/src/consig`文件进行配置`crossDomain`是否跨域，`server`服务器主机地址
+  - 将根目录下的`.env`文件进行配置，`clientPort`前端端口，`serverPort`服务端端口，`AccessControlAllowOrigin`前端主机地址，`crossDomain`是否跨域
 - 前端有三个版本，分别是jquey，react， angular, vue
 
 ## 参考及依赖

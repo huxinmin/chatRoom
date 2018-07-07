@@ -11,10 +11,10 @@ var source = "<div class=\"chats-window\" data-username={{username}}>"
 var render = template.compile(source);
 
 const renderChatsWin = (chatsWindowWrapper, data)=>{
-	var old = $(".chats-window");
-	if(old.length){
-		old.remove();
-	}
+  var old = $(".chats-window");
+  if(old.length){
+    old.remove();
+  }
   var chatsWinUserHtml = render(data);
   chatsWindowWrapper.prepend(chatsWinUserHtml);
   const chatsWin = $(".chats-win-history-group");

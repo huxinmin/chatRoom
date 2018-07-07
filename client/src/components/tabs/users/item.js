@@ -11,7 +11,7 @@ var source = "<div class=\"users-item\" data-online={{online}} data-inChat={{inC
 var render = template.compile(source);
 
 const renderUsersItem = (usersGroup, data)=>{
-	$(".users-none").hide();
+  $(".users-none").hide();
   var itemHtml = render(data);
   usersGroup.append(itemHtml);
 };

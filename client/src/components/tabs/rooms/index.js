@@ -11,8 +11,8 @@ var source = "<li class=\"rooms-group\">"
 var render = template.compile(source);
 
 const renderRooms = (tabs)=>{
-	var roomsHtml = render();
-	console.log("renderRooms")
+  var roomsHtml = render();
+  console.log("renderRooms");
   tabs.append(roomsHtml);
 };
 

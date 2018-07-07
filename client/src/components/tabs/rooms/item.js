@@ -11,7 +11,7 @@ var source = "<div class=\"rooms-item\" data-inChat={{inChats}}>"
 var render = template.compile(source);
 
 const renderRoomsItem = (roomsGroup, data)=>{
-	$(".rooms-none").hide();
+  $(".rooms-none").hide();
   var itemHtml = render(data);
   roomsGroup.append(itemHtml);
 };

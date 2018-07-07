@@ -10,8 +10,8 @@ var source = "<li class=\"users-group\">"
 var render = template.compile(source);
 
 const renderUsers = (tabs)=>{
-	var usersHtml = render();
-	console.log("renderUsersGroup")
+  var usersHtml = render();
+  console.log("renderUsersGroup");
   tabs.append(usersHtml);
 };
 

@@ -1,5 +1,10 @@
-exports = module.exports = (socket, data)=>{
-	console.log(socket);
-	console.log(data);
-	//emit 告诉其他人我登录了
+exports = module.exports = (socket)=>{
+	socket.on('login',(data, fn)=>{
+		fn("服务器确认收到了login事件")
+		console.log('用户登录了');
+		console.log(socket.id)
+		socket.username = data.username;
+		socket.join(data.username);
+		socket.broadcast.emit('recLogin',data)
+	});
 }

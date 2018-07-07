@@ -1,9 +1,9 @@
-import homeOnload from '../../ajax/homeOnload';
-import unloadAlert from '../../utils/unloadAlert';
+import homeOnload from "../../ajax/homeOnload";
+import unloadAlert from "../../utils/unloadAlert";
 const homeEvent = () => {
-		unloadAlert();
-		$(window).on('load',()=>{
-			homeOnload();
-		});
+  unloadAlert();
+  $(window).on("load",()=>{
+    homeOnload();
+  });
 };
 export default homeEvent;

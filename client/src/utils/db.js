@@ -1,3 +1,3 @@
 localforage.config({
-	name: 'chatRoom'
+  name: "chatRoom",
 });

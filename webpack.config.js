@@ -56,7 +56,8 @@ module.exports = {
     page:'page',
     template:'template',
     WebTorrent:'WebTorrent',
-    particlesJS:'particlesJS'
+    particlesJS:'particlesJS',
+    io:'io'
 
 	},
 

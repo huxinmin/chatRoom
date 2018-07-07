@@ -17,7 +17,7 @@ const tabsEvent = ()=>{
   	const username = $(this).find(".chats-item-username").text();
   	const avater = $(this).children(".chats-item-avater").attr("src");
   	const online = $(this).attr("data-online");
-  	window.locals.curChat = {isRoom:isRoom,username:username,avater:avater,online:online, inChat:'true'};
+  	window.locals.curChat = {isRoom:isRoom,username:username,avater:avater,online:online, inChat:"true",};
   });
   function calcCurChat(target, type){
     const username = target.children("p").text();
@@ -30,7 +30,7 @@ const tabsEvent = ()=>{
       var online = "none";
       var isRoom = true;
     }
-    window.locals.curChat = {isRoom:isRoom,username:username,avater:avater,online:online, inChat:inChat};
+    window.locals.curChat = {isRoom:isRoom,username:username,avater:avater,online:online, inChat:inChat,};
     target.attr("data-inchat", "true");
   }
 };

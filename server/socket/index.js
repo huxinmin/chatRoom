@@ -1,4 +1,5 @@
 const login = require('./login');
+const logout = require('./logout');
 const messages = require('./messages');
 
 exports = module.exports = function(server) {
@@ -7,9 +8,9 @@ exports = module.exports = function(server) {
 		io.on('connection', (socket)=>{
 			//Mine当前登录用户发送的操作
 			//涉及到文件上传，下载的操作就用http，否则就用socket
-			socket.on('on_login',(data)=>{
-				login(socket,data);
-			});
+			
+			login(socket);
+			logout(socket);
 			socket.on('on_register',(data)=>{});
 			socket.on('on_avater',(data)=>{});
 			socket.on('on_password',(data)=>{});

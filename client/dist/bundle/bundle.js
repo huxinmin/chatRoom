@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/bundle";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 19);
+/******/ 	return __webpack_require__(__webpack_require__.s = 20);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -88,7 +88,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 var crossDomain = false;
 
-var server = exports.server = 'http://127.0.0.1:9000';
+var serverHost = "http://127.0.0.1:9000";
+
+var server = exports.server = crossDomain ? serverHost : window.location.origin;
 
 var ajaxCrossDomainSettings = exports.ajaxCrossDomainSettings = crossDomain ? { xhrFields: { withCredentials: true }, crossDomain: true } : {};
 
@@ -106,29 +108,29 @@ module.exports = jQuery;
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 var setCookie = function setCookie(key, val) {
-	var exp = new Date();
-	exp.setTime(exp.getTime() + 3 * 24 * 60 * 60 * 1000); //3天过期
-	document.cookie = key + "=" + encodeURIComponent(val) + ";expires=" + exp.toGMTString() + ";path=/";
+  var exp = new Date();
+  exp.setTime(exp.getTime() + 3 * 24 * 60 * 60 * 1000); //3天过期
+  document.cookie = key + "=" + encodeURIComponent(val) + ";expires=" + exp.toGMTString() + ";path=/";
 };
 
 var getCookie = function getCookie(key) {
-	if (document.cookie.length > 0) {
-		var c_start = document.cookie.indexOf(key + "=");
-		if (c_start != -1) {
-			c_start = c_start + key.length + 1;
-			var c_end = document.cookie.indexOf(";", c_start);
-			if (c_end == -1) c_end = document.cookie.length;
-			return unescape(document.cookie.substring(c_start, c_end));
-		}
-	}
-	return "";
+  if (document.cookie.length > 0) {
+    var c_start = document.cookie.indexOf(key + "=");
+    if (c_start != -1) {
+      c_start = c_start + key.length + 1;
+      var c_end = document.cookie.indexOf(";", c_start);
+      if (c_end == -1) c_end = document.cookie.length;
+      return unescape(document.cookie.substring(c_start, c_end));
+    }
+  }
+  return "";
 };
 
 var deleteCookie = function deleteCookie(key) {
-	document.cookie = key + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+  document.cookie = key + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
 };
 
 exports.setCookie = setCookie;
@@ -143,55 +145,60 @@ exports.deleteCookie = deleteCookie;
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 
 var _sweetalert = __webpack_require__(1);
 
 var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
-var _addInChatsPro = __webpack_require__(35);
+var _addInChatsPro = __webpack_require__(36);
 
 var _cookie = __webpack_require__(4);
 
 var _config = __webpack_require__(2);
 
+var _socket = __webpack_require__(89);
+
+var _socket2 = _interopRequireDefault(_socket);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var homeOnload = function homeOnload() {
-	var options = Object.assign({
-		type: "get",
-		dataType: "json",
-		url: _config.server + "/server/home"
-	}, _config.ajaxCrossDomainSettings);
+  var options = Object.assign({
+    type: "get",
+    dataType: "json",
+    url: _config.server + "/server/home"
+  }, _config.ajaxCrossDomainSettings);
 
-	$.ajax(options).done(function (data) {
-		done(data);
-	}).fail(function (err) {
-		onloadFail();
-	});
-	function done(data) {
-		if (data) {
-			window.locals.mine = data.mine;
-			(0, _addInChatsPro.addRoomsInChatsPro)(data.rooms);
-			(0, _addInChatsPro.addUsersInChatsPro)(data.users);
-		} else {
-			onloadFail();
-		}
-	}
-	function onloadFail(messages) {
-		(0, _sweetalert2.default)({
-			button: {
-				text: "确定"
-			},
-			text: "数据获取失败",
-			icon: "error",
-			timer: 3000
-		}).then(function () {
-			(0, _cookie.setCookie)('isLogin', false);
-			page.redirect("/login");
-		});
-	}
+  $.ajax(options).done(function (data) {
+    done(data);
+  }).fail(function (err) {
+    onloadFail();
+  });
+  function done(data) {
+    if (data) {
+      window.locals.mine = data.mine;
+      (0, _addInChatsPro.addRoomsInChatsPro)(data.rooms);
+      (0, _addInChatsPro.addUsersInChatsPro)(data.users);
+      (0, _socket2.default)();
+    } else {
+      onloadFail();
+    }
+  }
+  function onloadFail(messages) {
+    (0, _sweetalert2.default)({
+      button: {
+        text: "确定"
+      },
+      text: "数据获取失败",
+      icon: "error",
+      timer: 3000
+    }).then(function () {
+      (0, _cookie.setCookie)("isLogin", false);
+      page.redirect("/login");
+    });
+  }
 };
 exports.default = homeOnload;
 
@@ -298,28 +305,28 @@ exports.default = renderHistoryItem;
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 var getChats = function getChats(type, cb) {
-	console.log("getChats");
-	localforage.getItem(type, function (err, chats) {
-		cb(chats);
-	});
+  console.log("getChats");
+  localforage.getItem(type, function (err, chats) {
+    cb(chats);
+  });
 };
 
 var setChats = function setChats(curChat, cb) {
-	if (curChat.inChat === "false") {
-		var item = curChat.isRoom ? "roomChats" : "chats";
-		var pushData = curChat.isRoom ? { roomname: curChat.username, avater: curChat.avater, lastMess: '' } : { username: curChat.username, avater: curChat.avater, lastMess: '' };
-		localforage.getItem(item, function (err, chats) {
-			chats = chats || [];
-			chats.push(pushData);
-			localforage.setItem(item, chats, function (err, val) {
-				if (err) throw Error('创建聊天出错了');
-				cb(val);
-			});
-		});
-	}
+  if (curChat.inChat === "false") {
+    var item = curChat.isRoom ? "roomChats" : "chats";
+    var pushData = curChat.isRoom ? { roomname: curChat.username, avater: curChat.avater, lastMess: "" } : { username: curChat.username, avater: curChat.avater, lastMess: "" };
+    localforage.getItem(item, function (err, chats) {
+      chats = chats || [];
+      chats.push(pushData);
+      localforage.setItem(item, chats, function (err, val) {
+        if (err) throw Error("创建聊天出错了");
+        cb(val);
+      });
+    });
+  }
 };
 
 exports.getChats = getChats;
@@ -333,57 +340,57 @@ exports.setChats = setChats;
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 exports.updateChatsWith = exports.getChatsWith = exports.createChatsWith = undefined;
 
 var _config = __webpack_require__(2);
 
 var createChatsWith = function createChatsWith(itemName) {
-	console.log("setChatsWith");
-	localforage.setItem(itemName, []);
+  console.log("setChatsWith");
+  localforage.setItem(itemName, []);
 };
 
 var dropChatsWith = function dropChatsWith(itemName) {
-	localforage.setItem(itemName, null);
+  localforage.setItem(itemName, null);
 };
 
 var getChatsWith = function getChatsWith(data, cb) {
-	console.log("getChatWithHistories");
-	if (data.isRoom) {
-		var groupName = 'roomChats_' + data.username;
-	} else {
-		var groupName = 'chats_' + data.username;
-	}
-	localforage.getItem(groupName, function (err, chatsWithHistories) {
-		//如果是和用户聊天，还需要加上username和avater
-		if (!data.isRoom) {
-			chatsWithHistories = _.map(chatsWithHistories, function (item) {
-				if (item.isMine === "true") {
-					var assignData = _.pick(window.locals.mine, ["username", "avater"]);
-				} else {
-					var assignData = _.chain(window.locals.users).find({ username: data.username }).pick(["username", "avater"]).value();
-				}
-				assignData.avater = _config.server + '/' + assignData.avater;
-				return Object.assign(assignData, item);
-			});
-		}
-		cb(chatsWithHistories);
-	});
+  console.log("getChatWithHistories");
+  if (data.isRoom) {
+    var groupName = "roomChats_" + data.username;
+  } else {
+    var groupName = "chats_" + data.username;
+  }
+  localforage.getItem(groupName, function (err, chatsWithHistories) {
+    //如果是和用户聊天，还需要加上username和avater
+    if (!data.isRoom) {
+      chatsWithHistories = _.map(chatsWithHistories, function (item) {
+        if (item.isMine === "true") {
+          var assignData = _.pick(window.locals.mine, ["username", "avater"]);
+        } else {
+          var assignData = _.chain(window.locals.users).find({ username: data.username }).pick(["username", "avater"]).value();
+        }
+        assignData.avater = _config.server + "/" + assignData.avater;
+        return Object.assign(assignData, item);
+      });
+    }
+    cb(chatsWithHistories);
+  });
 };
 /** 需要限制数量，不能超过100个，超过则删除第一个，尾部增加一个
 	*
 	*
 	*/
 var updateChatsWith = function updateChatsWith(itemName, val) {
-	var limit = 100;
-	localforage.getItem(itemName, function (err, items) {
-		if (items.length >= limit) {
-			items.shift();
-		}
-		items.push(val);
-		localforage.setItem(itemName, items);
-	});
+  var limit = 100;
+  localforage.getItem(itemName, function (err, items) {
+    if (items.length >= limit) {
+      items.shift();
+    }
+    items.push(val);
+    localforage.setItem(itemName, items);
+  });
 };
 
 exports.createChatsWith = createChatsWith;
@@ -484,7 +491,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(26);
+__webpack_require__(27);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -531,11 +538,46 @@ module.exports = g;
 "use strict";
 
 
-__webpack_require__(20);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.recUsersLoginSocket = exports.emitLoginSocket = undefined;
+
+var _init = __webpack_require__(37);
+
+var _init2 = _interopRequireDefault(_init);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var emitLoginSocket = function emitLoginSocket(data) {
+  _init2.default.open();
+  _init2.default.emit("login", data, function (data) {
+    console.log(data);
+  });
+};
+
+var recUsersLoginSocket = function recUsersLoginSocket() {
+  _init2.default.on("recLogin", function (data) {
+    console.log("接收到用户登录信息");
+    console.log(data);
+  });
+};
+
+exports.emitLoginSocket = emitLoginSocket;
+exports.recUsersLoginSocket = recUsersLoginSocket;
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 __webpack_require__(21);
 
 __webpack_require__(22);
+
+__webpack_require__(23);
 
 var _page = __webpack_require__(7);
 
@@ -545,19 +587,19 @@ var _jquery = __webpack_require__(3);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-__webpack_require__(23);
+__webpack_require__(24);
 
-__webpack_require__(28);
+__webpack_require__(29);
 
-var _login = __webpack_require__(29);
+var _login = __webpack_require__(30);
 
 var _login2 = _interopRequireDefault(_login);
 
-var _home = __webpack_require__(37);
+var _home = __webpack_require__(39);
 
 var _home2 = _interopRequireDefault(_home);
 
-var _register = __webpack_require__(78);
+var _register = __webpack_require__(80);
 
 var _register2 = _interopRequireDefault(_register);
 
@@ -588,13 +630,13 @@ _page2.default.base("/chatRoom");
 (0, _page2.default)();
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -718,7 +760,7 @@ particlesJS("canvasWarpper", {
 });
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -860,13 +902,13 @@ setCanvasSize();
 // window.addEventListener("resize", setCanvasSize, false);
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _item = __webpack_require__(24);
+var _item = __webpack_require__(25);
 
 var _item2 = _interopRequireDefault(_item);
 
@@ -874,7 +916,7 @@ var _item3 = __webpack_require__(9);
 
 var _item4 = _interopRequireDefault(_item3);
 
-var _chatsWin = __webpack_require__(25);
+var _chatsWin = __webpack_require__(26);
 
 var _chatsWin2 = _interopRequireDefault(_chatsWin);
 
@@ -907,8 +949,8 @@ window.locals = {
       throw TypeError("locals.mine 赋值必须为一个普通对象");
     }
     this._mine = data;
-    var avater = _config.server + '/' + data.avater;
-    $(".mine img").attr('src', avater);
+    var avater = _config.server + "/" + data.avater;
+    $(".mine img").attr("src", avater);
   },
   get users() {
     return this._users;
@@ -922,9 +964,10 @@ window.locals = {
     var usersGroup = $(".users-group");
     console.log("设置Users值触发渲染用户列表");
     data.forEach(function (item) {
+      item.avater = _config.server + "/" + item.avater;
       (0, _item2.default)(usersGroup, item);
     });
-    (0, _chats.getChats)('chats', function (chats) {
+    (0, _chats.getChats)("chats", function (chats) {
       $(".users-item").each(function () {
         if (_.some(chats, { username: $(this).children(".users-item-name").text() })) {
           $(this).attr("data-inchat", "true");
@@ -944,9 +987,10 @@ window.locals = {
     if (data.length === 0) return;
     var roomsGroup = $(".rooms-group");
     data.forEach(function (item) {
+      item.avater = _config.server + "/" + item.avater;
       (0, _item4.default)(roomsGroup, item);
     });
-    (0, _chats.getChats)('roomChats', function (roomChats) {
+    (0, _chats.getChats)("roomChats", function (roomChats) {
       $(".rooms-item").each(function () {
         if (_.some(roomChats, { roomname: $(this).children(".rooms-item-name").text() })) {
           $(this).attr("data-inchat", "true");
@@ -978,7 +1022,7 @@ window.locals = {
     // curChat数据形式为{username:"",avater:"", isRoom:true, online:true||false||"none"}
     // data等于从本地chats-$username中查找到username等于curChat的数据的合并
     // 注意只获取50条记录，更多的需要再次查询，为了做高效滚动加载
-    if (data.online === 'false') {
+    if (data.online === "false") {
       (0, _sweetalert2.default)({
         button: {
           text: "确定"
@@ -991,7 +1035,7 @@ window.locals = {
     $(".chats-item").attr("data-active", "false");
     var chatsWindowWrapper = $(".chats-window-wrapper");
     //在聊天列表中，不重新创建聊天框，只跳转激活，并获取历史记录
-    if (data.inChat === 'true') {
+    if (data.inChat === "true") {
       $(".chats-item[data-username='" + data.username + "']").attr("data-active", "true");
       (0, _chatsWith.getChatsWith)(data, function (chatsWithHistories) {
         console.log("切换聊天对象时，重新创建对话框，并生成聊天对话记录");
@@ -1017,14 +1061,14 @@ window.locals = {
     }
     $(".menu-item[data-type='chats']").click();
     /** 设置本地或者更新chats以及chats_$username
-      * 亦或是roomschats以及roomchats_$roomname
-      * 未完待做
-      */
+     * 亦或是roomschats以及roomchats_$roomname
+     * 未完待做
+     */
   }
 };
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1055,7 +1099,7 @@ var renderUsersItem = function renderUsersItem(usersGroup, data) {
 exports.default = renderUsersItem;
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1095,7 +1139,7 @@ var renderChatsWin = function renderChatsWin(chatsWindowWrapper, data) {
 exports.default = renderChatsWin;
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -1285,10 +1329,10 @@ exports.default = renderChatsWin;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18), __webpack_require__(27)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18), __webpack_require__(28)))
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -1478,18 +1522,18 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 localforage.config({
-	name: 'chatRoom'
+  name: "chatRoom"
 });
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1499,19 +1543,19 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-__webpack_require__(30);
+__webpack_require__(31);
 
-var _svg = __webpack_require__(31);
+var _svg = __webpack_require__(32);
 
 var _svg2 = _interopRequireDefault(_svg);
 
-__webpack_require__(32);
+__webpack_require__(33);
 
-var _event = __webpack_require__(33);
+var _event = __webpack_require__(34);
 
 var _event2 = _interopRequireDefault(_event);
 
-var _loading = __webpack_require__(36);
+var _loading = __webpack_require__(38);
 
 var _loading2 = _interopRequireDefault(_loading);
 
@@ -1538,13 +1582,13 @@ var renderLogin = function renderLogin(app) {
 exports.default = renderLogin;
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1559,7 +1603,7 @@ var svg = "<svg viewBox=\"0 0 320 320\">" + "<defs>" + "<linearGradient inkscape
 exports.default = svg;
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1627,7 +1671,7 @@ var current = null;
 });
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1645,7 +1689,7 @@ var _page = __webpack_require__(7);
 
 var _page2 = _interopRequireDefault(_page);
 
-var _login = __webpack_require__(34);
+var _login = __webpack_require__(35);
 
 var _login2 = _interopRequireDefault(_login);
 
@@ -1658,7 +1702,7 @@ var _cookie = __webpack_require__(4);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var loginEvent = function loginEvent(loginBtn) {
-  var isLogin = (0, _cookie.getCookie)('isLogin');
+  var isLogin = (0, _cookie.getCookie)("isLogin");
   if (isLogin === "true") _page2.default.redirect("/home");
   (0, _jquery2.default)(document).on("click", loginBtn, function () {
     onLoginBtn();
@@ -1688,7 +1732,7 @@ var loginEvent = function loginEvent(loginBtn) {
 exports.default = loginEvent;
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1710,6 +1754,8 @@ var _homeOnload = __webpack_require__(5);
 
 var _homeOnload2 = _interopRequireDefault(_homeOnload);
 
+var _login = __webpack_require__(19);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var loginAjax = function loginAjax(data) {
@@ -1728,7 +1774,8 @@ var loginAjax = function loginAjax(data) {
   function done(data) {
     if (data.auth) {
       window.locals.mine = data.mine;
-      (0, _cookie.setCookie)('isLogin', true);
+      (0, _cookie.setCookie)("isLogin", true);
+      (0, _login.emitLoginSocket)(data);
       (0, _sweetalert2.default)({
         button: false,
         text: data.message,
@@ -1753,50 +1800,65 @@ var loginAjax = function loginAjax(data) {
     });
   }
 };
+//socket
 exports.default = loginAjax;
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 // 给users数组每个数据添加inChats是都在聊天列表中的属性
 // 如果users中的username在chats中有则该值为true否则为false
 var addUsersInChatsPro = function addUsersInChatsPro(users) {
-	console.log("addUsersInChatsPro");
-	addInChatsPro(users, 'username', 'users');
+  console.log("addUsersInChatsPro");
+  addInChatsPro(users, "username", "users");
 };
 
 var addRoomsInChatsPro = function addRoomsInChatsPro(rooms) {
-	console.log("addRoomsInChatsPro");
-	addInChatsPro(rooms, 'roomname', 'rooms');
+  console.log("addRoomsInChatsPro");
+  addInChatsPro(rooms, "roomname", "rooms");
 };
 
 function addInChatsPro(arr, key, localsKey) {
-	localforage.getItem('chats', function (err, chats) {
-		window.locals[localsKey] = _.map(arr, function (item) {
-			if (chats === null || chats.length === 0) {
-				return Object.assign(item, { inChats: false });
-			}
-			if (_.find(chats, { key: item[key] })) {
-				return Object.assign(item, { inChats: true });
-			} else {
-				return Object.assign(item, { inChats: false });
-			}
-		});
-	});
+  localforage.getItem("chats", function (err, chats) {
+    window.locals[localsKey] = _.map(arr, function (item) {
+      if (chats === null || chats.length === 0) {
+        return Object.assign(item, { inChats: false });
+      }
+      if (_.find(chats, { key: item[key] })) {
+        return Object.assign(item, { inChats: true });
+      } else {
+        return Object.assign(item, { inChats: false });
+      }
+    });
+  });
 }
 
 exports.addUsersInChatsPro = addUsersInChatsPro;
 exports.addRoomsInChatsPro = addRoomsInChatsPro;
 
 /***/ }),
-/* 36 */
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var socket = io({ autoConnect: false });
+
+exports.default = socket;
+
+/***/ }),
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1819,7 +1881,7 @@ var loadingLogin = function loadingLogin(target) {
 exports.default = loadingLogin;
 
 /***/ }),
-/* 37 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1833,21 +1895,21 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(38);
+__webpack_require__(40);
 
-var _left = __webpack_require__(39);
+var _left = __webpack_require__(41);
 
 var _left2 = _interopRequireDefault(_left);
 
-var _middle = __webpack_require__(50);
+var _middle = __webpack_require__(52);
 
 var _middle2 = _interopRequireDefault(_middle);
 
-var _right = __webpack_require__(63);
+var _right = __webpack_require__(65);
 
 var _right2 = _interopRequireDefault(_right);
 
-var _events = __webpack_require__(76);
+var _events = __webpack_require__(78);
 
 var _events2 = _interopRequireDefault(_events);
 
@@ -1871,13 +1933,13 @@ var renderHome = function renderHome(app) {
 exports.default = renderHome;
 
 /***/ }),
-/* 38 */
+/* 40 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 39 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1891,35 +1953,35 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(40);
+__webpack_require__(42);
 
-var _user = __webpack_require__(41);
+var _user = __webpack_require__(43);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _chat = __webpack_require__(42);
+var _chat = __webpack_require__(44);
 
 var _chat2 = _interopRequireDefault(_chat);
 
-var _group = __webpack_require__(43);
+var _group = __webpack_require__(45);
 
 var _group2 = _interopRequireDefault(_group);
 
-var _setting = __webpack_require__(44);
+var _setting = __webpack_require__(46);
 
 var _setting2 = _interopRequireDefault(_setting);
 
-var _logout = __webpack_require__(45);
+var _logout = __webpack_require__(47);
 
 var _logout2 = _interopRequireDefault(_logout);
 
-var _events = __webpack_require__(46);
+var _events = __webpack_require__(48);
 
 var _events2 = _interopRequireDefault(_events);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var source = "<li class='left'>" + "<div class=\"mine\"><img src''></div>" + "<ul class=\"menu-group\">" + "{{each menus val i}}" + "<li class='menu-item' data-type={{val.type}} title={{val.title}}>{{@ val.icon}}</li>" + "{{/each}}" + "</ul>" + "<div class='bottom-btns-group'>" + "<div title='退出' class=\"logout-btn\">" + _logout2.default + "</div>" + "<div title='设置' class=\"setting-btn\">" + _setting2.default + "</div>" + "</div>" + "</li>";
+var source = "<li class='left'>" + "<div class=\"mine\"><img src=''></div>" + "<ul class=\"menu-group\">" + "{{each menus val i}}" + "<li class='menu-item' data-type={{val.type}} title={{val.title}}>{{@ val.icon}}</li>" + "{{/each}}" + "</ul>" + "<div class='bottom-btns-group'>" + "<div title='退出' class=\"logout-btn\">" + _logout2.default + "</div>" + "<div title='设置' class=\"setting-btn\">" + _setting2.default + "</div>" + "</div>" + "</li>";
 
 var data = {
   menus: [{ type: "chats", icon: _chat2.default, title: "聊天" }, { type: "users", icon: _user2.default, title: "用户" }, { type: "rooms", icon: _group2.default, title: "群聊" }]
@@ -1936,13 +1998,13 @@ var renderLeft = function renderLeft(home) {
 exports.default = renderLeft;
 
 /***/ }),
-/* 40 */
+/* 42 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 41 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1955,7 +2017,7 @@ var userSvg = "<svg t=\"1530441974032\" class=\"icon\" style=\"\" viewBox=\"0 0 
 exports.default = userSvg;
 
 /***/ }),
-/* 42 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1968,7 +2030,7 @@ var chatSvg = "<svg t=\"1530441491910\" class=\"icon\" style=\"\" viewBox=\"0 0 
 exports.default = chatSvg;
 
 /***/ }),
-/* 43 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1981,7 +2043,7 @@ var groupSvg = "<svg t=\"1530441429861\" class=\"icon\" style=\"\" viewBox=\"0 0
 exports.default = groupSvg;
 
 /***/ }),
-/* 44 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1994,7 +2056,7 @@ var settingSvg = "<svg t=\"1530441420200\" class=\"icon\" style=\"\" viewBox=\"0
 exports.default = settingSvg;
 
 /***/ }),
-/* 45 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2003,12 +2065,12 @@ exports.default = settingSvg;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var logoutSvg = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xml:space="preserve"><g><path d="M524.5,10h-49v441.2h49V10L524.5,10z M688.1,89.7V133c141.3,70.3,238.7,217.2,238.7,386.7c0,237.7-191.5,431.1-426.8,431.1c-235.4,0-426.9-193.4-426.9-431.1c0-164.8,92.1-308.1,227-380.7V95C142.9,170.6,34.3,332.3,34.3,519.7C34.3,779.5,242.8,990,500,990c257.2,0,465.7-210.5,465.7-470.3C965.7,327.7,851.6,162.6,688.1,89.7z"/></g></svg>';
+var logoutSvg = "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" viewBox=\"0 0 1000 1000\" enable-background=\"new 0 0 1000 1000\" xml:space=\"preserve\"><g><path d=\"M524.5,10h-49v441.2h49V10L524.5,10z M688.1,89.7V133c141.3,70.3,238.7,217.2,238.7,386.7c0,237.7-191.5,431.1-426.8,431.1c-235.4,0-426.9-193.4-426.9-431.1c0-164.8,92.1-308.1,227-380.7V95C142.9,170.6,34.3,332.3,34.3,519.7C34.3,779.5,242.8,990,500,990c257.2,0,465.7-210.5,465.7-470.3C965.7,327.7,851.6,162.6,688.1,89.7z\"/></g></svg>";
 
 exports.default = logoutSvg;
 
 /***/ }),
-/* 46 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2022,11 +2084,11 @@ var _sweetalert = __webpack_require__(1);
 
 var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
-var _logout = __webpack_require__(47);
+var _logout = __webpack_require__(49);
 
 var _logout2 = _interopRequireDefault(_logout);
 
-var _settingAlert = __webpack_require__(48);
+var _settingAlert = __webpack_require__(50);
 
 var _settingAlert2 = _interopRequireDefault(_settingAlert);
 
@@ -2076,35 +2138,38 @@ var leftEvent = function leftEvent() {
 exports.default = leftEvent;
 
 /***/ }),
-/* 47 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 
 var _cookie = __webpack_require__(4);
 
 var _config = __webpack_require__(2);
 
+var _logout = __webpack_require__(110);
+
 var logoutAjax = function logoutAjax() {
-	var options = Object.assign({
-		type: "post",
-		dataType: "json",
-		url: _config.server + "/server/logout"
-	}, _config.ajaxCrossDomainSettings);
-	$.ajax(options);
-	(0, _cookie.setCookie)('isLogin', false);
-	page.redirect("/login");
+  var options = Object.assign({
+    type: "post",
+    dataType: "json",
+    url: _config.server + "/server/logout"
+  }, _config.ajaxCrossDomainSettings);
+  $.ajax(options);
+  (0, _logout.emitLogoutSocket)();
+  (0, _cookie.setCookie)("isLogin", false);
+  page.redirect("/login");
 };
 
 exports.default = logoutAjax;
 
 /***/ }),
-/* 48 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2118,7 +2183,7 @@ var _sweetalert = __webpack_require__(1);
 
 var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
-__webpack_require__(49);
+__webpack_require__(51);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2134,59 +2199,11 @@ var settingAlert = function settingAlert() {
     },
     content: content,
     className: "setting-swalt",
-    title: '设置'
+    title: "设置"
   });
 };
 
 exports.default = settingAlert;
-
-/***/ }),
-/* 49 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 50 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _template = __webpack_require__(0);
-
-var _template2 = _interopRequireDefault(_template);
-
-__webpack_require__(51);
-
-var _search = __webpack_require__(52);
-
-var _search2 = _interopRequireDefault(_search);
-
-var _tabs = __webpack_require__(57);
-
-var _tabs2 = _interopRequireDefault(_tabs);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var source = "<li class=\"middle\"></li>";
-
-var data = {};
-var render = _template2.default.compile(source);
-var middleHtml = render(data);
-
-var renderMiddle = function renderMiddle(home) {
-  home.append(middleHtml);
-  var middle = $(".middle");
-  (0, _search2.default)(middle);
-  (0, _tabs2.default)(middle);
-};
-
-exports.default = renderMiddle;
 
 /***/ }),
 /* 51 */
@@ -2215,11 +2232,59 @@ var _search = __webpack_require__(54);
 
 var _search2 = _interopRequireDefault(_search);
 
-var _add = __webpack_require__(55);
+var _tabs = __webpack_require__(59);
+
+var _tabs2 = _interopRequireDefault(_tabs);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var source = "<li class=\"middle\"></li>";
+
+var data = {};
+var render = _template2.default.compile(source);
+var middleHtml = render(data);
+
+var renderMiddle = function renderMiddle(home) {
+  home.append(middleHtml);
+  var middle = $(".middle");
+  (0, _search2.default)(middle);
+  (0, _tabs2.default)(middle);
+};
+
+exports.default = renderMiddle;
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _template = __webpack_require__(0);
+
+var _template2 = _interopRequireDefault(_template);
+
+__webpack_require__(55);
+
+var _search = __webpack_require__(56);
+
+var _search2 = _interopRequireDefault(_search);
+
+var _add = __webpack_require__(57);
 
 var _add2 = _interopRequireDefault(_add);
 
-var _events = __webpack_require__(56);
+var _events = __webpack_require__(58);
 
 var _events2 = _interopRequireDefault(_events);
 
@@ -2242,13 +2307,13 @@ var renderSearch = function renderSearch(middle) {
 exports.default = renderSearch;
 
 /***/ }),
-/* 53 */
+/* 55 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 54 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2261,7 +2326,7 @@ var searchSvg = "<svg t=\"1530441471927\" class=\"icon\" style=\"\" viewBox=\"0 
 exports.default = searchSvg;
 
 /***/ }),
-/* 55 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2274,7 +2339,7 @@ var addSvg = "<svg t=\"1530441538036\" class=\"icon\" style=\"\" viewBox=\"0 0 1
 exports.default = addSvg;
 
 /***/ }),
-/* 56 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2294,7 +2359,7 @@ var searchEvent = function searchEvent() {};
 exports.default = searchEvent;
 
 /***/ }),
-/* 57 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2308,21 +2373,21 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(58);
+__webpack_require__(60);
 
-var _chats = __webpack_require__(59);
+var _chats = __webpack_require__(61);
 
 var _chats2 = _interopRequireDefault(_chats);
 
-var _rooms = __webpack_require__(60);
+var _rooms = __webpack_require__(62);
 
 var _rooms2 = _interopRequireDefault(_rooms);
 
-var _users = __webpack_require__(61);
+var _users = __webpack_require__(63);
 
 var _users2 = _interopRequireDefault(_users);
 
-var _events = __webpack_require__(62);
+var _events = __webpack_require__(64);
 
 var _events2 = _interopRequireDefault(_events);
 
@@ -2345,20 +2410,20 @@ var renderTabs = function renderTabs(middle) {
 exports.default = renderTabs;
 
 /***/ }),
-/* 58 */
+/* 60 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 59 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 
 var _template = __webpack_require__(0);
@@ -2384,35 +2449,35 @@ var render = _template2.default.compile(source);
   *
   */
 var renderChats = function renderChats(tabs) {
-	var chatsHtml = render();
-	tabs.append(chatsHtml);
-	var chatsGroup = $(".chats-group");
-	getChatsRenderChats("chats", "username", { type: "user", online: "" });
-	getChatsRenderChats("roomChats", "roomname", { type: "room", online: "none" });
-	function getChatsRenderChats(itemName, typename, assignData) {
-		(0, _chats.getChats)(itemName, function (chats) {
-			console.log('获取本地数据并渲染中间的' + itemName + '聊天对话列表');
-			chats = chats || [];
-			if (chats && chats.length > 0) $(".chats-none").hide();
-			chats.forEach(function (item) {
-				var renderData = Object.assign(assignData, { active: "false", unread: 0, username: item[typename] }, item);
-				(0, _item2.default)(chatsGroup, renderData);
-			});
-		});
-	}
+  var chatsHtml = render();
+  tabs.append(chatsHtml);
+  var chatsGroup = $(".chats-group");
+  getChatsRenderChats("chats", "username", { type: "user", online: "" });
+  getChatsRenderChats("roomChats", "roomname", { type: "room", online: "none" });
+  function getChatsRenderChats(itemName, typename, assignData) {
+    (0, _chats.getChats)(itemName, function (chats) {
+      console.log("获取本地数据并渲染中间的" + itemName + "聊天对话列表");
+      chats = chats || [];
+      if (chats && chats.length > 0) $(".chats-none").hide();
+      chats.forEach(function (item) {
+        var renderData = Object.assign(assignData, { active: "false", unread: 0, username: item[typename] }, item);
+        (0, _item2.default)(chatsGroup, renderData);
+      });
+    });
+  }
 };
 
 exports.default = renderChats;
 
 /***/ }),
-/* 60 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 
 var _template = __webpack_require__(0);
@@ -2432,22 +2497,22 @@ var source = "<li class=\"rooms-group\">" + "<div class=\"rooms-none\">暂无群
 var render = _template2.default.compile(source);
 
 var renderRooms = function renderRooms(tabs) {
-	var roomsHtml = render();
-	console.log("renderRooms");
-	tabs.append(roomsHtml);
+  var roomsHtml = render();
+  console.log("renderRooms");
+  tabs.append(roomsHtml);
 };
 
 exports.default = renderRooms;
 
 /***/ }),
-/* 61 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 
 var _template = __webpack_require__(0);
@@ -2463,15 +2528,15 @@ var source = "<li class=\"users-group\">" + "<div class=\"users-none\">暂无用
 var render = _template2.default.compile(source);
 
 var renderUsers = function renderUsers(tabs) {
-	var usersHtml = render();
-	console.log("renderUsersGroup");
-	tabs.append(usersHtml);
+  var usersHtml = render();
+  console.log("renderUsersGroup");
+  tabs.append(usersHtml);
 };
 
 exports.default = renderUsers;
 
 /***/ }),
-/* 62 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2504,7 +2569,7 @@ var tabsEvent = function tabsEvent() {
     var username = (0, _jquery2.default)(this).find(".chats-item-username").text();
     var avater = (0, _jquery2.default)(this).children(".chats-item-avater").attr("src");
     var online = (0, _jquery2.default)(this).attr("data-online");
-    window.locals.curChat = { isRoom: isRoom, username: username, avater: avater, online: online, inChat: 'true' };
+    window.locals.curChat = { isRoom: isRoom, username: username, avater: avater, online: online, inChat: "true" };
   });
   function calcCurChat(target, type) {
     var username = target.children("p").text();
@@ -2524,7 +2589,7 @@ var tabsEvent = function tabsEvent() {
 exports.default = tabsEvent;
 
 /***/ }),
-/* 63 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2538,9 +2603,9 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(64);
+__webpack_require__(66);
 
-var _chatsInputBox = __webpack_require__(65);
+var _chatsInputBox = __webpack_require__(67);
 
 var _chatsInputBox2 = _interopRequireDefault(_chatsInputBox);
 
@@ -2564,13 +2629,13 @@ var renderRight = function renderRight(home) {
 exports.default = renderRight;
 
 /***/ }),
-/* 64 */
+/* 66 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 65 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2584,13 +2649,13 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(66);
+__webpack_require__(68);
 
-var _events = __webpack_require__(67);
+var _events = __webpack_require__(69);
 
 var _events2 = _interopRequireDefault(_events);
 
-var _chatsInputTools = __webpack_require__(68);
+var _chatsInputTools = __webpack_require__(70);
 
 var _chatsInputTools2 = _interopRequireDefault(_chatsInputTools);
 
@@ -2612,20 +2677,20 @@ var renderChatsInputBox = function renderChatsInputBox(chatsWindowWrapper) {
 exports.default = renderChatsInputBox;
 
 /***/ }),
-/* 66 */
+/* 68 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 67 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 
 var _jquery = __webpack_require__(3);
@@ -2643,31 +2708,31 @@ var _config = __webpack_require__(2);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var chatsInputEvent = function chatsInputEvent() {
-	(0, _jquery2.default)(document).on("click", ".chats-input-btn", function () {
-		var inputCont = (0, _jquery2.default)(".chats-input-text");
-		var message = inputCont.html();
-		if (!message || message.length === 0) {
-			return;
-		}
-		var chatsWin = (0, _jquery2.default)(".chats-win-history-group");
-		var now = moment().format('MM-DD HH:mm');
-		var data = [{ isMine: "true", message: message, time: now, avater: _config.server + '/' + window.locals.mine.avater }];
-		(0, _historyItem2.default)(chatsWin, data);
-		inputCont.html("");
-		var curChat = window.locals.curChat;
-		if (!curChat.isRoom) {
-			var itemName = "chats_" + curChat.username;
-			(0, _chatsWith.updateChatsWith)(itemName, { isMine: "true", message: message, time: now });
-		} else {
-			var _itemName = "roomChats_" + curChat.username;
-			(0, _chatsWith.updateChatsWith)(_itemName, { isMine: "true", message: message, time: now, avater: window.locals.mine.avater, username: window.locals.mine.username });
-		}
-	});
+  (0, _jquery2.default)(document).on("click", ".chats-input-btn", function () {
+    var inputCont = (0, _jquery2.default)(".chats-input-text");
+    var message = inputCont.html();
+    if (!message || message.length === 0) {
+      return;
+    }
+    var chatsWin = (0, _jquery2.default)(".chats-win-history-group");
+    var now = moment().format("MM-DD HH:mm");
+    var data = [{ isMine: "true", message: message, time: now, avater: _config.server + "/" + window.locals.mine.avater }];
+    (0, _historyItem2.default)(chatsWin, data);
+    inputCont.html("");
+    var curChat = window.locals.curChat;
+    if (!curChat.isRoom) {
+      var itemName = "chats_" + curChat.username;
+      (0, _chatsWith.updateChatsWith)(itemName, { isMine: "true", message: message, time: now });
+    } else {
+      var _itemName = "roomChats_" + curChat.username;
+      (0, _chatsWith.updateChatsWith)(_itemName, { isMine: "true", message: message, time: now, avater: window.locals.mine.avater, username: window.locals.mine.username });
+    }
+  });
 };
 exports.default = chatsInputEvent;
 
 /***/ }),
-/* 68 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2681,17 +2746,17 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(69);
+__webpack_require__(71);
 
-var _emoji = __webpack_require__(70);
+var _emoji = __webpack_require__(72);
 
 var _emoji2 = _interopRequireDefault(_emoji);
 
-var _file = __webpack_require__(72);
+var _file = __webpack_require__(74);
 
 var _file2 = _interopRequireDefault(_file);
 
-var _torrent = __webpack_require__(74);
+var _torrent = __webpack_require__(76);
 
 var _torrent2 = _interopRequireDefault(_torrent);
 
@@ -2713,13 +2778,13 @@ var renderChatsInputTools = function renderChatsInputTools(chatsInputBox) {
 exports.default = renderChatsInputTools;
 
 /***/ }),
-/* 69 */
+/* 71 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 70 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2733,7 +2798,7 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-var _emoji = __webpack_require__(71);
+var _emoji = __webpack_require__(73);
 
 var _emoji2 = _interopRequireDefault(_emoji);
 
@@ -2751,7 +2816,7 @@ var renderToolEmoji = function renderToolEmoji(chatsInputTools) {
 exports.default = renderToolEmoji;
 
 /***/ }),
-/* 71 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2764,7 +2829,7 @@ var emojiSvg = "<svg t=\"1530441533385\" class=\"icon\" style=\"\" viewBox=\"0 0
 exports.default = emojiSvg;
 
 /***/ }),
-/* 72 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2778,7 +2843,7 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-var _file = __webpack_require__(73);
+var _file = __webpack_require__(75);
 
 var _file2 = _interopRequireDefault(_file);
 
@@ -2796,7 +2861,7 @@ var renderToolFile = function renderToolFile(chatsInputTools) {
 exports.default = renderToolFile;
 
 /***/ }),
-/* 73 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2809,7 +2874,7 @@ var fileSvg = "<svg t=\"1530441567176\" class=\"icon\" style=\"\" viewBox=\"0 0 
 exports.default = fileSvg;
 
 /***/ }),
-/* 74 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2823,7 +2888,7 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-var _torrent = __webpack_require__(75);
+var _torrent = __webpack_require__(77);
 
 var _torrent2 = _interopRequireDefault(_torrent);
 
@@ -2841,7 +2906,7 @@ var renderToolTorrent = function renderToolTorrent(chatsInputTools) {
 exports.default = renderToolTorrent;
 
 /***/ }),
-/* 75 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2854,55 +2919,6 @@ var torrentSvg = "<svg t=\"1530441521205\" class=\"icon\" style=\"\" viewBox=\"0
 exports.default = torrentSvg;
 
 /***/ }),
-/* 76 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-		value: true
-});
-
-var _homeOnload = __webpack_require__(5);
-
-var _homeOnload2 = _interopRequireDefault(_homeOnload);
-
-var _unloadAlert = __webpack_require__(77);
-
-var _unloadAlert2 = _interopRequireDefault(_unloadAlert);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var homeEvent = function homeEvent() {
-		(0, _unloadAlert2.default)();
-		$(window).on('load', function () {
-				(0, _homeOnload2.default)();
-		});
-};
-exports.default = homeEvent;
-
-/***/ }),
-/* 77 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-var unloadAlert = function unloadAlert() {
-	$(window).on('beforeunload', function (e) {
-		var confirMessage = "您确定要离开此页面么？";
-		e.returnValue = confirMessage;
-		return confirMessage;
-	});
-};
-
-exports.default = unloadAlert;
-
-/***/ }),
 /* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2913,13 +2929,62 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-__webpack_require__(79);
+var _homeOnload = __webpack_require__(5);
 
-var _events = __webpack_require__(80);
+var _homeOnload2 = _interopRequireDefault(_homeOnload);
+
+var _unloadAlert = __webpack_require__(79);
+
+var _unloadAlert2 = _interopRequireDefault(_unloadAlert);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var homeEvent = function homeEvent() {
+  (0, _unloadAlert2.default)();
+  $(window).on("load", function () {
+    (0, _homeOnload2.default)();
+  });
+};
+exports.default = homeEvent;
+
+/***/ }),
+/* 79 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var unloadAlert = function unloadAlert() {
+  $(window).on("beforeunload", function (e) {
+    var confirMessage = "您确定要离开此页面么？";
+    e.returnValue = confirMessage;
+    return confirMessage;
+  });
+};
+
+exports.default = unloadAlert;
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+__webpack_require__(81);
+
+var _events = __webpack_require__(82);
 
 var _events2 = _interopRequireDefault(_events);
 
-var _loading = __webpack_require__(86);
+var _loading = __webpack_require__(88);
 
 var _loading2 = _interopRequireDefault(_loading);
 
@@ -2939,23 +3004,23 @@ var renderRegister = function renderRegister(app) {
 exports.default = renderRegister;
 
 /***/ }),
-/* 79 */
+/* 81 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 80 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 
-var _avaterCropper = __webpack_require__(81);
+var _avaterCropper = __webpack_require__(83);
 
 var _avaterCropper2 = _interopRequireDefault(_avaterCropper);
 
@@ -2963,144 +3028,144 @@ var _sweetalert = __webpack_require__(1);
 
 var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
-var _validate = __webpack_require__(83);
+var _validate = __webpack_require__(85);
 
 var _validate2 = _interopRequireDefault(_validate);
 
-var _register = __webpack_require__(84);
+var _register = __webpack_require__(86);
 
 var _register2 = _interopRequireDefault(_register);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var regEvent = function regEvent() {
-	$(document).on('change', "#avaterInput", function () {
-		if (this.files && this.files.length) {
-			(0, _avaterCropper2.default)(this.files[0], function (imgBlob) {
-				$(".choose-avater").hide();
-			});
-		}
-	});
-	$(document).on('click', '.register-confirm-btn', function () {
-		var valid = validateAvater() && validateUsername($(".register-name").val()) && validatePassword($(".register-password").val()) && validateCfPassword($(".register-password").val(), $(".register-cfPassword").val());
-		if (valid) {
-			(0, _register2.default)();
-		}
-	});
-	$(document).on("blur", ".register-name", function () {
-		validateUsername($(this).val());
-	});
-	$(document).on("blur", ".register-password", function () {
-		validatePassword($(this).val());
-	});
-	$(document).on("blur", ".register-cfPassword", function () {
-		var password = $(".register-password").val();
-		var cfPassword = $(this).val();
-		validateCfPassword(password, cfPassword);
-	});
-	function validateUsername(val) {
-		return (0, _validate2.default)(val, "用户名不符合规则，4到16位字母，数字，下划线，减号");
-	}
-	function validatePassword(val) {
-		return (0, _validate2.default)(val, "密码不符合规则，4到16位字母，数字，下划线，减号");
-	}
-	function validateCfPassword(password, cfPassword) {
-		if (password !== cfPassword) {
-			(0, _sweetalert2.default)({
-				button: {
-					text: "确定"
-				},
-				text: "两次密码输入不一致",
-				icon: "error",
-				timer: 3000
-			});
-			return false;
-		}
-		return true;
-	}
-	function validateAvater() {
-		if ($(".choose-avater").css("display") === 'block') {
-			(0, _sweetalert2.default)({
-				button: {
-					text: "确定"
-				},
-				text: "您还未选择头像",
-				icon: "error",
-				timer: 3000
-			});
-			return false;
-		}
-		return true;
-	}
+  $(document).on("change", "#avaterInput", function () {
+    if (this.files && this.files.length) {
+      (0, _avaterCropper2.default)(this.files[0], function (imgBlob) {
+        $(".choose-avater").hide();
+      });
+    }
+  });
+  $(document).on("click", ".register-confirm-btn", function () {
+    var valid = validateAvater() && validateUsername($(".register-name").val()) && validatePassword($(".register-password").val()) && validateCfPassword($(".register-password").val(), $(".register-cfPassword").val());
+    if (valid) {
+      (0, _register2.default)();
+    }
+  });
+  $(document).on("blur", ".register-name", function () {
+    validateUsername($(this).val());
+  });
+  $(document).on("blur", ".register-password", function () {
+    validatePassword($(this).val());
+  });
+  $(document).on("blur", ".register-cfPassword", function () {
+    var password = $(".register-password").val();
+    var cfPassword = $(this).val();
+    validateCfPassword(password, cfPassword);
+  });
+  function validateUsername(val) {
+    return (0, _validate2.default)(val, "用户名不符合规则，4到16位字母，数字，下划线，减号");
+  }
+  function validatePassword(val) {
+    return (0, _validate2.default)(val, "密码不符合规则，4到16位字母，数字，下划线，减号");
+  }
+  function validateCfPassword(password, cfPassword) {
+    if (password !== cfPassword) {
+      (0, _sweetalert2.default)({
+        button: {
+          text: "确定"
+        },
+        text: "两次密码输入不一致",
+        icon: "error",
+        timer: 3000
+      });
+      return false;
+    }
+    return true;
+  }
+  function validateAvater() {
+    if ($(".choose-avater").css("display") === "block") {
+      (0, _sweetalert2.default)({
+        button: {
+          text: "确定"
+        },
+        text: "您还未选择头像",
+        icon: "error",
+        timer: 3000
+      });
+      return false;
+    }
+    return true;
+  }
 };
 
 exports.default = regEvent;
 
 /***/ }),
-/* 81 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 
 var _sweetalert = __webpack_require__(1);
 
 var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
-__webpack_require__(82);
+__webpack_require__(84);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var avaterCropper = function avaterCropper(file, cb) {
-	if (/^image\/\w+$/.test(file.type)) {
-		var options = {
-			preview: '.img-preview',
-			aspectRatio: 1 / 1
-		};
-		var URL = window.URL || window.webkitURL;
-		var uploadedImageURL = URL.createObjectURL(file);
-		var uploadedImageType = file.type;
-		var content = $("<div class='cropper-swal-wrapper'>" + " <div class='img-preview'></div>" + "<div class='img-container'>" + "<img id='image' src>" + "</div></div>");
-		(0, _sweetalert2.default)({
-			content: content[0],
-			button: { text: "确定" }
-		}).then(function (val) {
-			if (val) {
-				var resultCanvas = $image.cropper('getCroppedCanvas');
-				resultCanvas.toBlob(function (imgBlob) {
-					cb(imgBlob);
-				});
-				$(".register-avater").attr("src", resultCanvas.toDataURL(uploadedImageType));
-			}
-		});
-		var $image = $('#image');
-		$image.cropper('destroy').attr('src', uploadedImageURL).cropper(options);
-	} else {
-		(0, _sweetalert2.default)({
-			button: {
-				text: "确定"
-			},
-			text: "请选择图片格式",
-			icon: "error",
-			timer: 3000
-		});
-	}
+  if (/^image\/\w+$/.test(file.type)) {
+    var options = {
+      preview: ".img-preview",
+      aspectRatio: 1 / 1
+    };
+    var URL = window.URL || window.webkitURL;
+    var uploadedImageURL = URL.createObjectURL(file);
+    var uploadedImageType = file.type;
+    var content = $("<div class='cropper-swal-wrapper'>" + " <div class='img-preview'></div>" + "<div class='img-container'>" + "<img id='image' src>" + "</div></div>");
+    (0, _sweetalert2.default)({
+      content: content[0],
+      button: { text: "确定" }
+    }).then(function (val) {
+      if (val) {
+        var resultCanvas = $image.cropper("getCroppedCanvas");
+        resultCanvas.toBlob(function (imgBlob) {
+          cb(imgBlob);
+        });
+        $(".register-avater").attr("src", resultCanvas.toDataURL(uploadedImageType));
+      }
+    });
+    var $image = $("#image");
+    $image.cropper("destroy").attr("src", uploadedImageURL).cropper(options);
+  } else {
+    (0, _sweetalert2.default)({
+      button: {
+        text: "确定"
+      },
+      text: "请选择图片格式",
+      icon: "error",
+      timer: 3000
+    });
+  }
 };
 
 exports.default = avaterCropper;
 
 /***/ }),
-/* 82 */
+/* 84 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 83 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3137,14 +3202,14 @@ var validate = function validate(text, message) {
 exports.default = validate;
 
 /***/ }),
-/* 84 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 
 var _sweetalert = __webpack_require__(1);
@@ -3153,7 +3218,7 @@ var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
 var _cookie = __webpack_require__(4);
 
-var _dataURLtoBlob = __webpack_require__(85);
+var _dataURLtoBlob = __webpack_require__(87);
 
 var _dataURLtoBlob2 = _interopRequireDefault(_dataURLtoBlob);
 
@@ -3166,102 +3231,176 @@ var _homeOnload2 = _interopRequireDefault(_homeOnload);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var registerAjax = function registerAjax() {
-	var data = new FormData();
-	data.append("username", $(".register-name").val());
-	data.append("password", $(".register-password").val());
-	var imgBlob = (0, _dataURLtoBlob2.default)($(".register-avater").attr("src"));
-	data.append("avater", imgBlob);
-	var options = Object.assign({
-		type: "post",
-		dataType: "json",
-		url: _config.server + "/server/register",
-		contentType: false,
-		processData: false,
-		data: data
-	}, _config.ajaxCrossDomainSettings);
+  var data = new FormData();
+  data.append("username", $(".register-name").val());
+  data.append("password", $(".register-password").val());
+  var imgBlob = (0, _dataURLtoBlob2.default)($(".register-avater").attr("src"));
+  data.append("avater", imgBlob);
+  var options = Object.assign({
+    type: "post",
+    dataType: "json",
+    url: _config.server + "/server/register",
+    contentType: false,
+    processData: false,
+    data: data
+  }, _config.ajaxCrossDomainSettings);
 
-	$.ajax(options).done(function (data) {
-		done(data);
-	}).fail(function (err) {
-		fail("登录失败");
-	});
-	function done(data) {
-		if (data.auth) {
-			window.locals.mine = data.mine;
-			(0, _cookie.setCookie)('isLogin', true);
-			(0, _sweetalert2.default)({
-				button: false,
-				text: data.message,
-				icon: "success",
-				timer: 2000
-			}).then(function () {
-				(0, _homeOnload2.default)();
-				page.redirect("/home");
-			});
-		} else {
-			fail(data.message);
-		}
-	}
-	function fail(message) {
-		(0, _sweetalert2.default)({
-			button: {
-				text: "确定"
-			},
-			text: message,
-			icon: "error",
-			timer: 3000
-		});
-	}
+  $.ajax(options).done(function (data) {
+    done(data);
+  }).fail(function (err) {
+    fail("登录失败");
+  });
+  function done(data) {
+    if (data.auth) {
+      window.locals.mine = data.mine;
+      (0, _cookie.setCookie)("isLogin", true);
+      (0, _sweetalert2.default)({
+        button: false,
+        text: data.message,
+        icon: "success",
+        timer: 2000
+      }).then(function () {
+        (0, _homeOnload2.default)();
+        page.redirect("/home");
+      });
+    } else {
+      fail(data.message);
+    }
+  }
+  function fail(message) {
+    (0, _sweetalert2.default)({
+      button: {
+        text: "确定"
+      },
+      text: message,
+      icon: "error",
+      timer: 3000
+    });
+  }
 };
 
 exports.default = registerAjax;
 
 /***/ }),
-/* 85 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 var dataURLtoBlob = function dataURLtoBlob(dataurl) {
-    var arr = dataurl.split(','),
-        mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[1]),
-        n = bstr.length,
-        u8arr = new Uint8Array(n);
-    while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new Blob([u8arr], { type: mime });
+  var arr = dataurl.split(","),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
 };
 
 exports.default = dataURLtoBlob;
 
 /***/ }),
-/* 86 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 var loadingRegister = function loadingRegister(target) {
-	anime({
-		targets: target,
-		duration: 200,
-		marginTop: [-1000, -200],
-		height: [{ value: "600px", duration: 100, delay: 50, easing: "easeOutExpo" }, { value: "500px", duration: 50 }],
-		easing: "easeInOutSine",
-		elasticity: 100
-	});
+  anime({
+    targets: target,
+    duration: 200,
+    marginTop: [-1000, -200],
+    height: [{ value: "600px", duration: 100, delay: 50, easing: "easeOutExpo" }, { value: "500px", duration: 50 }],
+    easing: "easeInOutSine",
+    elasticity: 100
+  });
 };
 
 exports.default = loadingRegister;
+
+/***/ }),
+/* 89 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _login = __webpack_require__(19);
+
+var _logout = __webpack_require__(110);
+
+var recSockets = function recSockets() {
+  (0, _login.recUsersLoginSocket)();
+  (0, _logout.recUsersLogoutSocket)();
+};
+
+exports.default = recSockets;
+
+/***/ }),
+/* 90 */,
+/* 91 */,
+/* 92 */,
+/* 93 */,
+/* 94 */,
+/* 95 */,
+/* 96 */,
+/* 97 */,
+/* 98 */,
+/* 99 */,
+/* 100 */,
+/* 101 */,
+/* 102 */,
+/* 103 */,
+/* 104 */,
+/* 105 */,
+/* 106 */,
+/* 107 */,
+/* 108 */,
+/* 109 */,
+/* 110 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.recUsersLogoutSocket = exports.emitLogoutSocket = undefined;
+
+var _init = __webpack_require__(37);
+
+var _init2 = _interopRequireDefault(_init);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var emitLogoutSocket = function emitLogoutSocket() {
+  _init2.default.close();
+};
+
+var recUsersLogoutSocket = function recUsersLogoutSocket() {
+  _init2.default.on("recLogout", function (data) {
+    console.log("接收到用户退出登录信息");
+    console.log(data);
+  });
+};
+
+exports.emitLogoutSocket = emitLogoutSocket;
+exports.recUsersLogoutSocket = recUsersLogoutSocket;
 
 /***/ })
 /******/ ]);
