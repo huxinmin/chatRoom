@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/bundle";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 22);
+/******/ 	return __webpack_require__(__webpack_require__.s = 21);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -152,15 +152,13 @@ var _sweetalert = __webpack_require__(1);
 
 var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
-var _addInChatsPro = __webpack_require__(38);
+var _addInChatsPro = __webpack_require__(37);
 
 var _cookie = __webpack_require__(4);
 
 var _config = __webpack_require__(2);
 
-var _socket = __webpack_require__(39);
-
-var _socket2 = _interopRequireDefault(_socket);
+var _emit = __webpack_require__(20);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -177,7 +175,7 @@ var homeOnload = function homeOnload() {
     onloadFail();
   });
   function done(data) {
-    _socket2.default.connect();
+    (0, _emit.emitLoginSocket)({ username: data.mine.username, avater: data.mine.avater });
     if (data) {
       window.locals.mine = data.mine;
       (0, _addInChatsPro.addRoomsInChatsPro)(data.rooms);
@@ -203,7 +201,43 @@ var homeOnload = function homeOnload() {
 exports.default = homeOnload;
 
 /***/ }),
-/* 6 */,
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _notification = __webpack_require__(109);
+
+var _notification2 = _interopRequireDefault(_notification);
+
+var _config = __webpack_require__(2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var socket = io({ autoConnect: false });
+
+socket.on("recLogin", function (data) {
+  (0, _notification2.default)(data.username, '上线了', _config.server + '/' + data.avater);
+  console.log(data);
+});
+
+socket.on("recLogout", function (data) {
+  console.log(data);
+});
+
+socket.on('recMessages', function (data) {
+  console.log('recMessages');
+  console.log(data);
+});
+
+exports.default = socket;
+
+/***/ }),
 /* 7 */
 /***/ (function(module, exports) {
 
@@ -492,7 +526,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(29);
+__webpack_require__(28);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -533,19 +567,56 @@ module.exports = g;
 
 
 /***/ }),
-/* 20 */,
-/* 21 */,
-/* 22 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.emitMessagesSocket = exports.emitLogoutSocket = exports.emitLoginSocket = undefined;
+
+var _index = __webpack_require__(6);
+
+var _index2 = _interopRequireDefault(_index);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var emitLoginSocket = function emitLoginSocket(data) {
+  _index2.default.connect();
+  _index2.default.emit("login", data, function (ack) {
+    console.log(ack);
+  });
+};
+
+var emitLogoutSocket = function emitLogoutSocket() {
+  _index2.default.disconnect();
+};
+
+var emitMessagesSocket = function emitMessagesSocket(data) {
+  _index2.default.emit("messages", data, function (ack) {
+    console.log(ack);
+  });
+};
+
+exports.emitLoginSocket = emitLoginSocket;
+exports.emitLogoutSocket = emitLogoutSocket;
+exports.emitMessagesSocket = emitMessagesSocket;
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+__webpack_require__(22);
+
 __webpack_require__(23);
 
 __webpack_require__(24);
-
-__webpack_require__(25);
 
 var _page = __webpack_require__(8);
 
@@ -555,23 +626,23 @@ var _jquery = __webpack_require__(3);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-__webpack_require__(26);
+__webpack_require__(25);
 
-__webpack_require__(31);
+__webpack_require__(30);
 
-var _login = __webpack_require__(32);
+var _login = __webpack_require__(31);
 
 var _login2 = _interopRequireDefault(_login);
 
-var _home = __webpack_require__(41);
+var _home = __webpack_require__(39);
 
 var _home2 = _interopRequireDefault(_home);
 
-var _register = __webpack_require__(82);
+var _register = __webpack_require__(80);
 
 var _register2 = _interopRequireDefault(_register);
 
-__webpack_require__(39);
+__webpack_require__(6);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -600,13 +671,13 @@ _page2.default.base("/chatRoom");
 (0, _page2.default)();
 
 /***/ }),
-/* 23 */
+/* 22 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 24 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -730,7 +801,7 @@ particlesJS("canvasWarpper", {
 });
 
 /***/ }),
-/* 25 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -872,13 +943,13 @@ setCanvasSize();
 // window.addEventListener("resize", setCanvasSize, false);
 
 /***/ }),
-/* 26 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _item = __webpack_require__(27);
+var _item = __webpack_require__(26);
 
 var _item2 = _interopRequireDefault(_item);
 
@@ -886,7 +957,7 @@ var _item3 = __webpack_require__(10);
 
 var _item4 = _interopRequireDefault(_item3);
 
-var _chatsWin = __webpack_require__(28);
+var _chatsWin = __webpack_require__(27);
 
 var _chatsWin2 = _interopRequireDefault(_chatsWin);
 
@@ -1038,7 +1109,7 @@ window.locals = {
 };
 
 /***/ }),
-/* 27 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1069,7 +1140,7 @@ var renderUsersItem = function renderUsersItem(usersGroup, data) {
 exports.default = renderUsersItem;
 
 /***/ }),
-/* 28 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1109,7 +1180,7 @@ var renderChatsWin = function renderChatsWin(chatsWindowWrapper, data) {
 exports.default = renderChatsWin;
 
 /***/ }),
-/* 29 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -1299,10 +1370,10 @@ exports.default = renderChatsWin;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19), __webpack_require__(30)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19), __webpack_require__(29)))
 
 /***/ }),
-/* 30 */
+/* 29 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -1492,7 +1563,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 31 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1503,7 +1574,7 @@ localforage.config({
 });
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1513,19 +1584,19 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-__webpack_require__(33);
+__webpack_require__(32);
 
-var _svg = __webpack_require__(34);
+var _svg = __webpack_require__(33);
 
 var _svg2 = _interopRequireDefault(_svg);
 
-__webpack_require__(35);
+__webpack_require__(34);
 
-var _event = __webpack_require__(36);
+var _event = __webpack_require__(35);
 
 var _event2 = _interopRequireDefault(_event);
 
-var _loading = __webpack_require__(40);
+var _loading = __webpack_require__(38);
 
 var _loading2 = _interopRequireDefault(_loading);
 
@@ -1552,13 +1623,13 @@ var renderLogin = function renderLogin(app) {
 exports.default = renderLogin;
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 34 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1573,7 +1644,7 @@ var svg = "<svg viewBox=\"0 0 320 320\">" + "<defs>" + "<linearGradient inkscape
 exports.default = svg;
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1641,7 +1712,7 @@ var current = null;
 });
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1659,7 +1730,7 @@ var _page = __webpack_require__(8);
 
 var _page2 = _interopRequireDefault(_page);
 
-var _login = __webpack_require__(37);
+var _login = __webpack_require__(36);
 
 var _login2 = _interopRequireDefault(_login);
 
@@ -1675,7 +1746,6 @@ var loginEvent = function loginEvent(loginBtn) {
   var isLogin = (0, _cookie.getCookie)("isLogin");
   if (isLogin === "true") _page2.default.redirect("/home");
   (0, _jquery2.default)(document).on("click", loginBtn, function () {
-    console.log("login login btn");
     onLoginBtn();
   });
   (0, _jquery2.default)(document).on("keydown", function (e) {
@@ -1703,7 +1773,7 @@ var loginEvent = function loginEvent(loginBtn) {
 exports.default = loginEvent;
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1725,7 +1795,7 @@ var _homeOnload = __webpack_require__(5);
 
 var _homeOnload2 = _interopRequireDefault(_homeOnload);
 
-var _emit = __webpack_require__(111);
+var _emit = __webpack_require__(20);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1746,7 +1816,7 @@ var loginAjax = function loginAjax(data) {
     if (data.auth) {
       window.locals.mine = data.mine;
       (0, _cookie.setCookie)("isLogin", true);
-      (0, _emit.emitLoginSocket)(data);
+      (0, _emit.emitLoginSocket)({ username: data.mine.username, avater: data.mine.avater });
       (0, _sweetalert2.default)({
         button: false,
         text: data.message,
@@ -1775,7 +1845,7 @@ var loginAjax = function loginAjax(data) {
 exports.default = loginAjax;
 
 /***/ }),
-/* 38 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1815,31 +1885,7 @@ exports.addUsersInChatsPro = addUsersInChatsPro;
 exports.addRoomsInChatsPro = addRoomsInChatsPro;
 
 /***/ }),
-/* 39 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var socket = io({ autoConnect: false });
-
-socket.on("recLogin", function (data) {
-  console.log("接收到用户登录信息");
-  console.log(data);
-});
-
-socket.on("recLogout", function (data) {
-  console.log("接收到用户退出登录信息");
-  console.log(data);
-});
-
-exports.default = socket;
-
-/***/ }),
-/* 40 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1862,7 +1908,7 @@ var loadingLogin = function loadingLogin(target) {
 exports.default = loadingLogin;
 
 /***/ }),
-/* 41 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1876,21 +1922,21 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(42);
+__webpack_require__(40);
 
-var _left = __webpack_require__(43);
+var _left = __webpack_require__(41);
 
 var _left2 = _interopRequireDefault(_left);
 
-var _middle = __webpack_require__(54);
+var _middle = __webpack_require__(52);
 
 var _middle2 = _interopRequireDefault(_middle);
 
-var _right = __webpack_require__(67);
+var _right = __webpack_require__(65);
 
 var _right2 = _interopRequireDefault(_right);
 
-var _events = __webpack_require__(80);
+var _events = __webpack_require__(78);
 
 var _events2 = _interopRequireDefault(_events);
 
@@ -1914,13 +1960,13 @@ var renderHome = function renderHome(app) {
 exports.default = renderHome;
 
 /***/ }),
-/* 42 */
+/* 40 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 43 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1934,29 +1980,29 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(44);
+__webpack_require__(42);
 
-var _user = __webpack_require__(45);
+var _user = __webpack_require__(43);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _chat = __webpack_require__(46);
+var _chat = __webpack_require__(44);
 
 var _chat2 = _interopRequireDefault(_chat);
 
-var _group = __webpack_require__(47);
+var _group = __webpack_require__(45);
 
 var _group2 = _interopRequireDefault(_group);
 
-var _setting = __webpack_require__(48);
+var _setting = __webpack_require__(46);
 
 var _setting2 = _interopRequireDefault(_setting);
 
-var _logout = __webpack_require__(49);
+var _logout = __webpack_require__(47);
 
 var _logout2 = _interopRequireDefault(_logout);
 
-var _events = __webpack_require__(50);
+var _events = __webpack_require__(48);
 
 var _events2 = _interopRequireDefault(_events);
 
@@ -1979,13 +2025,13 @@ var renderLeft = function renderLeft(home) {
 exports.default = renderLeft;
 
 /***/ }),
-/* 44 */
+/* 42 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 45 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1998,7 +2044,7 @@ var userSvg = "<svg t=\"1530441974032\" class=\"icon\" style=\"\" viewBox=\"0 0 
 exports.default = userSvg;
 
 /***/ }),
-/* 46 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2011,7 +2057,7 @@ var chatSvg = "<svg t=\"1530441491910\" class=\"icon\" style=\"\" viewBox=\"0 0 
 exports.default = chatSvg;
 
 /***/ }),
-/* 47 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2024,7 +2070,7 @@ var groupSvg = "<svg t=\"1530441429861\" class=\"icon\" style=\"\" viewBox=\"0 0
 exports.default = groupSvg;
 
 /***/ }),
-/* 48 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2037,7 +2083,7 @@ var settingSvg = "<svg t=\"1530441420200\" class=\"icon\" style=\"\" viewBox=\"0
 exports.default = settingSvg;
 
 /***/ }),
-/* 49 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2051,7 +2097,7 @@ var logoutSvg = "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns
 exports.default = logoutSvg;
 
 /***/ }),
-/* 50 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2065,11 +2111,11 @@ var _sweetalert = __webpack_require__(1);
 
 var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
-var _logout = __webpack_require__(51);
+var _logout = __webpack_require__(49);
 
 var _logout2 = _interopRequireDefault(_logout);
 
-var _settingAlert = __webpack_require__(52);
+var _settingAlert = __webpack_require__(50);
 
 var _settingAlert2 = _interopRequireDefault(_settingAlert);
 
@@ -2119,7 +2165,7 @@ var leftEvent = function leftEvent() {
 exports.default = leftEvent;
 
 /***/ }),
-/* 51 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2133,7 +2179,7 @@ var _cookie = __webpack_require__(4);
 
 var _config = __webpack_require__(2);
 
-var _emit = __webpack_require__(111);
+var _emit = __webpack_require__(20);
 
 var logoutAjax = function logoutAjax() {
   var options = Object.assign({
@@ -2150,7 +2196,7 @@ var logoutAjax = function logoutAjax() {
 exports.default = logoutAjax;
 
 /***/ }),
-/* 52 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2164,7 +2210,7 @@ var _sweetalert = __webpack_require__(1);
 
 var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
-__webpack_require__(53);
+__webpack_require__(51);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2185,6 +2231,54 @@ var settingAlert = function settingAlert() {
 };
 
 exports.default = settingAlert;
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _template = __webpack_require__(0);
+
+var _template2 = _interopRequireDefault(_template);
+
+__webpack_require__(53);
+
+var _search = __webpack_require__(54);
+
+var _search2 = _interopRequireDefault(_search);
+
+var _tabs = __webpack_require__(59);
+
+var _tabs2 = _interopRequireDefault(_tabs);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var source = "<li class=\"middle\"></li>";
+
+var data = {};
+var render = _template2.default.compile(source);
+var middleHtml = render(data);
+
+var renderMiddle = function renderMiddle(home) {
+  home.append(middleHtml);
+  var middle = $(".middle");
+  (0, _search2.default)(middle);
+  (0, _tabs2.default)(middle);
+};
+
+exports.default = renderMiddle;
 
 /***/ }),
 /* 53 */
@@ -2213,59 +2307,11 @@ var _search = __webpack_require__(56);
 
 var _search2 = _interopRequireDefault(_search);
 
-var _tabs = __webpack_require__(61);
-
-var _tabs2 = _interopRequireDefault(_tabs);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var source = "<li class=\"middle\"></li>";
-
-var data = {};
-var render = _template2.default.compile(source);
-var middleHtml = render(data);
-
-var renderMiddle = function renderMiddle(home) {
-  home.append(middleHtml);
-  var middle = $(".middle");
-  (0, _search2.default)(middle);
-  (0, _tabs2.default)(middle);
-};
-
-exports.default = renderMiddle;
-
-/***/ }),
-/* 55 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 56 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _template = __webpack_require__(0);
-
-var _template2 = _interopRequireDefault(_template);
-
-__webpack_require__(57);
-
-var _search = __webpack_require__(58);
-
-var _search2 = _interopRequireDefault(_search);
-
-var _add = __webpack_require__(59);
+var _add = __webpack_require__(57);
 
 var _add2 = _interopRequireDefault(_add);
 
-var _events = __webpack_require__(60);
+var _events = __webpack_require__(58);
 
 var _events2 = _interopRequireDefault(_events);
 
@@ -2288,13 +2334,13 @@ var renderSearch = function renderSearch(middle) {
 exports.default = renderSearch;
 
 /***/ }),
-/* 57 */
+/* 55 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 58 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2307,7 +2353,7 @@ var searchSvg = "<svg t=\"1530441471927\" class=\"icon\" style=\"\" viewBox=\"0 
 exports.default = searchSvg;
 
 /***/ }),
-/* 59 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2320,7 +2366,7 @@ var addSvg = "<svg t=\"1530441538036\" class=\"icon\" style=\"\" viewBox=\"0 0 1
 exports.default = addSvg;
 
 /***/ }),
-/* 60 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2340,7 +2386,7 @@ var searchEvent = function searchEvent() {};
 exports.default = searchEvent;
 
 /***/ }),
-/* 61 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2354,21 +2400,21 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(62);
+__webpack_require__(60);
 
-var _chats = __webpack_require__(63);
+var _chats = __webpack_require__(61);
 
 var _chats2 = _interopRequireDefault(_chats);
 
-var _rooms = __webpack_require__(64);
+var _rooms = __webpack_require__(62);
 
 var _rooms2 = _interopRequireDefault(_rooms);
 
-var _users = __webpack_require__(65);
+var _users = __webpack_require__(63);
 
 var _users2 = _interopRequireDefault(_users);
 
-var _events = __webpack_require__(66);
+var _events = __webpack_require__(64);
 
 var _events2 = _interopRequireDefault(_events);
 
@@ -2391,13 +2437,13 @@ var renderTabs = function renderTabs(middle) {
 exports.default = renderTabs;
 
 /***/ }),
-/* 62 */
+/* 60 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 63 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2451,7 +2497,7 @@ var renderChats = function renderChats(tabs) {
 exports.default = renderChats;
 
 /***/ }),
-/* 64 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2486,7 +2532,7 @@ var renderRooms = function renderRooms(tabs) {
 exports.default = renderRooms;
 
 /***/ }),
-/* 65 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2517,7 +2563,7 @@ var renderUsers = function renderUsers(tabs) {
 exports.default = renderUsers;
 
 /***/ }),
-/* 66 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2570,7 +2616,7 @@ var tabsEvent = function tabsEvent() {
 exports.default = tabsEvent;
 
 /***/ }),
-/* 67 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2584,9 +2630,9 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(68);
+__webpack_require__(66);
 
-var _chatsInputBox = __webpack_require__(69);
+var _chatsInputBox = __webpack_require__(67);
 
 var _chatsInputBox2 = _interopRequireDefault(_chatsInputBox);
 
@@ -2610,13 +2656,13 @@ var renderRight = function renderRight(home) {
 exports.default = renderRight;
 
 /***/ }),
-/* 68 */
+/* 66 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 69 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2630,13 +2676,13 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(70);
+__webpack_require__(68);
 
-var _events = __webpack_require__(71);
+var _events = __webpack_require__(69);
 
 var _events2 = _interopRequireDefault(_events);
 
-var _chatsInputTools = __webpack_require__(72);
+var _chatsInputTools = __webpack_require__(70);
 
 var _chatsInputTools2 = _interopRequireDefault(_chatsInputTools);
 
@@ -2658,13 +2704,13 @@ var renderChatsInputBox = function renderChatsInputBox(chatsWindowWrapper) {
 exports.default = renderChatsInputBox;
 
 /***/ }),
-/* 70 */
+/* 68 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 71 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2686,6 +2732,8 @@ var _chatsWith = __webpack_require__(15);
 
 var _config = __webpack_require__(2);
 
+var _emit = __webpack_require__(20);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var chatsInputEvent = function chatsInputEvent() {
@@ -2698,6 +2746,7 @@ var chatsInputEvent = function chatsInputEvent() {
     var chatsWin = (0, _jquery2.default)(".chats-win-history-group");
     var now = moment().format("MM-DD HH:mm");
     var data = [{ isMine: "true", message: message, time: now, avater: _config.server + "/" + window.locals.mine.avater }];
+    (0, _emit.emitMessagesSocket)({ sender: window.locals.mine, receiver: window.locals.curChat.username, message: message, time: now });
     (0, _historyItem2.default)(chatsWin, data);
     inputCont.html("");
     var curChat = window.locals.curChat;
@@ -2713,7 +2762,7 @@ var chatsInputEvent = function chatsInputEvent() {
 exports.default = chatsInputEvent;
 
 /***/ }),
-/* 72 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2727,17 +2776,17 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(73);
+__webpack_require__(71);
 
-var _emoji = __webpack_require__(74);
+var _emoji = __webpack_require__(72);
 
 var _emoji2 = _interopRequireDefault(_emoji);
 
-var _file = __webpack_require__(76);
+var _file = __webpack_require__(74);
 
 var _file2 = _interopRequireDefault(_file);
 
-var _torrent = __webpack_require__(78);
+var _torrent = __webpack_require__(76);
 
 var _torrent2 = _interopRequireDefault(_torrent);
 
@@ -2759,13 +2808,13 @@ var renderChatsInputTools = function renderChatsInputTools(chatsInputBox) {
 exports.default = renderChatsInputTools;
 
 /***/ }),
-/* 73 */
+/* 71 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 74 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2779,7 +2828,7 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-var _emoji = __webpack_require__(75);
+var _emoji = __webpack_require__(73);
 
 var _emoji2 = _interopRequireDefault(_emoji);
 
@@ -2797,7 +2846,7 @@ var renderToolEmoji = function renderToolEmoji(chatsInputTools) {
 exports.default = renderToolEmoji;
 
 /***/ }),
-/* 75 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2810,7 +2859,7 @@ var emojiSvg = "<svg t=\"1530441533385\" class=\"icon\" style=\"\" viewBox=\"0 0
 exports.default = emojiSvg;
 
 /***/ }),
-/* 76 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2824,7 +2873,7 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-var _file = __webpack_require__(77);
+var _file = __webpack_require__(75);
 
 var _file2 = _interopRequireDefault(_file);
 
@@ -2842,7 +2891,7 @@ var renderToolFile = function renderToolFile(chatsInputTools) {
 exports.default = renderToolFile;
 
 /***/ }),
-/* 77 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2855,7 +2904,7 @@ var fileSvg = "<svg t=\"1530441567176\" class=\"icon\" style=\"\" viewBox=\"0 0 
 exports.default = fileSvg;
 
 /***/ }),
-/* 78 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2869,7 +2918,7 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-var _torrent = __webpack_require__(79);
+var _torrent = __webpack_require__(77);
 
 var _torrent2 = _interopRequireDefault(_torrent);
 
@@ -2887,7 +2936,7 @@ var renderToolTorrent = function renderToolTorrent(chatsInputTools) {
 exports.default = renderToolTorrent;
 
 /***/ }),
-/* 79 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2900,7 +2949,7 @@ var torrentSvg = "<svg t=\"1530441521205\" class=\"icon\" style=\"\" viewBox=\"0
 exports.default = torrentSvg;
 
 /***/ }),
-/* 80 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2914,7 +2963,7 @@ var _homeOnload = __webpack_require__(5);
 
 var _homeOnload2 = _interopRequireDefault(_homeOnload);
 
-var _unloadAlert = __webpack_require__(81);
+var _unloadAlert = __webpack_require__(79);
 
 var _unloadAlert2 = _interopRequireDefault(_unloadAlert);
 
@@ -2929,7 +2978,7 @@ var homeEvent = function homeEvent() {
 exports.default = homeEvent;
 
 /***/ }),
-/* 81 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2949,7 +2998,7 @@ var unloadAlert = function unloadAlert() {
 exports.default = unloadAlert;
 
 /***/ }),
-/* 82 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2959,13 +3008,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-__webpack_require__(83);
+__webpack_require__(81);
 
-var _events = __webpack_require__(84);
+var _events = __webpack_require__(82);
 
 var _events2 = _interopRequireDefault(_events);
 
-var _loading = __webpack_require__(90);
+var _loading = __webpack_require__(88);
 
 var _loading2 = _interopRequireDefault(_loading);
 
@@ -2985,13 +3034,13 @@ var renderRegister = function renderRegister(app) {
 exports.default = renderRegister;
 
 /***/ }),
-/* 83 */
+/* 81 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 84 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3001,7 +3050,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _avaterCropper = __webpack_require__(85);
+var _avaterCropper = __webpack_require__(83);
 
 var _avaterCropper2 = _interopRequireDefault(_avaterCropper);
 
@@ -3009,11 +3058,11 @@ var _sweetalert = __webpack_require__(1);
 
 var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
-var _validate = __webpack_require__(87);
+var _validate = __webpack_require__(85);
 
 var _validate2 = _interopRequireDefault(_validate);
 
-var _register = __webpack_require__(88);
+var _register = __webpack_require__(86);
 
 var _register2 = _interopRequireDefault(_register);
 
@@ -3083,7 +3132,7 @@ var regEvent = function regEvent() {
 exports.default = regEvent;
 
 /***/ }),
-/* 85 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3097,7 +3146,7 @@ var _sweetalert = __webpack_require__(1);
 
 var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
-__webpack_require__(86);
+__webpack_require__(84);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3140,13 +3189,13 @@ var avaterCropper = function avaterCropper(file, cb) {
 exports.default = avaterCropper;
 
 /***/ }),
-/* 86 */
+/* 84 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 87 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3183,7 +3232,7 @@ var validate = function validate(text, message) {
 exports.default = validate;
 
 /***/ }),
-/* 88 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3199,7 +3248,7 @@ var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
 var _cookie = __webpack_require__(4);
 
-var _dataURLtoBlob = __webpack_require__(89);
+var _dataURLtoBlob = __webpack_require__(87);
 
 var _dataURLtoBlob2 = _interopRequireDefault(_dataURLtoBlob);
 
@@ -3263,7 +3312,7 @@ var registerAjax = function registerAjax() {
 exports.default = registerAjax;
 
 /***/ }),
-/* 89 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3287,7 +3336,7 @@ var dataURLtoBlob = function dataURLtoBlob(dataurl) {
 exports.default = dataURLtoBlob;
 
 /***/ }),
-/* 90 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3310,6 +3359,8 @@ var loadingRegister = function loadingRegister(target) {
 exports.default = loadingRegister;
 
 /***/ }),
+/* 89 */,
+/* 90 */,
 /* 91 */,
 /* 92 */,
 /* 93 */,
@@ -3328,42 +3379,33 @@ exports.default = loadingRegister;
 /* 106 */,
 /* 107 */,
 /* 108 */,
-/* 109 */,
-/* 110 */,
-/* 111 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
-exports.emitLogoutSocket = exports.emitLoginSocket = undefined;
-
-var _index = __webpack_require__(39);
-
-var _index2 = _interopRequireDefault(_index);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var emitLoginSocket = function emitLoginSocket(data) {
-  _index2.default.connect();
-  _index2.default.emit("login", data, function (data) {
-    console.log(data);
-  });
+var createNotification = function createNotification(title, message, icon) {
+	var hidden = document.hidden || document.webkitHidden;
+	//如果在当前页面，则不显示通知
+	if (!hidden) return;
+	/** 还需要判断settinh中的是否显示通知的开关，
+   * 未完待做
+   *
+   */
+	var notification = new Notification(title, {
+		body: message,
+		icon: icon
+	});
+	setTimeout(function () {
+		notification.close();
+	}, 5000);
 };
 
-$(document).on('click', function () {
-  console.log(_index2.default);
-});
-
-var emitLogoutSocket = function emitLogoutSocket() {
-  _index2.default.disconnect();
-};
-
-exports.emitLoginSocket = emitLoginSocket;
-exports.emitLogoutSocket = emitLogoutSocket;
+exports.default = createNotification;
 
 /***/ })
 /******/ ]);

@@ -1,13 +1,20 @@
+import createNotification from '../components/notification';
+import {server} from "../config.js";
+
 const socket = io({autoConnect:false});
 
 socket.on("recLogin", function(data) {
-  console.log("接收到用户登录信息");
+  createNotification(data.username, '上线了', server+'/'+data.avater);
   console.log(data);
 });
 
 socket.on("recLogout", function(data) {
-  console.log("接收到用户退出登录信息");
   console.log(data);
+});
+
+socket.on('recMessages', (data)=>{
+	console.log('recMessages');
+	console.log(data);
 });
 
 export default socket;

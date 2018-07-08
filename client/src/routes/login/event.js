@@ -8,7 +8,6 @@ const loginEvent = (loginBtn)=>{
   const isLogin = getCookie("isLogin");
   if(isLogin==="true") page.redirect("/home");
   $(document).on("click", loginBtn, ()=>{
-    console.log("login login btn")
   	onLoginBtn();
   });
   $(document).on("keydown", (e)=>{

@@ -2,7 +2,7 @@ import swal from "sweetalert";
 import {addUsersInChatsPro, addRoomsInChatsPro,} from "../utils/addInChatsPro";
 import {setCookie,} from "../utils/cookie";
 import {server, ajaxCrossDomainSettings,} from "../config.js";
-import socket from '../socket';
+import {emitLoginSocket,} from "../socket/emit";
 
 const homeOnload = ()=>{
   const options = Object.assign({
@@ -17,7 +17,7 @@ const homeOnload = ()=>{
     onloadFail();
   });
   function done(data){
-    socket.connect();
+    emitLoginSocket({username:data.mine.username, avater:data.mine.avater});
     if(data){
       window.locals.mine = data.mine;
       addRoomsInChatsPro(data.rooms);

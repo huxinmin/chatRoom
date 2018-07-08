@@ -2,6 +2,7 @@ import $ from "jquery";
 import renderHistoryItem from "../chatsWin/historyItem";
 import {updateChatsWith,} from "../../utils/chatsWith";
 import {server,} from "../../config.js";
+import {emitMessagesSocket} from '../../socket/emit';
 
 const chatsInputEvent = ()=>{
   $(document).on("click", ".chats-input-btn", function(){
@@ -11,6 +12,7 @@ const chatsInputEvent = ()=>{
     const chatsWin = $(".chats-win-history-group");
     const now = moment().format("MM-DD HH:mm");
     const data = [{isMine:"true", message:message, time:now, avater:server+"/"+window.locals.mine.avater,},];
+    emitMessagesSocket({sender:window.locals.mine,receiver:window.locals.curChat.username,message:message,time:now});
     renderHistoryItem(chatsWin, data);
     inputCont.html("");
     const curChat = window.locals.curChat;

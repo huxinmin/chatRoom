@@ -11,12 +11,10 @@ exports = module.exports = function(server) {
 			
 			login(socket);
 			logout(socket);
+			messages(socket);
 			socket.on('on_register',(data)=>{});
 			socket.on('on_avater',(data)=>{});
 			socket.on('on_password',(data)=>{});
-			socket.on('on_messages',(data)=>{
-				messages(socket,data);
-			});
 			socket.on('on_oflMessages',(data)=>{});
 			socket.on('on_remark',(data)=>{});
 			socket.on('on_file',(data)=>{});
