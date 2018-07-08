@@ -1,6 +1,6 @@
 import {setCookie,} from "../utils/cookie";
 import {server, ajaxCrossDomainSettings,} from "../config.js";
-import {emitLogoutSocket,} from "../socket/logout";
+import {emitLogoutSocket,} from "../socket/emit";
 
 const logoutAjax = ()=>{
   const options = Object.assign({

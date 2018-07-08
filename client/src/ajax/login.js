@@ -3,7 +3,7 @@ import {setCookie,} from "../utils/cookie";
 import {server, ajaxCrossDomainSettings,} from "../config.js";
 import homeOnload from "./homeOnload";
 //socket
-import {emitLoginSocket,} from "../socket/login";
+import {emitLoginSocket,} from "../socket/emit";
 
 
 const loginAjax = (data)=>{

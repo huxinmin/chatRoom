@@ -1,9 +1,13 @@
-import {recUsersLoginSocket} from "./login";
-import {recUsersLogoutSocket} from "./logout";
+const socket = io({autoConnect:false});
 
-const recSockets = ()=>{
-  recUsersLoginSocket();
-  recUsersLogoutSocket();
-};
+socket.on("recLogin", function(data) {
+  console.log("接收到用户登录信息");
+  console.log(data);
+});
 
-export default recSockets;
+socket.on("recLogout", function(data) {
+  console.log("接收到用户退出登录信息");
+  console.log(data);
+});
+
+export default socket;

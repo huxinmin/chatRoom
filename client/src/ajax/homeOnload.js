@@ -2,7 +2,7 @@ import swal from "sweetalert";
 import {addUsersInChatsPro, addRoomsInChatsPro,} from "../utils/addInChatsPro";
 import {setCookie,} from "../utils/cookie";
 import {server, ajaxCrossDomainSettings,} from "../config.js";
-import recSockets from "../socket";
+import socket from '../socket';
 
 const homeOnload = ()=>{
   const options = Object.assign({
@@ -17,11 +17,11 @@ const homeOnload = ()=>{
     onloadFail();
   });
   function done(data){
+    socket.connect();
     if(data){
       window.locals.mine = data.mine;
       addRoomsInChatsPro(data.rooms);
       addUsersInChatsPro(data.users);
-      recSockets();
     }else{
       onloadFail();
     }

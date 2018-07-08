@@ -13,7 +13,7 @@ var source = "<div class={{loginClass}}>"
 +              "<input autocomplete=\"off\" type={{val.type}} id={{val.id}}>"
 +           "</div>"
 +        "{{/each}}"
-+        "<input type=\"submit\" id={{btn.id}} value={{btn.val}}>"
++        "<input type=\"button\" id={{btn.id}} value={{btn.val}}>"
 +      "</div>"
 + "<a href=\"/chatRoom/register\" class='register-href'>还没账号？点击注册</a>"
 +"</div>";
