@@ -8,6 +8,7 @@ const emitLoginSocket = (data)=>{
 };
 
 const emitLogoutSocket = ()=>{
+	socket.emit("logout");
   socket.disconnect();
 };
 
@@ -17,4 +18,10 @@ const emitMessagesSocket = (data)=>{
   });
 };
 
-export {emitLoginSocket, emitLogoutSocket, emitMessagesSocket};
+const emitRoomMessagesSocket = (data)=>{
+	socket.emit("roomMessages",data, (ack)=>{
+  	console.log(ack);
+  });
+}
+
+export {emitLoginSocket, emitLogoutSocket, emitMessagesSocket, emitRoomMessagesSocket};

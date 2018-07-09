@@ -7,6 +7,12 @@
   box-sizing: border-box;
   padding: 40px;
   overflow: hidden;
+  /*防止chrome下 autocomplete失效*/
+  input:-webkit-autofill{
+    background-color: transparent!important;
+    color: #f2f2f2!important;
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+  }
 }
 .login-container svg {
   position: absolute;

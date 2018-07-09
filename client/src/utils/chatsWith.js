@@ -39,6 +39,7 @@ const getChatsWith = (data, cb)=>{
 const updateChatsWith = (itemName, val)=>{
   const limit = 100;
   localforage.getItem(itemName,(err, items)=>{
+  	items = items || [];
     if(items.length >= limit){
       items.shift();
     }

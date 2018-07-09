@@ -10,7 +10,7 @@ var source = "<div class={{loginClass}}>"
 +        "{{each inputs val }}"
 +           "<div class=\"login-from-group\">"
 +              "<label for={{val.id}}>{{val.val}}</label>"
-+              "<input autocomplete=\"off\" type={{val.type}} id={{val.id}}>"
++              "<input autocomplete=\"off\" type='text' id={{val.id}}>"
 +           "</div>"
 +        "{{/each}}"
 +        "<input type=\"button\" id={{btn.id}} value={{btn.val}}>"
@@ -21,7 +21,7 @@ var source = "<div class={{loginClass}}>"
 
 const data = {
   loginClass:"login-container",
-  inputs:[{id:"username", val:"用户名", type:"text",},{id:"password", val:"密码", type:"password",},],
+  inputs:[{id:"username", val:"用户名"},{id:"password", val:"密码"},],
   btn:{
     id:"login", val:"登录",
   },
