@@ -199,7 +199,7 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(14);
+__webpack_require__(16);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -220,6 +220,56 @@ exports.default = renderHistoryItem;
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var getChats = function getChats(type, cb) {
+  console.log("getChats");
+  localforage.getItem(type, function (err, chats) {
+    cb(chats);
+  });
+};
+
+var setChats = function setChats(curChat, lastMess, cb) {
+  console.log('setChats');
+  cb = cb || function () {};
+  var item = curChat.isRoom ? "roomChats" : "chats";
+  if (curChat.inChat === "false") {
+    var pushData = curChat.isRoom ? { roomname: curChat.username, avater: curChat.avater, lastMess: "" } : { username: curChat.username, avater: curChat.avater, lastMess: "" };
+    localforage.getItem(item, function (err, chats) {
+      chats = chats || [];
+      chats.push(pushData);
+      localforage.setItem(item, chats, function (err, val) {
+        if (err) throw Error("创建聊天出错了");
+        cb(val);
+      });
+    });
+  } else {
+    localforage.getItem(item, function (err, chats) {
+      if (curChat.isRoom) {
+        var index = _.findIndex(chats, { roomname: curChat.username });
+      } else {
+        var index = _.findIndex(chats, { username: curChat.username });
+      }
+      chats[index].lastMess = lastMess;
+      localforage.setItem(item, chats, function (err, val) {
+        if (err) throw Error("创建聊天出错了");
+        cb(val);
+      });
+    });
+  }
+};
+
+exports.getChats = getChats;
+exports.setChats = setChats;
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -285,7 +335,38 @@ exports.getChatsWith = getChatsWith;
 exports.updateChatsWith = updateChatsWith;
 
 /***/ }),
-/* 8 */
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _template = __webpack_require__(0);
+
+var _template2 = _interopRequireDefault(_template);
+
+__webpack_require__(17);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var source = "<div class=\"chats-item\" data-username={{username}} data-unread={{unread}} data-active={{active}} data-type={{type}} data-online={{online}}>" + "<img class=\"chats-item-avater\" src={{avater}}>" + "<div class=\"chats-item-info\">" + "<div class=\"chats-item-info-top\">" + "<span class=\"chats-item-username\">{{username}}</span>" + "<span class=\"chats-item-unread\">{{unread}}</span>" + "</div>" + "<p class=\"chats-item-info-bottom\">{{lastMes}}</p>" + "</div>" + "</div>";
+
+var render = _template2.default.compile(source);
+
+var renderChatsItem = function renderChatsItem(chatsGroup, data) {
+  var itemHtml = render(data);
+  chatsGroup.append(itemHtml);
+  $(".chats-none").hide();
+};
+
+exports.default = renderChatsItem;
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -348,25 +429,25 @@ var homeOnload = function homeOnload() {
 exports.default = homeOnload;
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports) {
 
 module.exports = anime;
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports) {
 
 module.exports = page;
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -380,7 +461,7 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(13);
+__webpack_require__(15);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -397,97 +478,16 @@ var renderRoomsItem = function renderRoomsItem(roomsGroup, data) {
 exports.default = renderRoomsItem;
 
 /***/ }),
-/* 13 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
 /* 15 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var getChats = function getChats(type, cb) {
-  console.log("getChats");
-  localforage.getItem(type, function (err, chats) {
-    cb(chats);
-  });
-};
-
-var setChats = function setChats(curChat, lastMess, cb) {
-  console.log('setChats');
-  cb = cb || function () {};
-  var item = curChat.isRoom ? "roomChats" : "chats";
-  if (curChat.inChat === "false") {
-    var pushData = curChat.isRoom ? { roomname: curChat.username, avater: curChat.avater, lastMess: "" } : { username: curChat.username, avater: curChat.avater, lastMess: "" };
-    localforage.getItem(item, function (err, chats) {
-      chats = chats || [];
-      chats.push(pushData);
-      localforage.setItem(item, chats, function (err, val) {
-        if (err) throw Error("创建聊天出错了");
-        cb(val);
-      });
-    });
-  } else {
-    localforage.getItem(item, function (err, chats) {
-      if (curChat.isRoom) {
-        var index = _.findIndex(chats, { roomname: curChat.username });
-      } else {
-        var index = _.findIndex(chats, { username: curChat.username });
-      }
-      chats[index].lastMess = lastMess;
-      localforage.setItem(item, chats, function (err, val) {
-        if (err) throw Error("创建聊天出错了");
-        cb(val);
-      });
-    });
-  }
-};
-
-exports.getChats = getChats;
-exports.setChats = setChats;
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 16 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _template = __webpack_require__(0);
-
-var _template2 = _interopRequireDefault(_template);
-
-__webpack_require__(17);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var source = "<div class=\"chats-item\" data-username={{username}} data-unread={{unread}} data-active={{active}} data-type={{type}} data-online={{online}}>" + "<img class=\"chats-item-avater\" src={{avater}}>" + "<div class=\"chats-item-info\">" + "<div class=\"chats-item-info-top\">" + "<span class=\"chats-item-username\">{{username}}</span>" + "<span class=\"chats-item-unread\">{{unread}}</span>" + "</div>" + "<p class=\"chats-item-info-bottom\">{{lastMes}}</p>" + "</div>" + "</div>";
-
-var render = _template2.default.compile(source);
-
-var renderChatsItem = function renderChatsItem(chatsGroup, data) {
-  var itemHtml = render(data);
-  chatsGroup.append(itemHtml);
-  $(".chats-none").hide();
-};
-
-exports.default = renderChatsItem;
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 17 */
@@ -613,11 +613,11 @@ var _historyItem = __webpack_require__(6);
 
 var _historyItem2 = _interopRequireDefault(_historyItem);
 
-var _chatsWith = __webpack_require__(7);
+var _chatsWith = __webpack_require__(8);
 
-var _chats = __webpack_require__(15);
+var _chats = __webpack_require__(7);
 
-var _item = __webpack_require__(16);
+var _item = __webpack_require__(9);
 
 var _item2 = _interopRequireDefault(_item);
 
@@ -686,7 +686,7 @@ __webpack_require__(23);
 
 __webpack_require__(24);
 
-var _page = __webpack_require__(10);
+var _page = __webpack_require__(12);
 
 var _page2 = _interopRequireDefault(_page);
 
@@ -875,7 +875,7 @@ particlesJS("canvasWarpper", {
 "use strict";
 
 
-var _anime = __webpack_require__(9);
+var _anime = __webpack_require__(11);
 
 var _anime2 = _interopRequireDefault(_anime);
 
@@ -1021,7 +1021,7 @@ var _item = __webpack_require__(26);
 
 var _item2 = _interopRequireDefault(_item);
 
-var _item3 = __webpack_require__(12);
+var _item3 = __webpack_require__(14);
 
 var _item4 = _interopRequireDefault(_item3);
 
@@ -1029,11 +1029,11 @@ var _chatsWin = __webpack_require__(27);
 
 var _chatsWin2 = _interopRequireDefault(_chatsWin);
 
-var _chats = __webpack_require__(15);
+var _chats = __webpack_require__(7);
 
-var _chatsWith = __webpack_require__(7);
+var _chatsWith = __webpack_require__(8);
 
-var _item5 = __webpack_require__(16);
+var _item5 = __webpack_require__(9);
 
 var _item6 = _interopRequireDefault(_item5);
 
@@ -1191,7 +1191,7 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(11);
+__webpack_require__(13);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1222,7 +1222,7 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(14);
+__webpack_require__(16);
 
 var _historyItem = __webpack_require__(6);
 
@@ -1670,11 +1670,11 @@ var _loading2 = _interopRequireDefault(_loading);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var source = "<div class={{loginClass}}>" + _svg2.default + "<div class=\"login-form\">" + "{{each inputs val }}" + "<div class=\"login-from-group\">" + "<label for={{val.id}}>{{val.val}}</label>" + "<input autocomplete=\"off\" type='text' id={{val.id}}>" + "</div>" + "{{/each}}" + "<input type=\"button\" id={{btn.id}} value={{btn.val}}>" + "</div>" + "<a href=\"/chatRoom/register\" class='register-href'>还没账号？点击注册</a>" + "</div>";
+var source = "<div class={{loginClass}}>" + _svg2.default + "<div class=\"login-form\">" + "{{each inputs val }}" + "<div class=\"login-from-group\">" + "<label for={{val.id}}>{{val.val}}</label>" + "<input autocomplete=\"off\" type={{val.type}} id={{val.id}}>" + "</div>" + "{{/each}}" + "<input type=\"button\" id={{btn.id}} value={{btn.val}}>" + "</div>" + "<a href=\"/chatRoom/register\" class='register-href'>还没账号？点击注册</a>" + "</div>";
 
 var data = {
   loginClass: "login-container",
-  inputs: [{ id: "username", val: "用户名" }, { id: "password", val: "密码" }],
+  inputs: [{ id: "username", val: "用户名", type: "text" }, { id: "password", val: "密码", type: "password" }],
   btn: {
     id: "login", val: "登录"
   }
@@ -1718,7 +1718,7 @@ exports.default = svg;
 "use strict";
 
 
-var _anime = __webpack_require__(9);
+var _anime = __webpack_require__(11);
 
 var _anime2 = _interopRequireDefault(_anime);
 
@@ -1794,7 +1794,7 @@ var _jquery = __webpack_require__(3);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _page = __webpack_require__(10);
+var _page = __webpack_require__(12);
 
 var _page2 = _interopRequireDefault(_page);
 
@@ -1859,7 +1859,7 @@ var _cookie = __webpack_require__(4);
 
 var _config = __webpack_require__(2);
 
-var _homeOnload = __webpack_require__(8);
+var _homeOnload = __webpack_require__(10);
 
 var _homeOnload2 = _interopRequireDefault(_homeOnload);
 
@@ -2556,9 +2556,9 @@ var _template2 = _interopRequireDefault(_template);
 
 __webpack_require__(17);
 
-var _chats = __webpack_require__(15);
+var _chats = __webpack_require__(7);
 
-var _item = __webpack_require__(16);
+var _item = __webpack_require__(9);
 
 var _item2 = _interopRequireDefault(_item);
 
@@ -2608,9 +2608,9 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(13);
+__webpack_require__(15);
 
-var _item = __webpack_require__(12);
+var _item = __webpack_require__(14);
 
 var _item2 = _interopRequireDefault(_item);
 
@@ -2643,7 +2643,7 @@ var _template = __webpack_require__(0);
 
 var _template2 = _interopRequireDefault(_template);
 
-__webpack_require__(11);
+__webpack_require__(13);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2825,7 +2825,7 @@ var _historyItem = __webpack_require__(6);
 
 var _historyItem2 = _interopRequireDefault(_historyItem);
 
-var _chatsWith = __webpack_require__(7);
+var _chatsWith = __webpack_require__(8);
 
 var _config = __webpack_require__(2);
 
@@ -3059,7 +3059,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _homeOnload = __webpack_require__(8);
+var _homeOnload = __webpack_require__(10);
 
 var _homeOnload2 = _interopRequireDefault(_homeOnload);
 
@@ -3354,7 +3354,7 @@ var _dataURLtoBlob2 = _interopRequireDefault(_dataURLtoBlob);
 
 var _config = __webpack_require__(2);
 
-var _homeOnload = __webpack_require__(8);
+var _homeOnload = __webpack_require__(10);
 
 var _homeOnload2 = _interopRequireDefault(_homeOnload);
 

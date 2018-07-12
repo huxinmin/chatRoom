@@ -97,24 +97,18 @@
   - `inChat`初始值，是否在对话框中
 
 ## 本地存储数据设计
-- `chats`[Array]聊天记录
+- `histories`[Array]最后一次的聊天记录
   - 单个聊天记录{Object}
     - `username`聊天对象
     - `avater`聊天对象头像
     - `lastMess`最后一次对话的消息
-- `chats_$username`{Object}与某个用户的聊天记录$username是变量
-  - `isMine`是否是我说的还是对方说的
-  - `message`聊天具体消息
-  - `time`聊天时间
-- `roomChats`[Array]群聊记录
-  - 单个聊天记录{Object}
-    - `roomname`聊天群组名
-    - `avater`聊天群组头像
-    - `lastMess`最后一次对话的消息
-- `roomChats_$roomname`{Object}某个群聊的聊天记录$roomname是变量
-  - `isMine`是否自己说的还是别人说的
-  - `message`聊天具体消息
-  - `avater`说话者的头像
-  - `username`说话者的用户名
-  - `time`聊天的时间
-- `settings`[Array]用户设置
+    - `time`最后一次对话时间
+- `chatsWith`{Object}
+  - `${username}`[Array]与某个用户的所有聊天记录$username是用户名或者是群名
+    - `sender`发送者名字（当是自己说的时候，等于Mine的用户名）
+    - `senderAvater`发送者头像
+    - `receiver`接受者名字(当是普通用户聊天时等于${username})
+    - `receiverAvater`接受者头像
+    - `message`聊天具体消息
+    - `time`聊天时间
+- `settings`{Object}用户设置

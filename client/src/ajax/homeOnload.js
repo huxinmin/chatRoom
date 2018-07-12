@@ -17,7 +17,7 @@ const homeOnload = ()=>{
     onloadFail();
   });
   function done(data){
-    emitLoginSocket({username:data.mine.username, avater:data.mine.avater});
+    emitLoginSocket({username:data.mine.username, avater:data.mine.avater,});
     if(data){
       window.locals.mine = data.mine;
       addRoomsInChatsPro(data.rooms);

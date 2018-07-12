@@ -37,7 +37,7 @@ module.exports = {
                   options: {
                     minimize: true
                   }
-                }, 
+                },
                 'less-loader'
               ]
         })
@@ -51,7 +51,6 @@ module.exports = {
     anime:'anime',
     fileSaver:'file-saver',
     JSZip:'JSZip',
-    localforage:'localforage',
     _:'_', //lodash
     page:'page',
     template:'template',

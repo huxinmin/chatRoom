@@ -1,14 +1,14 @@
 import socket from "./index";
 
 const emitLoginSocket = (data)=>{
-	socket.connect();
+  socket.connect();
   socket.emit("login", data, function(ack){
-  	console.log(ack)
+  	console.log(ack);
   });
 };
 
 const emitLogoutSocket = ()=>{
-	socket.emit("logout");
+  socket.emit("logout");
   socket.disconnect();
 };
 
@@ -19,9 +19,9 @@ const emitMessagesSocket = (data)=>{
 };
 
 const emitRoomMessagesSocket = (data)=>{
-	socket.emit("roomMessages",data, (ack)=>{
+  socket.emit("roomMessages",data, (ack)=>{
   	console.log(ack);
   });
-}
+};
 
-export {emitLoginSocket, emitLogoutSocket, emitMessagesSocket, emitRoomMessagesSocket};
+export {emitLoginSocket, emitLogoutSocket, emitMessagesSocket, emitRoomMessagesSocket,};

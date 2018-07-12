@@ -10,7 +10,7 @@ import renderLogin from "./routes/login";
 // home page
 import renderHome from "./routes/home";
 import renderRegister from "./routes/register";
-import './socket';
+import "./socket";
 
 const app = $("#app");
 page.base("/chatRoom");

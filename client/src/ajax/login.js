@@ -23,7 +23,7 @@ const loginAjax = (data)=>{
     if(data.auth){
     	window.locals.mine = data.mine;
     	setCookie("isLogin",true);
-      emitLoginSocket({username:data.mine.username, avater:data.mine.avater});
+      emitLoginSocket({username:data.mine.username, avater:data.mine.avater,});
     	swal({
         button:false,
   			text: data.message,

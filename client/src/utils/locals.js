@@ -126,7 +126,7 @@ window.locals = {
       //然后还要打开聊天窗口和输入界面
       renderChatsWin(chatsWindowWrapper,Object.assign({histories:[],}, data));
     }
-    setChats(data,'', ()=>{
+    setChats(data,"", ()=>{
     	var itemName = data.isRoom?"roomChats_"+data.username:"chats_"+data.username;
     	createChatsWith(itemName);
     });

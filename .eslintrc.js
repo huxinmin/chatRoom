@@ -4,7 +4,8 @@ module.exports = {
     "globals":{
         $:false,
         window:false,
-        document:false
+        document:false,
+        console:false
     },
     "rules": {
         // enable additional rules
