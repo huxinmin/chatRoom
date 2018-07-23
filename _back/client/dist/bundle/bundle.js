@@ -450,8 +450,6 @@ var _historyItem = __webpack_require__(6);
 
 var _historyItem2 = _interopRequireDefault(_historyItem);
 
-var _chatsWith = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../utils/chatsWith\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
 var _item = __webpack_require__(7);
 
 var _item2 = _interopRequireDefault(_item);
@@ -1379,7 +1377,7 @@ var _LocalStorage2 = _interopRequireDefault(_LocalStorage);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var adapter = new _LocalStorage2.default('db');
+var adapter = new _LocalStorage2.default("db");
 var db = (0, _lowdb2.default)(adapter);
 
 db.defaults({ histories: [], chatsWith: {}, settings: {} }).write();
@@ -19562,8 +19560,6 @@ var _template = __webpack_require__(0);
 var _template2 = _interopRequireDefault(_template);
 
 __webpack_require__(13);
-
-var _chats = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../../../utils/chats\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 
 var _item = __webpack_require__(7);
 

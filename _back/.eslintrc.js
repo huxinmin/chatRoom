@@ -5,7 +5,8 @@ module.exports = {
         $:false,
         window:false,
         document:false,
-        console:false
+        console:false,
+        _:false
     },
     "rules": {
         // enable additional rules

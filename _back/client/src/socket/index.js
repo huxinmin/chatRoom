@@ -1,7 +1,6 @@
 import createNotification from "../components/notification";
 import {server,} from "../config.js";
 import renderHistoryItem from "../components/chatsWin/historyItem";
-import {updateChatsWith,} from "../utils/chatsWith";
 import renderChatsItem from "../components/tabs/chats/item";
 
 const socket = io({autoConnect:false,});

@@ -1,1 +1,4 @@
 node_modules
+_back/node_modules
+_back/client/node_modules
+_back/server/node_modules

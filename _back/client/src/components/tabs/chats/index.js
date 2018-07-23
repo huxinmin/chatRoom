@@ -1,6 +1,5 @@
 import template from "template";
 import "./index.less";
-import {getChats,} from "../../../utils/chats";
 
 import renderChatsItem from "./item";
 

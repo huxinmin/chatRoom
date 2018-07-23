@@ -12,13 +12,12 @@
     "build": "webpack --config ./webpack.config.js --progress",
     "watch": "webpack --config ./webpack.config.js --progress --watch",
     "eslint": "eslint client/src",
-    "eslint-fix": "eslint client/src --fix",
+    "eslint-fix": "eslint client/src/. --fix",
     "test": "",
     "coverage": "",
     "dev": ""
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "art-template-loader": "^1.4.3",
     "babel-core": "^6.26.3",
