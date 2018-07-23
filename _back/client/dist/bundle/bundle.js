@@ -297,6 +297,18 @@ var _config = __webpack_require__(2);
 
 var _emit = __webpack_require__(5);
 
+var _item = __webpack_require__(65);
+
+var _item2 = _interopRequireDefault(_item);
+
+var _item3 = __webpack_require__(113);
+
+var _item4 = _interopRequireDefault(_item3);
+
+var _db = __webpack_require__(25);
+
+var _db2 = _interopRequireDefault(_db);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var homeOnload = function homeOnload() {
@@ -315,9 +327,28 @@ var homeOnload = function homeOnload() {
     (0, _emit.emitLoginSocket)({ username: data.mine.username, avater: data.mine.avater });
     if (data) {
       window.locals.mine = data.mine;
+      renderUsersRooms(data.users, data.rooms);
     } else {
       onloadFail();
     }
+  }
+  function renderUsersRooms(users, rooms) {
+    rooms.forEach(function (item) {
+      if (_db2.default.find({ username: item.roomname }).value()) {
+        item.inChats = 'true';
+      } else {
+        item.inChats = 'false';
+      }
+      (0, _item2.default)($(".rooms-group"), item);
+    });
+    users.forEach(function (item) {
+      if (_db2.default.find({ username: item.username }).value()) {
+        item.inChats = 'true';
+      } else {
+        item.inChats = 'false';
+      }
+      (0, _item4.default)($(".users-group"), item);
+    });
   }
   function onloadFail(messages) {
     (0, _sweetalert2.default)({
@@ -925,10 +956,6 @@ window.locals = {
       //然后还要打开聊天窗口和输入界面
       (0, _chatsWin2.default)(chatsWindowWrapper, Object.assign({ histories: [] }, data));
     }
-    setChats(data, "", function () {
-      var itemName = data.isRoom ? "roomChats_" + data.username : "chats_" + data.username;
-      createChatsWith(itemName);
-    });
     $(".menu-item[data-type='chats']").click();
     /** 设置本地或者更新chats以及chats_$username
      * 亦或是roomschats以及roomchats_$roomname
@@ -19604,10 +19631,6 @@ var _template2 = _interopRequireDefault(_template);
 
 __webpack_require__(16);
 
-var _item = __webpack_require__(65);
-
-var _item2 = _interopRequireDefault(_item);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var source = "<li class=\"rooms-group\">" + "<div class=\"rooms-none\">暂无群组</div>" + "</li>";
@@ -20491,6 +20514,57 @@ var loadingRegister = function loadingRegister(target) {
 };
 
 exports.default = loadingRegister;
+
+/***/ }),
+/* 93 */,
+/* 94 */,
+/* 95 */,
+/* 96 */,
+/* 97 */,
+/* 98 */,
+/* 99 */,
+/* 100 */,
+/* 101 */,
+/* 102 */,
+/* 103 */,
+/* 104 */,
+/* 105 */,
+/* 106 */,
+/* 107 */,
+/* 108 */,
+/* 109 */,
+/* 110 */,
+/* 111 */,
+/* 112 */,
+/* 113 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _template = __webpack_require__(0);
+
+var _template2 = _interopRequireDefault(_template);
+
+__webpack_require__(67);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var source = "<div class=\"users-item\" data-online={{online}} data-inChat={{inChats}}>" + "<img class=\"users-item-avater\" src={{avater}}>" + "<p class=\"users-item-name\">{{username}}</p>" + "</div>";
+
+var render = _template2.default.compile(source);
+
+var renderUsersItem = function renderUsersItem(usersGroup, data) {
+  $(".users-none").hide();
+  var itemHtml = render(data);
+  usersGroup.append(itemHtml);
+};
+
+exports.default = renderUsersItem;
 
 /***/ })
 /******/ ]);

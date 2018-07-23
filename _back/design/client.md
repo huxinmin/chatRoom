@@ -98,12 +98,12 @@
     - `avater`聊天对象头像
     - `lastMess`最后一次对话的消息
     - `time`最后一次对话时间
-- `chatsWith`{Object}
-  - `${username}`[Array]与某个用户的所有聊天记录$username是用户名或者是群名
-    - `sender`发送者名字（当是自己说的时候，等于Mine的用户名）
-    - `senderAvater`发送者头像
-    - `receiver`接受者名字(当是普通用户聊天时等于${username})
-    - `receiverAvater`接受者头像
-    - `message`聊天具体消息
-    - `time`聊天时间
+- `chatsWith`[Array]
+  - `username`{Object}与某个用户的所有聊天记录$username是用户名或者是群名
+  - `sender`发送者名字（当是自己说的时候，等于Mine的用户名）
+  - `senderAvater`发送者头像
+  - `receiver`接受者名字(当是普通用户聊天时等于${username})
+  - `receiverAvater`接受者头像
+  - `message`聊天具体消息
+  - `time`聊天时间
 - `settings`{Object}用户设置
