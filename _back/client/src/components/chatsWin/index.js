@@ -11,6 +11,7 @@ var source = "<div class=\"chats-window\" data-username={{username}}>"
 var render = template.compile(source);
 
 const renderChatsWin = (chatsWindowWrapper, data)=>{
+	console.log("渲染对话窗口")
   var old = $(".chats-window");
   if(old.length){
     old.remove();

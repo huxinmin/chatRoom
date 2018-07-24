@@ -1,7 +1,7 @@
-import $ from "jquery";
 import renderHistoryItem from "../chatsWin/historyItem";
 import {server,} from "../../config.js";
 import {emitMessagesSocket, emitRoomMessagesSocket,} from "../../socket/emit";
+import db from '../../utils/db';
 
 const chatsInputEvent = ()=>{
   $(document).on("click", ".chats-input-btn", function(){
@@ -18,18 +18,35 @@ const chatsInputEvent = ()=>{
     console.log("发送消息");
     if(!curChat.isRoom){
       const itemName = "chats_"+curChat.username;
-
-      /** 更新本地chatsWith
-        *  未完待做
-        */
       emitMessagesSocket(socketMessages);
     }else{
     	emitRoomMessagesSocket(socketMessages);
       const itemName = "roomChats_"+curChat.username;
-      /** 更新本地chatsWith
-        *  未完待做
-        */
     }
+    /** 更新本地chatsWith
+     *
+    */
+    var history = db.get('histories');
+    if( history.find({ username: curChat.username }).value() ){
+    	history.find({ username: curChat.username }).assign({lastMess:message,time:now}).write()
+    }else{
+    	history.push({username:curChat.username,avater:server+"/"+curChat.avater,lastMess:message,time:now}).write()
+    }
+    var chatsWith = db.get('chatsWith');
+    const oneHistory = {
+    	sender:window.locals.mine.username,
+    	senderAvater:server+"/"+window.locals.mine.avater,
+    	receiver:curChat.username,
+    	receiverAvater:server+"/"+curChat.avater,
+    	message:message,
+    	time:now
+    }
+    if(chatsWith.find({ username: curChat.username }).value()){
+    	chatsWith.find({ username: curChat.username }).get('histories').push(oneHistory).write();
+    }else{
+    	chatsWith.push({username:curChat.username,histories:[oneHistory] }).write();
+    }
+
   });
 };
 export default chatsInputEvent;

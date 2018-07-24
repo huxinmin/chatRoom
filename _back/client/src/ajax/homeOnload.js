@@ -4,6 +4,7 @@ import {server, ajaxCrossDomainSettings,} from "../config.js";
 import {emitLoginSocket,} from "../socket/emit";
 import renderRoomsItem from "../components/tabs/rooms/item";
 import renderUsersItem from '../components/tabs/users/item';
+import renderChatsItem from "../components/tabs/chats/item";
 import db from '../utils/db';
 
 const homeOnload = ()=>{
@@ -22,25 +23,30 @@ const homeOnload = ()=>{
     emitLoginSocket({username:data.mine.username, avater:data.mine.avater,});
     if(data){
       window.locals.mine = data.mine;
-      renderUsersRooms(data.users, data.rooms);
+      renderUsersRoomsChats(data.users, data.rooms);
     }else{
       onloadFail();
     }
 	 }
-  function renderUsersRooms(users, rooms){
+  function renderUsersRoomsChats(users, rooms){
+  	const chatsGroup = $(".chats-group");
     rooms.forEach((item)=>{
-        if( db.find({username:item.roomname}).value() ){
-          item.inChats = 'true'
+    		var history = db.get("histories").find({username:item.roomname}).value();
+        if(history){
+          item.inChat = 'true'
+          renderChatsItem(chatsGroup, Object.assign({unread:0,active:'false',type:'room',online:'none'},history))
         }else{
-          item.inChats = 'false'
+          item.inChat = 'false'
         }
         renderRoomsItem($(".rooms-group"),item);
       })
     users.forEach((item)=>{
-        if( db.find({username:item.username}).value() ){
-          item.inChats = 'true'
+    	var history = db.get("histories").find({username:item.username}).value();
+        if(history){
+          item.inChat = 'true'
+          renderChatsItem(chatsGroup,Object.assign({unread:0,active:'false',type:'user',online:item.online},history));
         }else{
-          item.inChats = 'false'
+          item.inChat = 'false'
         }
         renderUsersItem($(".users-group"),item);
       })

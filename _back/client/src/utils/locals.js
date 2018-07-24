@@ -1,6 +1,7 @@
 import renderChatsWin from "../components/chatsWin";
 import renderChatsItem from "../components/tabs/chats/item";
 import swal from "sweetalert";
+import db from './db';
 import {server,} from "../config.js";
 
 window.locals = {
@@ -33,14 +34,6 @@ window.locals = {
   		$(".chats-window-none").hide();
   		$(".chats-input-box").show();
   	}
-  	/** 如果curChat在chats中，则直接跳转激活
-  	  * 不在则先创建一个chat-item，再跳转激活
-  	  * 点击chat-item或者users-item rooms-item也可激活这个setter
-  	  * 未完成代做
-  	  */
-    // curChat数据形式为{username:"",avater:"", isRoom:true, online:true||false||"none"}
-    // data等于从本地chats-$username中查找到username等于curChat的数据的合并
-    // 注意只获取50条记录，更多的需要再次查询，为了做高效滚动加载
     if(data.online === "false"){
     	swal({
    			button: {
@@ -53,18 +46,25 @@ window.locals = {
     }
     $(".chats-item").attr("data-active", "false");
     const chatsWindowWrapper = $(".chats-window-wrapper");
+    const chatsGroup = $(".chats-group");
     //在聊天列表中，不重新创建聊天框，只跳转激活，并获取历史记录
+    console.log("改变windows curChat",data)
     if(data.inChat === "true"){
       $(".chats-item[data-username='"+data.username+"']").attr("data-active", "true");
-   		/** 切换聊天对象时，重新创建对话框，并生成聊天对话记录
-   		  * 未完待做
-   		  *
-   		  *
-   		  */
-
+   		const chatsWith = db.get("chatsWith").find({username:data.username}).value();
+   		var histories = [];
+   		if(chatsWith && chatsWith.histories){
+   			histories = chatsWith.histories
+   			histories = histories.map((item)=>{
+   				if(item.sender === window.locals.mine.username){
+   					return Object.assign({isMine:'true', avater:item.senderAvater}, item)
+   				}
+   				return Object.assign({isMine:'false', avater:item.receiverAvater}, item)
+   			})
+   		}
+   		renderChatsWin(chatsWindowWrapper,Object.assign({histories:histories}, data));
     }else{
    		//不在聊天列表中，重新创建聊天框，并跳转激活，不用获取历史记录，但是需要设置历史记录
-   		const chatsGroup = $(".chats-group");
    		var itemData = Object.assign({
    			unread:0,
    			type: data.isRoom ? "room":"user",

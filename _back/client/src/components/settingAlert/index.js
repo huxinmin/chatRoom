@@ -3,7 +3,7 @@ import "./index.less";
 
 const settingAlert = ()=>{
   const content = $("<div class='setting-swalt-content'>"
-		+"content</div>")[0];
+		+"敬请期待</div>")[0];
   swal({
    	button:{
   		text: "x",
