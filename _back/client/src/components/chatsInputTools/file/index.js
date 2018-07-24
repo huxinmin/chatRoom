@@ -1,9 +1,10 @@
 import template from "template";
 import fileSvg from "../../../svg/file";
 
-var source = "<div title='发送文件' class=\"tools-file\">"
+var source = "<label for='fileupload' title='发送文件' class=\"tools-file\">"
 + fileSvg
-+"</div>";
++"<input type='file' id='fileupload' name='file' style='width:0;height:0;display:none;'>"
++"</label>";
 
 var render = template.compile(source);
 

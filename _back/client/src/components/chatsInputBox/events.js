@@ -48,5 +48,14 @@ const chatsInputEvent = ()=>{
     }
 
   });
+  $(document).on('keyup','.chats-input-text', function(e){
+  	//按回车
+  	if(e.which === 13){
+  		$(".chats-input-btn").click();
+  		e.preventDefault();
+  		e.stopPropagation();
+  		return false
+  	}
+  });
 };
 export default chatsInputEvent;

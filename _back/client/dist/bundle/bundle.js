@@ -179,6 +179,18 @@ var emitRoomMessagesSocket = function emitRoomMessagesSocket(data) {
   });
 };
 
+var emitFileSocket = function emitFileSocket(data) {
+  _index2.default.emit("file", data, function (ack) {
+    console.log(ack);
+  });
+};
+
+var emitRoomFileSocket = function emitRoomFileSocket(data) {
+  _index2.default.emit("roomFile", data, function (ack) {
+    console.log(ack);
+  });
+};
+
 exports.emitLoginSocket = emitLoginSocket;
 exports.emitLogoutSocket = emitLogoutSocket;
 exports.emitMessagesSocket = emitMessagesSocket;
@@ -540,26 +552,104 @@ socket.on("recLogout", function (data) {
 });
 
 socket.on("recMessages", function (data) {
-  console.log("recMessages");
-  console.log(data);
+  //聊天界面自动滚动到下一条
+  function scrollAuto() {
+    $(".chats-window").scrollTop($(".chats-win-history-group").height());
+  }
+  console.log("recMessages", data);
   //如果发送者与当前curChat的用户名相同，也就是聊天框是激活的，则创建聊天历史记录，并改变lowdb数据，否则只改变数据
   //如果是第一次聊天，也就是没有聊天历史记录,则需要创建chats对话框，并标位未读
   if (window.locals.curChat.username === data.sender.username) {
-    (0, _historyItem2.default)();
+    var chatsWin = $(".chats-win-history-group");
+    var history = [{ isMine: 'false', message: data.message, time: data.time, avater: _config.server + "/" + data.sender.avater }];
+    if (data.sender.username === window.locals.mine.username) {
+      history[0].isMine = 'true';
+    }
+    (0, _historyItem2.default)(chatsWin, history);
   }
+  var oneHistory = {
+    sender: data.sender.username,
+    senderAvater: _config.server + "/" + data.sender.avater,
+    receiver: window.locals.mine.username,
+    receiverAvater: _config.server + "/" + window.locals.mine.avater,
+    message: data.message,
+    time: data.time
+  };
   if (_db2.default.get('histories').find({ username: data.sender.username }).value()) {
-    (0, _item2.default)();
-    _db2.default.get('histories').find({ username: data.sender.username }).assign({}).write();
-    _db2.default.get("chatsWith").find();
+    _db2.default.get('histories').find({ username: data.sender.username }).assign({ lastMess: data.message, time: data.time }).write();
+    _db2.default.get("chatsWith").find({ username: data.sender.username }).get('histories').push(oneHistory).write();
   } else {
-    _db2.default.get('histories').push();
-    _db2.default.get("chatsWith").push();
+    var chatsGroup = $(".chats-group");
+    var itemData = {
+      unread: 0,
+      type: "user",
+      active: "false",
+      lastMes: data.message,
+      username: data.sender.username,
+      online: 'true',
+      avater: _config.server + "/" + data.sender.avater
+    };
+    (0, _item2.default)(chatsGroup, itemData);
+    _db2.default.get('histories').push({ username: data.sender.username, avater: _config.server + "/" + data.sender.avater, lastMess: data.message, time: data.time }).write();
+    _db2.default.get("chatsWith").push({ username: data.sender.username, histories: [oneHistory] }).write();
   }
+  scrollAuto();
 });
 
 socket.on("recRoomMessages", function (data) {
-  console.log("recRoomMessages");
-  console.log(data);
+  function scrollAuto() {
+    $(".chats-window").scrollTop($(".chats-win-history-group").height());
+  }
+  console.log("recRoomMessages", data);
+  if (window.locals.curChat.username === data.receiver) {
+    var chatsWin = $(".chats-win-history-group");
+    var history = [{ isMine: 'false', message: data.message, time: data.time, avater: _config.server + "/" + data.sender.avater }];
+    if (data.sender.username === window.locals.mine.username) {
+      history[0].isMine = 'true';
+    }
+    (0, _historyItem2.default)(chatsWin, history);
+  }
+  var receiverAvater;
+  $(".rooms-item-name").each(function () {
+    if ($(this).text() === data.receiver) {
+      receiverAvater = $(this).siblings('.rooms-item-avater').attr("src");
+    }
+  });
+  var oneHistory = {
+    sender: data.sender.username,
+    senderAvater: _config.server + "/" + data.sender.avater,
+    receiver: data.receiver,
+    receiverAvater: _config.server + "/" + receiverAvater,
+    message: data.message,
+    time: data.time
+  };
+  if (_db2.default.get('histories').find({ username: data.receiver }).value()) {
+    _db2.default.get('histories').find({ username: data.receiver }).assign({ lastMess: data.message, time: data.time }).write();
+    _db2.default.get("chatsWith").find({ username: data.receiver }).get('histories').push(oneHistory).write();
+  } else {
+    var chatsGroup = $(".chats-group");
+    var itemData = {
+      unread: 0,
+      type: "room",
+      active: "false",
+      lastMes: data.message,
+      username: data.receiver,
+      online: 'none',
+      avater: _config.server + "/" + data.sender.avater
+    };
+    (0, _item2.default)(chatsGroup, itemData);
+    _db2.default.get('histories').push({ username: data.receiver, avater: _config.server + "/" + receiverAvater, lastMess: data.message, time: data.time }).write();
+    _db2.default.get("chatsWith").push({ username: data.receiver, histories: [oneHistory] }).write();
+  }
+  scrollAuto();
+});
+
+socket.on("recFile", function (data) {
+  console.log("recFile", data);
+});
+
+socket.on("recRoomFile", function (data) {
+  console.log("recRoomFile", data);
 });
 
 exports.default = socket;
@@ -19988,6 +20078,15 @@ var chatsInputEvent = function chatsInputEvent() {
       chatsWith.push({ username: curChat.username, histories: [oneHistory] }).write();
     }
   });
+  $(document).on('keyup', '.chats-input-text', function (e) {
+    //按回车
+    if (e.which === 13) {
+      $(".chats-input-btn").click();
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
+  });
 };
 exports.default = chatsInputEvent;
 
@@ -20020,6 +20119,10 @@ var _torrent = __webpack_require__(81);
 
 var _torrent2 = _interopRequireDefault(_torrent);
 
+var _events = __webpack_require__(114);
+
+var _events2 = _interopRequireDefault(_events);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var source = "<div class=\"chats-input-tools\"></div>";
@@ -20033,6 +20136,7 @@ var renderChatsInputTools = function renderChatsInputTools(chatsInputBox) {
   (0, _emoji2.default)(chatsInputTools);
   (0, _file2.default)(chatsInputTools);
   (0, _torrent2.default)(chatsInputTools);
+  (0, _events2.default)();
 };
 
 exports.default = renderChatsInputTools;
@@ -20109,7 +20213,7 @@ var _file2 = _interopRequireDefault(_file);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var source = "<div title='发送文件' class=\"tools-file\">" + _file2.default + "</div>";
+var source = "<label for='fileupload' title='发送文件' class=\"tools-file\">" + _file2.default + "<input type='file' id='fileupload' name='file' style='width:0;height:0;display:none;'>" + "</label>";
 
 var render = _template2.default.compile(source);
 
@@ -20587,6 +20691,62 @@ var loadingRegister = function loadingRegister(target) {
 };
 
 exports.default = loadingRegister;
+
+/***/ }),
+/* 94 */,
+/* 95 */,
+/* 96 */,
+/* 97 */,
+/* 98 */,
+/* 99 */,
+/* 100 */,
+/* 101 */,
+/* 102 */,
+/* 103 */,
+/* 104 */,
+/* 105 */,
+/* 106 */,
+/* 107 */,
+/* 108 */,
+/* 109 */,
+/* 110 */,
+/* 111 */,
+/* 112 */,
+/* 113 */,
+/* 114 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _config = __webpack_require__(2);
+
+var _emit = __webpack_require__(5);
+
+var _db = __webpack_require__(15);
+
+var _db2 = _interopRequireDefault(_db);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var chatsInputToolsEvent = function chatsInputToolsEvent() {
+    $('#fileupload').fileupload({
+        url: 'url',
+        dataType: 'json',
+        autoUpload: false,
+        maxFileSize: 1000 * 1000 * 1000
+    }).on('fileuploadadd', function (e, data) {
+        console.log(data);
+    }).on('fileuploadprocessalways', function (e, data) {}).on('fileuploadprogressall', function (e, data) {
+        var progress = parseInt(data.loaded / data.total * 100, 10);
+        $('#progress .progress-bar').css('width', progress + '%');
+    }).on('fileuploaddone', function (e, data) {}).on('fileuploadfail', function (e, data) {});
+};
+exports.default = chatsInputToolsEvent;
 
 /***/ })
 /******/ ]);

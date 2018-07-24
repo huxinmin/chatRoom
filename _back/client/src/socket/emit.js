@@ -24,4 +24,16 @@ const emitRoomMessagesSocket = (data)=>{
   });
 };
 
+const emitFileSocket = (data)=>{
+  socket.emit("file",data, (ack)=>{
+  	console.log(ack);
+  });
+};
+
+const emitRoomFileSocket = (data)=>{
+  socket.emit("roomFile",data, (ack)=>{
+  	console.log(ack);
+  });
+};
+
 export {emitLoginSocket, emitLogoutSocket, emitMessagesSocket, emitRoomMessagesSocket,};
