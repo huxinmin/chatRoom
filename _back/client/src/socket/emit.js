@@ -42,10 +42,26 @@ const emitFileSocketDone = (data)=>{
   });
 };
 
-const emitRoomFileSocket = (data)=>{
-  socket.emit("roomFile",data, (ack)=>{
+const emitRoomFileSocketStart = (data)=>{
+  socket.emit("roomFileStart",data, (ack)=>{
   	console.log(ack);
   });
 };
 
-export {emitLoginSocket, emitLogoutSocket,emitFileSocketStart,emitFileSocketProgress,emitFileSocketDone, emitMessagesSocket, emitRoomMessagesSocket,emitRoomFileSocket,};
+const emitRoomFileSocketProgress = (data)=>{
+  socket.emit("roomFileProgress",data, (ack)=>{
+  	console.log(ack);
+  });
+};
+
+const emitRoomFileSocketDone = (data)=>{
+  socket.emit("roomFileDone",data, (ack)=>{
+  	console.log(ack);
+  });
+};
+
+export {
+				emitLoginSocket, emitLogoutSocket, emitMessagesSocket,emitRoomMessagesSocket,
+				emitFileSocketStart,emitFileSocketProgress,emitFileSocketDone,
+				emitRoomFileSocketStart,emitRoomFileSocketProgress,emitRoomFileSocketDone
+		};

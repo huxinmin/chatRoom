@@ -54,12 +54,14 @@ window.locals = {
    		const chatsWith = db.get("chatsWith").find({username:data.username}).value();
    		var histories = [];
    		if(chatsWith && chatsWith.histories){
-   			histories = chatsWith.histories
-   			histories = histories.map((item)=>{
+   			histories = chatsWith.histories.slice();
+   			histories.forEach((item)=>{
    				if(item.sender === window.locals.mine.username){
-   					return Object.assign({isMine:'true', avater:item.senderAvater}, item)
+   					item.isMine = 'true'
+   				}else{
+   					item.isMine= 'false'
    				}
-   				return Object.assign({isMine:'false', avater:item.receiverAvater}, item)
+   				item.avater = server+'/'+item.senderAvater
    			})
    		}
    		renderChatsWin(chatsWindowWrapper,Object.assign({histories:histories}, data));
@@ -69,8 +71,9 @@ window.locals = {
    			unread:0,
    			type: data.isRoom ? "room":"user",
    			active:"true",
-   			lastMes:"",
+   			lastMess:"",
    		},data);
+   		itemData.avater = server+'/'+itemData.avater;
    		renderChatsItem(chatsGroup,itemData);
       //然后还要打开聊天窗口和输入界面
       renderChatsWin(chatsWindowWrapper,Object.assign({histories:[],}, data));

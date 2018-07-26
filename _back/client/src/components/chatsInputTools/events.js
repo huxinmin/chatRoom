@@ -1,5 +1,7 @@
 import {server,} from "../../config.js";
-import {emitFileSocketStart, emitFileSocketProgress,emitFileSocketDone, emitRoomFileSocket,} from "../../socket/emit";
+import {emitFileSocketStart, emitFileSocketProgress,emitFileSocketDone,
+				emitRoomFileSocketStart,emitRoomFileSocketProgress,emitRoomFileSocketDone
+				} from "../../socket/emit";
 import db from '../../utils/db';
 import {createId} from '../../utils/utils';
 
@@ -22,7 +24,13 @@ const chatsInputToolsEvent = ()=>{
     	var progress = $("<div class='progress'><div class='progress-bar'></div></div>");
     	fileMess.append(progress);
     	var socketMessages = {sender:window.locals.mine,receiver:data.receiver,id:data.contextId};
-    	emitFileSocketStart(socketMessages);
+    	if(window.locals.curChat.isRoom){
+    		emitRoomFileSocketStart(socketMessages);
+    		data.isRoom = true;
+    	}else{
+    		emitFileSocketStart(socketMessages);
+    		data.isRoom = false
+    	}
     }).on('fileuploadprogress', function(e, data){
     		console.log('fileuploadprogress',data)
     		var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -31,19 +39,12 @@ const chatsInputToolsEvent = ()=>{
             progress + '%'
         );
         var socketMessages = {sender:window.locals.mine,receiver:data.receiver,progress:progress, id:data.contextId};
-    		emitFileSocketProgress(socketMessages);
+        if(data.isRoom){
+        	emitRoomFileSocketProgress(socketMessages);
+        }else{
+        	emitFileSocketProgress(socketMessages);
+        }
     }).on('fileuploaddone', function (e, data) {
-    	/**
-    	*
-    	*   需要给每一个聊天信息加一个唯一标识， 不能用time做标识，下面的time都要去掉，改成用id查找更新
-    	*
-    	*
-    	*
-    	*
-    	*
-    	*
-    	  *
-    	  */
     	console.log("fileuploaddone", data)
     	if(data.result.status){
     		var downloadUrl = $("<a download='"+data.result.url+"' href='"+server+'/file/'+data.result.url+"'>下载</a>");
@@ -62,7 +63,11 @@ const chatsInputToolsEvent = ()=>{
     		data.html.append(downloadUrl.clone()).children('span').html("上传完成");
     		var message = data.html.prop('outerHTML')
     		var socketMessages = {sender:window.locals.mine,receiver:data.receiver, id:data.contextId,isImg:isImg, url:data.result.url,hid:data.hid,message:message};
-    		emitFileSocketDone(socketMessages);
+    		if(data.isRoom){
+    			emitRoomFileSocketDone(socketMessages);
+    		}else{
+    			emitFileSocketDone(socketMessages);
+    		}
     		db.get('histories').find({id:data.hid}).assign({lastMess:message}).write()
     		db.get('chatsWith').find({username:data.receiver}).get("histories").find({id:data.hid}).assign({message:message}).write();
     	}

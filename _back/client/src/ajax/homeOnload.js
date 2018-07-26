@@ -34,20 +34,24 @@ const homeOnload = ()=>{
     		var history = db.get("histories").find({username:item.roomname}).value();
         if(history){
           item.inChat = 'true'
+          history.avater = server+'/'+history.avater
           renderChatsItem(chatsGroup, Object.assign({unread:0,active:'false',type:'room',online:'none'},history))
         }else{
           item.inChat = 'false'
         }
+        item.avater = server+'/'+item.avater;
         renderRoomsItem($(".rooms-group"),item);
       })
     users.forEach((item)=>{
     	var history = db.get("histories").find({username:item.username}).value();
         if(history){
           item.inChat = 'true'
+          history.avater = server+'/'+history.avater
           renderChatsItem(chatsGroup,Object.assign({unread:0,active:'false',type:'user',online:item.online},history));
         }else{
           item.inChat = 'false'
         }
+        item.avater = server+'/'+item.avater;
         renderUsersItem($(".users-group"),item);
       })
   }

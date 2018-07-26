@@ -3,7 +3,7 @@ import fileSvg from "../../../svg/file";
 
 var source = "<label for='fileupload' title='发送文件' class=\"tools-file\">"
 + fileSvg
-+"<input multiple type='file' id='fileupload' name='file' style='width:0;height:0;display:none;'>"
++"<input type='file' id='fileupload' name='file' style='width:0;height:0;display:none;'>"
 +"</label>";
 
 var render = template.compile(source);

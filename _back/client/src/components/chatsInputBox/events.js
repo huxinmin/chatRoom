@@ -35,14 +35,14 @@ const chatsInputEvent = ()=>{
     if( history.find({ username: curChat.username }).value() ){
     	history.find({ username: curChat.username }).assign({lastMess:message,time:now, id:id}).write()
     }else{
-    	history.push({username:curChat.username,avater:server+"/"+curChat.avater,lastMess:message,time:now, id:id}).write()
+    	history.push({username:curChat.username,avater:curChat.avater,lastMess:message,time:now, id:id}).write()
     }
     var chatsWith = db.get('chatsWith');
     const oneHistory = {
     	sender:window.locals.mine.username,
-    	senderAvater:server+"/"+window.locals.mine.avater,
+    	senderAvater:window.locals.mine.avater,
     	receiver:curChat.username,
-    	receiverAvater:server+"/"+curChat.avater,
+    	receiverAvater:curChat.avater,
     	message:message,
     	time:now,
     	id:id

@@ -34,15 +34,15 @@ socket.on("recMessages", (data)=>{
   }
   const oneHistory = {
     	sender:data.sender.username,
-    	senderAvater:server+"/"+data.sender.avater,
+    	senderAvater:data.sender.avater,
     	receiver:window.locals.mine.username,
-    	receiverAvater:server+"/"+window.locals.mine.avater,
+    	receiverAvater:window.locals.mine.avater,
     	message:data.message,
     	time:data.time,
     	id:data.id
   }
   if(db.get('histories').find({username:data.sender.username}).value()){
-  	db.get('histories').find({username:data.sender.username}).assign({lastMess:data.message,time:data.time, id:data.id}).write()
+  	db.get('histories').find({username:data.sender.username}).assign({lastMess:data.message,time:data.time, id:data.id, avater:data.sender.avater}).write()
   	var chatsWithHis = db.get("chatsWith").find({username:data.sender.username}).get('histories')
   	chatsWithHis.push(oneHistory).write()
   	//如果历史记录超过100条则去掉第一条
@@ -55,13 +55,13 @@ socket.on("recMessages", (data)=>{
    			unread:0,
    			type: "user",
    			active:"false",
-   			lastMes:data.message,
+   			lastMess:data.message,
    			username:data.sender.username,
    			online:'true',
    			avater:server+"/"+data.sender.avater
    		};
   	renderChatsItem(chatsGroup,itemData);
-  	db.get('histories').push({username:data.sender.username,avater:server+"/"+data.sender.avater,lastMess:data.message,time:data.time,id:data.id}).write()
+  	db.get('histories').push({username:data.sender.username,avater:data.sender.avater,lastMess:data.message,time:data.time,id:data.id}).write()
   	db.get("chatsWith").push({username:data.sender.username,histories:[oneHistory] }).write()
   }
   scrollAuto();
@@ -83,14 +83,15 @@ socket.on("recRoomMessages", (data)=>{
   var receiverAvater;
   $(".rooms-item-name").each(function(){
   	if($(this).text()===data.receiver){
-  		receiverAvater = $(this).siblings('.rooms-item-avater').attr("src");
+  		receiverAvater = $(this).siblings('.rooms-item-avater').attr("src").substring(server.length+1);
+  		console.log('receiverAvater'.receiverAvater)
   	}
   })
   const oneHistory = {
     	sender:data.sender.username,
-    	senderAvater:server+"/"+data.sender.avater,
+    	senderAvater:data.sender.avater,
     	receiver:data.receiver,
-    	receiverAvater:server+"/"+receiverAvater,
+    	receiverAvater:receiverAvater,
     	message:data.message,
     	time:data.time
   }
@@ -103,13 +104,13 @@ socket.on("recRoomMessages", (data)=>{
    			unread:0,
    			type: "room",
    			active:"false",
-   			lastMes:data.message,
+   			lastMess:data.message,
    			username:data.receiver,
    			online:'none',
    			avater:server+"/"+data.sender.avater
    		};
   	renderChatsItem(chatsGroup,itemData);
-  	db.get('histories').push({username:data.receiver,avater:server+"/"+receiverAvater,lastMess:data.message,time:data.time}).write()
+  	db.get('histories').push({username:data.receiver,avater:receiverAvater,lastMess:data.message,time:data.time}).write()
   	db.get("chatsWith").push({username:data.receiver,histories:[oneHistory] }).write()
   }
   scrollAuto();
@@ -143,8 +144,32 @@ socket.on("recFileDone", function(data){
   db.get('chatsWith').find({username:data.sender.username}).get("histories").find({id:data.hid}).assign({message:message}).write();
 });
 
-socket.on("recRoomFile", function(data){
-	console.log("recRoomFile",data)
+socket.on("recRoomFileStart", function(data){
+	console.log("recRoomFileStart",data)
+	var fileMess = $(".chats-window").find('#'+data.contextId);
+	var progress = $("<div class='progress'><div class='progress-bar'></div></div>");
+  fileMess.append(progress);
+});
+
+socket.on("recRoomFileProgress", function(data){
+	console.log("recRoomFileProgress",data)
+	$('#'+data.id+' .progress .progress-bar').css(
+    'width',
+    data.progress + '%'
+  );
+});
+
+socket.on("recRoomFileDone", function(data){
+	console.log("recRoomFileDone",data)
+	var fileMess = $(".chats-window").find('#'+data.id);
+	if(data.isImg){
+		fileMess.children("img").attr('src', server+'/file/'+data.url)
+	}
+	var downloadUrl = $("<a download='"+data.url+"' href='"+server+'/file/'+data.url+"'>下载</a>");
+	fileMess.append(downloadUrl).children('span').html("上传完成")
+  var message = data.message
+  db.get('histories').find({id:data.hid}).assign({lastMess:message}).write()
+  db.get('chatsWith').find({username:data.sender.username}).get("histories").find({id:data.hid}).assign({message:message}).write();
 });
 
 

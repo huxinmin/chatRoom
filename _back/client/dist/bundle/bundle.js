@@ -175,7 +175,7 @@ exports.deleteCookie = deleteCookie;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.emitRoomFileSocket = exports.emitRoomMessagesSocket = exports.emitMessagesSocket = exports.emitFileSocketDone = exports.emitFileSocketProgress = exports.emitFileSocketStart = exports.emitLogoutSocket = exports.emitLoginSocket = undefined;
+exports.emitRoomFileSocketDone = exports.emitRoomFileSocketProgress = exports.emitRoomFileSocketStart = exports.emitFileSocketDone = exports.emitFileSocketProgress = exports.emitFileSocketStart = exports.emitRoomMessagesSocket = exports.emitMessagesSocket = exports.emitLogoutSocket = exports.emitLoginSocket = undefined;
 
 var _index = __webpack_require__(17);
 
@@ -225,20 +225,34 @@ var emitFileSocketDone = function emitFileSocketDone(data) {
   });
 };
 
-var emitRoomFileSocket = function emitRoomFileSocket(data) {
-  _index2.default.emit("roomFile", data, function (ack) {
+var emitRoomFileSocketStart = function emitRoomFileSocketStart(data) {
+  _index2.default.emit("roomFileStart", data, function (ack) {
+    console.log(ack);
+  });
+};
+
+var emitRoomFileSocketProgress = function emitRoomFileSocketProgress(data) {
+  _index2.default.emit("roomFileProgress", data, function (ack) {
+    console.log(ack);
+  });
+};
+
+var emitRoomFileSocketDone = function emitRoomFileSocketDone(data) {
+  _index2.default.emit("roomFileDone", data, function (ack) {
     console.log(ack);
   });
 };
 
 exports.emitLoginSocket = emitLoginSocket;
 exports.emitLogoutSocket = emitLogoutSocket;
+exports.emitMessagesSocket = emitMessagesSocket;
+exports.emitRoomMessagesSocket = emitRoomMessagesSocket;
 exports.emitFileSocketStart = emitFileSocketStart;
 exports.emitFileSocketProgress = emitFileSocketProgress;
 exports.emitFileSocketDone = emitFileSocketDone;
-exports.emitMessagesSocket = emitMessagesSocket;
-exports.emitRoomMessagesSocket = emitRoomMessagesSocket;
-exports.emitRoomFileSocket = emitRoomFileSocket;
+exports.emitRoomFileSocketStart = emitRoomFileSocketStart;
+exports.emitRoomFileSocketProgress = emitRoomFileSocketProgress;
+exports.emitRoomFileSocketDone = emitRoomFileSocketDone;
 
 /***/ }),
 /* 7 */
@@ -259,7 +273,7 @@ __webpack_require__(15);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var source = "<div class=\"chats-item\" data-username={{username}} data-unread={{unread}} data-active={{active}} data-type={{type}} data-online={{online}}>" + "<img class=\"chats-item-avater\" src={{avater}}>" + "<div class=\"chats-item-info\">" + "<div class=\"chats-item-info-top\">" + "<span class=\"chats-item-username\">{{username}}</span>" + "<span class=\"chats-item-unread\">{{unread}}</span>" + "</div>" + "<p class=\"chats-item-info-bottom\">{{@ lastMes}}</p>" + "</div>" + "</div>";
+var source = "<div class=\"chats-item\" data-username={{username}} data-unread={{unread}} data-active={{active}} data-type={{type}} data-online={{online}}>" + "<img class=\"chats-item-avater\" src={{avater}}>" + "<div class=\"chats-item-info\">" + "<div class=\"chats-item-info-top\">" + "<span class=\"chats-item-username\">{{username}}</span>" + "<span class=\"chats-item-unread\">{{unread}}</span>" + "</div>" + "<div class=\"chats-item-info-bottom\">{{@ lastMess}}</div>" + "</div>" + "</div>";
 
 var render = _template2.default.compile(source);
 
@@ -398,20 +412,24 @@ var homeOnload = function homeOnload() {
       var history = _db2.default.get("histories").find({ username: item.roomname }).value();
       if (history) {
         item.inChat = 'true';
+        history.avater = _config.server + '/' + history.avater;
         (0, _item6.default)(chatsGroup, Object.assign({ unread: 0, active: 'false', type: 'room', online: 'none' }, history));
       } else {
         item.inChat = 'false';
       }
+      item.avater = _config.server + '/' + item.avater;
       (0, _item2.default)($(".rooms-group"), item);
     });
     users.forEach(function (item) {
       var history = _db2.default.get("histories").find({ username: item.username }).value();
       if (history) {
         item.inChat = 'true';
+        history.avater = _config.server + '/' + history.avater;
         (0, _item6.default)(chatsGroup, Object.assign({ unread: 0, active: 'false', type: 'user', online: item.online }, history));
       } else {
         item.inChat = 'false';
       }
+      item.avater = _config.server + '/' + item.avater;
       (0, _item4.default)($(".users-group"), item);
     });
   }
@@ -609,15 +627,15 @@ socket.on("recMessages", function (data) {
   }
   var oneHistory = {
     sender: data.sender.username,
-    senderAvater: _config.server + "/" + data.sender.avater,
+    senderAvater: data.sender.avater,
     receiver: window.locals.mine.username,
-    receiverAvater: _config.server + "/" + window.locals.mine.avater,
+    receiverAvater: window.locals.mine.avater,
     message: data.message,
     time: data.time,
     id: data.id
   };
   if (_db2.default.get('histories').find({ username: data.sender.username }).value()) {
-    _db2.default.get('histories').find({ username: data.sender.username }).assign({ lastMess: data.message, time: data.time, id: data.id }).write();
+    _db2.default.get('histories').find({ username: data.sender.username }).assign({ lastMess: data.message, time: data.time, id: data.id, avater: data.sender.avater }).write();
     var chatsWithHis = _db2.default.get("chatsWith").find({ username: data.sender.username }).get('histories');
     chatsWithHis.push(oneHistory).write();
     //如果历史记录超过100条则去掉第一条
@@ -630,13 +648,13 @@ socket.on("recMessages", function (data) {
       unread: 0,
       type: "user",
       active: "false",
-      lastMes: data.message,
+      lastMess: data.message,
       username: data.sender.username,
       online: 'true',
       avater: _config.server + "/" + data.sender.avater
     };
     (0, _item2.default)(chatsGroup, itemData);
-    _db2.default.get('histories').push({ username: data.sender.username, avater: _config.server + "/" + data.sender.avater, lastMess: data.message, time: data.time, id: data.id }).write();
+    _db2.default.get('histories').push({ username: data.sender.username, avater: data.sender.avater, lastMess: data.message, time: data.time, id: data.id }).write();
     _db2.default.get("chatsWith").push({ username: data.sender.username, histories: [oneHistory] }).write();
   }
   scrollAuto();
@@ -658,14 +676,15 @@ socket.on("recRoomMessages", function (data) {
   var receiverAvater;
   $(".rooms-item-name").each(function () {
     if ($(this).text() === data.receiver) {
-      receiverAvater = $(this).siblings('.rooms-item-avater').attr("src");
+      receiverAvater = $(this).siblings('.rooms-item-avater').attr("src").substring(_config.server.length + 1);
+      console.log('receiverAvater'.receiverAvater);
     }
   });
   var oneHistory = {
     sender: data.sender.username,
-    senderAvater: _config.server + "/" + data.sender.avater,
+    senderAvater: data.sender.avater,
     receiver: data.receiver,
-    receiverAvater: _config.server + "/" + receiverAvater,
+    receiverAvater: receiverAvater,
     message: data.message,
     time: data.time
   };
@@ -678,13 +697,13 @@ socket.on("recRoomMessages", function (data) {
       unread: 0,
       type: "room",
       active: "false",
-      lastMes: data.message,
+      lastMess: data.message,
       username: data.receiver,
       online: 'none',
       avater: _config.server + "/" + data.sender.avater
     };
     (0, _item2.default)(chatsGroup, itemData);
-    _db2.default.get('histories').push({ username: data.receiver, avater: _config.server + "/" + receiverAvater, lastMess: data.message, time: data.time }).write();
+    _db2.default.get('histories').push({ username: data.receiver, avater: receiverAvater, lastMess: data.message, time: data.time }).write();
     _db2.default.get("chatsWith").push({ username: data.receiver, histories: [oneHistory] }).write();
   }
   scrollAuto();
@@ -715,8 +734,29 @@ socket.on("recFileDone", function (data) {
   _db2.default.get('chatsWith').find({ username: data.sender.username }).get("histories").find({ id: data.hid }).assign({ message: message }).write();
 });
 
-socket.on("recRoomFile", function (data) {
-  console.log("recRoomFile", data);
+socket.on("recRoomFileStart", function (data) {
+  console.log("recRoomFileStart", data);
+  var fileMess = $(".chats-window").find('#' + data.contextId);
+  var progress = $("<div class='progress'><div class='progress-bar'></div></div>");
+  fileMess.append(progress);
+});
+
+socket.on("recRoomFileProgress", function (data) {
+  console.log("recRoomFileProgress", data);
+  $('#' + data.id + ' .progress .progress-bar').css('width', data.progress + '%');
+});
+
+socket.on("recRoomFileDone", function (data) {
+  console.log("recRoomFileDone", data);
+  var fileMess = $(".chats-window").find('#' + data.id);
+  if (data.isImg) {
+    fileMess.children("img").attr('src', _config.server + '/file/' + data.url);
+  }
+  var downloadUrl = $("<a download='" + data.url + "' href='" + _config.server + '/file/' + data.url + "'>下载</a>");
+  fileMess.append(downloadUrl).children('span').html("上传完成");
+  var message = data.message;
+  _db2.default.get('histories').find({ id: data.hid }).assign({ lastMess: message }).write();
+  _db2.default.get('chatsWith').find({ username: data.sender.username }).get("histories").find({ id: data.hid }).assign({ message: message }).write();
 });
 
 exports.default = socket;
@@ -1147,12 +1187,14 @@ window.locals = {
       var chatsWith = _db2.default.get("chatsWith").find({ username: data.username }).value();
       var histories = [];
       if (chatsWith && chatsWith.histories) {
-        histories = chatsWith.histories;
-        histories = histories.map(function (item) {
+        histories = chatsWith.histories.slice();
+        histories.forEach(function (item) {
           if (item.sender === window.locals.mine.username) {
-            return Object.assign({ isMine: 'true', avater: item.senderAvater }, item);
+            item.isMine = 'true';
+          } else {
+            item.isMine = 'false';
           }
-          return Object.assign({ isMine: 'false', avater: item.receiverAvater }, item);
+          item.avater = _config.server + '/' + item.senderAvater;
         });
       }
       (0, _chatsWin2.default)(chatsWindowWrapper, Object.assign({ histories: histories }, data));
@@ -1162,8 +1204,9 @@ window.locals = {
         unread: 0,
         type: data.isRoom ? "room" : "user",
         active: "true",
-        lastMes: ""
+        lastMess: ""
       }, data);
+      itemData.avater = _config.server + '/' + itemData.avater;
       (0, _item2.default)(chatsGroup, itemData);
       //然后还要打开聊天窗口和输入界面
       (0, _chatsWin2.default)(chatsWindowWrapper, Object.assign({ histories: [] }, data));
@@ -19938,34 +19981,30 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _jquery = __webpack_require__(4);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _config = __webpack_require__(2);
 
 var tabsEvent = function tabsEvent() {
-  (0, _jquery2.default)(".tabs-group li").on("changTabs", function (e, type) {
-    (0, _jquery2.default)(".tabs-group li").removeClass("active");
-    (0, _jquery2.default)("." + type + "-group").addClass("active");
+  $(".tabs-group li").on("changTabs", function (e, type) {
+    $(".tabs-group li").removeClass("active");
+    $("." + type + "-group").addClass("active");
   });
   //自己在这里犯了一个错误 ，如果使用箭头函数，则this不是点击的元素而是外面的this
-  (0, _jquery2.default)(document).on("click", ".users-item", function () {
-    calcCurChat((0, _jquery2.default)(this), "users");
+  $(document).on("click", ".users-item", function () {
+    calcCurChat($(this), "users");
   });
-  (0, _jquery2.default)(document).on("click", ".rooms-item", function () {
-    calcCurChat((0, _jquery2.default)(this), "rooms");
+  $(document).on("click", ".rooms-item", function () {
+    calcCurChat($(this), "rooms");
   });
-  (0, _jquery2.default)(document).on("click", ".chats-item", function () {
-    var isRoom = (0, _jquery2.default)(this).attr("data-type") === "room" ? true : false;
-    var username = (0, _jquery2.default)(this).find(".chats-item-username").text();
-    var avater = (0, _jquery2.default)(this).children(".chats-item-avater").attr("src");
-    var online = (0, _jquery2.default)(this).attr("data-online");
+  $(document).on("click", ".chats-item", function () {
+    var isRoom = $(this).attr("data-type") === "room" ? true : false;
+    var username = $(this).find(".chats-item-username").text();
+    var avater = $(this).children(".chats-item-avater").attr("src").substring(_config.server.length + 1);
+    var online = $(this).attr("data-online");
     window.locals.curChat = { isRoom: isRoom, username: username, avater: avater, online: online, inChat: "true" };
   });
   function calcCurChat(target, type) {
     var username = target.children("p").text();
-    var avater = target.children("img").attr("src");
+    var avater = target.children("img").attr("src").substring(_config.server.length + 1);
     var inChat = target.attr("data-inchat");
     if (type === "users") {
       var online = target.attr("data-online");
@@ -20134,14 +20173,14 @@ var chatsInputEvent = function chatsInputEvent() {
     if (history.find({ username: curChat.username }).value()) {
       history.find({ username: curChat.username }).assign({ lastMess: message, time: now, id: id }).write();
     } else {
-      history.push({ username: curChat.username, avater: _config.server + "/" + curChat.avater, lastMess: message, time: now, id: id }).write();
+      history.push({ username: curChat.username, avater: curChat.avater, lastMess: message, time: now, id: id }).write();
     }
     var chatsWith = _db2.default.get('chatsWith');
     var oneHistory = {
       sender: window.locals.mine.username,
-      senderAvater: _config.server + "/" + window.locals.mine.avater,
+      senderAvater: window.locals.mine.avater,
       receiver: curChat.username,
-      receiverAvater: _config.server + "/" + curChat.avater,
+      receiverAvater: curChat.avater,
       message: message,
       time: now,
       id: id
@@ -20294,7 +20333,7 @@ var _file2 = _interopRequireDefault(_file);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var source = "<label for='fileupload' title='发送文件' class=\"tools-file\">" + _file2.default + "<input multiple type='file' id='fileupload' name='file' style='width:0;height:0;display:none;'>" + "</label>";
+var source = "<label for='fileupload' title='发送文件' class=\"tools-file\">" + _file2.default + "<input type='file' id='fileupload' name='file' style='width:0;height:0;display:none;'>" + "</label>";
 
 var render = _template2.default.compile(source);
 
@@ -20405,25 +20444,24 @@ var chatsInputToolsEvent = function chatsInputToolsEvent() {
         var progress = $("<div class='progress'><div class='progress-bar'></div></div>");
         fileMess.append(progress);
         var socketMessages = { sender: window.locals.mine, receiver: data.receiver, id: data.contextId };
-        (0, _emit.emitFileSocketStart)(socketMessages);
+        if (window.locals.curChat.isRoom) {
+            (0, _emit.emitRoomFileSocketStart)(socketMessages);
+            data.isRoom = true;
+        } else {
+            (0, _emit.emitFileSocketStart)(socketMessages);
+            data.isRoom = false;
+        }
     }).on('fileuploadprogress', function (e, data) {
         console.log('fileuploadprogress', data);
         var progress = parseInt(data.loaded / data.total * 100, 10);
         $('#' + data.contextId + ' .progress .progress-bar').css('width', progress + '%');
         var socketMessages = { sender: window.locals.mine, receiver: data.receiver, progress: progress, id: data.contextId };
-        (0, _emit.emitFileSocketProgress)(socketMessages);
+        if (data.isRoom) {
+            (0, _emit.emitRoomFileSocketProgress)(socketMessages);
+        } else {
+            (0, _emit.emitFileSocketProgress)(socketMessages);
+        }
     }).on('fileuploaddone', function (e, data) {
-        /**
-        *
-        *   需要给每一个聊天信息加一个唯一标识， 不能用time做标识，下面的time都要去掉，改成用id查找更新
-        *
-        *
-        *
-        *
-        *
-        *
-          *
-          */
         console.log("fileuploaddone", data);
         if (data.result.status) {
             var downloadUrl = $("<a download='" + data.result.url + "' href='" + _config.server + '/file/' + data.result.url + "'>下载</a>");
@@ -20442,7 +20480,11 @@ var chatsInputToolsEvent = function chatsInputToolsEvent() {
             data.html.append(downloadUrl.clone()).children('span').html("上传完成");
             var message = data.html.prop('outerHTML');
             var socketMessages = { sender: window.locals.mine, receiver: data.receiver, id: data.contextId, isImg: isImg, url: data.result.url, hid: data.hid, message: message };
-            (0, _emit.emitFileSocketDone)(socketMessages);
+            if (data.isRoom) {
+                (0, _emit.emitRoomFileSocketDone)(socketMessages);
+            } else {
+                (0, _emit.emitFileSocketDone)(socketMessages);
+            }
             _db2.default.get('histories').find({ id: data.hid }).assign({ lastMess: message }).write();
             _db2.default.get('chatsWith').find({ username: data.receiver }).get("histories").find({ id: data.hid }).assign({ message: message }).write();
         }

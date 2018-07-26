@@ -35,7 +35,7 @@ router.post('/', function(req, res, next) {
 				if(err){
 					res.json({auth:false,message:messages.registerFail});
 				}else{
-					users = Object.assign(users, {avater:newName, online: true});
+					users = Object.assign(users, {avater:'avater/'+newName, online: true});
 					db.addUser(users);
 					auth.setAuth(res);
 					auth.setUid(res, users.username);

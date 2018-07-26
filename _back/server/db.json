@@ -26,14 +26,14 @@
     {
       "username": "huxinmin",
       "password": "123456",
-      "avater": "huxinmin1530881982736.jpeg",
+      "avater": "/avater/huxinmin1532590008053.jpeg",
       "online": true
     }
   ],
   "rooms": [
     {
       "roomname": "群聊",
-      "avater": "images/avater/10.jpg",
+      "avater": "assets/images/avater.jpg",
       "users": [
         {
           "username": "",

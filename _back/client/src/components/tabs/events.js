@@ -1,4 +1,4 @@
-import $ from "jquery";
+import {server} from '../../config';
 
 const tabsEvent = ()=>{
   $(".tabs-group li").on("changTabs", function(e, type){
@@ -15,13 +15,13 @@ const tabsEvent = ()=>{
   $(document).on("click", ".chats-item", function(){
   	const isRoom = $(this).attr("data-type")==="room" ?true:false;
   	const username = $(this).find(".chats-item-username").text();
-  	const avater = $(this).children(".chats-item-avater").attr("src");
+  	const avater = $(this).children(".chats-item-avater").attr("src").substring(server.length+1);
   	const online = $(this).attr("data-online");
   	window.locals.curChat = {isRoom:isRoom,username:username,avater:avater,online:online, inChat:"true",};
   });
   function calcCurChat(target, type){
     const username = target.children("p").text();
-    const avater = target.children("img").attr("src");
+    const avater = target.children("img").attr("src").substring(server.length+1);
     const inChat = target.attr("data-inchat");
     if(type === "users"){
       var online = target.attr("data-online");
