@@ -11,7 +11,7 @@ const _ = require("lodash");
 /* GET home page. */
 router.post('/', function(req, res, next) {
 	var form = new formidable.IncomingForm();
-	const uploadDir = path.resolve(__dirname, '../../upload');
+	const uploadDir = path.resolve(__dirname, '../../upload/avater');
 	form.uploadDir =uploadDir;
 	var users = {username:"",password:"",avater:""};
 	var avaterPath, ext, isExist = false;

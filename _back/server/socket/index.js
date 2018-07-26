@@ -2,6 +2,7 @@ const login = require('./login');
 const logout = require('./logout');
 const messages = require('./messages');
 const roomMessages = require('./roomMessages');
+const file = require('./file');
 
 exports = module.exports = function(server) {
 		var io = require('socket.io')(server);
@@ -14,6 +15,6 @@ exports = module.exports = function(server) {
 			logout(socket);
 			messages(socket);
 			roomMessages(socket);
-
+			file(socket)
 		});
 }

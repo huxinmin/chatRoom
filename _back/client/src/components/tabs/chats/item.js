@@ -9,7 +9,7 @@ var source = "<div class=\"chats-item\" data-username={{username}} data-unread={
 +    "<span class=\"chats-item-username\">{{username}}</span>"
 +    "<span class=\"chats-item-unread\">{{unread}}</span>"
 +  "</div>"
-+  "<p class=\"chats-item-info-bottom\">{{lastMes}}</p>"
++  "<p class=\"chats-item-info-bottom\">{{@ lastMes}}</p>"
 +"</div>"
 +"</div>";
 

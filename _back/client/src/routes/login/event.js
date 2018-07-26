@@ -10,7 +10,7 @@ const loginEvent = (loginBtn)=>{
   $(document).on("click", loginBtn, ()=>{
   	onLoginBtn();
   });
-  $(document).on("keydown", (e)=>{
+  $(document).on("keydown",".login-container", (e)=>{
   	if(e.keyCode === 13){
   		onLoginBtn();
   	}

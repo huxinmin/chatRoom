@@ -108,8 +108,32 @@ socket.on("recRoomMessages", (data)=>{
   scrollAuto();
 });
 
-socket.on("recFile", function(data){
-	console.log("recFile",data)
+socket.on("recFileStart", function(data){
+	console.log("recFileStart",data)
+	var fileMess = $('#'+data.id);
+	var progress = $("<div class='progress'><div class='progress-bar'></div></div>");
+  fileMess.append(progress);
+});
+
+socket.on("recFileProgress", function(data){
+	console.log("recFileProgress",data)
+	$('#'+data.id+' .progress .progress-bar').css(
+    'width',
+    data.progress + '%'
+  );
+});
+
+socket.on("recFileDone", function(data){
+	console.log("recFileDone",data)
+	var fileMess = $('#'+data.id);
+	if(data.isImg){
+		fileMess.children("img").attr('src', server+'/file/'+data.url)
+	}
+	var downloadUrl = $("<a download='"+data.url+"' href='"+server+'/file/'+data.url+"'>下载</a>");
+	fileMess.append(downloadUrl).children('span').html("上传完成")
+  var message = fileMess.prop('outerHTML')
+  db.get('histories').find({time:data.uploadTime}).assign({lastMess:message}).write()
+  db.get('chatsWith').find({username:data.receiver}).get("histories").find({time:data.uploadTime}).assign({message:message}).write();
 });
 
 socket.on("recRoomFile", function(data){

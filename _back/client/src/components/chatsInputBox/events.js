@@ -5,8 +5,11 @@ import db from '../../utils/db';
 
 const chatsInputEvent = ()=>{
   $(document).on("click", ".chats-input-btn", function(){
+  	function scrollAuto(){
+			$(".chats-window").scrollTop($(".chats-win-history-group").height())
+		}
     const inputCont = $(".chats-input-text");
-    const message = inputCont.html();
+    const message = inputCont.html().replace(/<div><br><\/div>/ig,'');
     if(!message || message.length===0){ return; }
     const chatsWin = $(".chats-win-history-group");
     const now = moment().format("MM-DD HH:mm");
@@ -46,14 +49,15 @@ const chatsInputEvent = ()=>{
     }else{
     	chatsWith.push({username:curChat.username,histories:[oneHistory] }).write();
     }
+    scrollAuto();
 
   });
   $(document).on('keyup','.chats-input-text', function(e){
+  	e.preventDefault();
+  	e.stopPropagation();
   	//按回车
   	if(e.which === 13){
   		$(".chats-input-btn").click();
-  		e.preventDefault();
-  		e.stopPropagation();
   		return false
   	}
   });
