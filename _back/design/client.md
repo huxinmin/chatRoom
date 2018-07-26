@@ -98,6 +98,7 @@
     - `avater`聊天对象头像
     - `lastMess`最后一次对话的消息
     - `time`最后一次对话时间
+    - `id`这次对话的唯一标识
 - `chatsWith`[Array]
   - `username`{Object}与某个用户的所有聊天记录$username是用户名或者是群名
   - `histories`[Array]所有聊天记录
@@ -107,4 +108,5 @@
     - `receiverAvater`接受者头像
     - `message`聊天具体消息
     - `time`聊天时间
+    - `id`这次对话的唯一标识
 - `settings`{Object}用户设置

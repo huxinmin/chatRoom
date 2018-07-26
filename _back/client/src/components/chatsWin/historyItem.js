@@ -3,7 +3,7 @@ import "./index.less";
 
 
 var source = "{{each data val}}"
-+  "<div class=\"chats-win-history-item\" data-isMine={{val.isMine}}>"
++  "<div class=\"chats-win-history-item\" data-isMine={{val.isMine}} data-hid={{val.id}}>"
 +    "<div class=\"inner-history-item\">"
 +      "<div class=\"history-item-info\">"
 +        "<div class=\"history-item-info-message\">{{@ val.message}}</div>"

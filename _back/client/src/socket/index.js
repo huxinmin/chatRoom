@@ -3,6 +3,7 @@ import {server,} from "../config.js";
 import renderHistoryItem from "../components/chatsWin/historyItem";
 import renderChatsItem from "../components/tabs/chats/item";
 import db from '../utils/db';
+import {hisLimit} from '../utils/utils';
 
 const socket = io({autoConnect:false,});
 
@@ -37,11 +38,17 @@ socket.on("recMessages", (data)=>{
     	receiver:window.locals.mine.username,
     	receiverAvater:server+"/"+window.locals.mine.avater,
     	message:data.message,
-    	time:data.time
+    	time:data.time,
+    	id:data.id
   }
   if(db.get('histories').find({username:data.sender.username}).value()){
-  	db.get('histories').find({username:data.sender.username}).assign({lastMess:data.message,time:data.time}).write()
-  	db.get("chatsWith").find({username:data.sender.username}).get('histories').push(oneHistory).write()
+  	db.get('histories').find({username:data.sender.username}).assign({lastMess:data.message,time:data.time, id:data.id}).write()
+  	var chatsWithHis = db.get("chatsWith").find({username:data.sender.username}).get('histories')
+  	chatsWithHis.push(oneHistory).write()
+  	//如果历史记录超过100条则去掉第一条
+  	if(chatsWithHis.size().value()>hisLimit){
+    		chatsWithHis.shift().write()
+    }
   }else{
   	const chatsGroup = $(".chats-group");
   	var itemData = {
@@ -54,7 +61,7 @@ socket.on("recMessages", (data)=>{
    			avater:server+"/"+data.sender.avater
    		};
   	renderChatsItem(chatsGroup,itemData);
-  	db.get('histories').push({username:data.sender.username,avater:server+"/"+data.sender.avater,lastMess:data.message,time:data.time}).write()
+  	db.get('histories').push({username:data.sender.username,avater:server+"/"+data.sender.avater,lastMess:data.message,time:data.time,id:data.id}).write()
   	db.get("chatsWith").push({username:data.sender.username,histories:[oneHistory] }).write()
   }
   scrollAuto();
@@ -110,7 +117,7 @@ socket.on("recRoomMessages", (data)=>{
 
 socket.on("recFileStart", function(data){
 	console.log("recFileStart",data)
-	var fileMess = $('#'+data.id);
+	var fileMess = $(".chats-window").find('#'+data.contextId);
 	var progress = $("<div class='progress'><div class='progress-bar'></div></div>");
   fileMess.append(progress);
 });
@@ -125,15 +132,15 @@ socket.on("recFileProgress", function(data){
 
 socket.on("recFileDone", function(data){
 	console.log("recFileDone",data)
-	var fileMess = $('#'+data.id);
+	var fileMess = $(".chats-window").find('#'+data.id);
 	if(data.isImg){
 		fileMess.children("img").attr('src', server+'/file/'+data.url)
 	}
 	var downloadUrl = $("<a download='"+data.url+"' href='"+server+'/file/'+data.url+"'>下载</a>");
 	fileMess.append(downloadUrl).children('span').html("上传完成")
-  var message = fileMess.prop('outerHTML')
-  db.get('histories').find({time:data.uploadTime}).assign({lastMess:message}).write()
-  db.get('chatsWith').find({username:data.receiver}).get("histories").find({time:data.uploadTime}).assign({message:message}).write();
+  var message = data.message
+  db.get('histories').find({id:data.hid}).assign({lastMess:message}).write()
+  db.get('chatsWith').find({username:data.sender.username}).get("histories").find({id:data.hid}).assign({message:message}).write();
 });
 
 socket.on("recRoomFile", function(data){
